@@ -1,38 +1,24 @@
 package com.stockboo.view;
 
-import com.google.gson.Gson;
 import com.j256.ormlite.android.apptools.OpenHelperManager;
-import com.j256.ormlite.dao.RuntimeExceptionDao;
-import com.stockboo.model.Stock;
-import com.stockboo.model.StockList;
 import com.stockboo.model.db.DatabaseHelper;
 import com.stockboo.view.util.util.SystemUiHider;
 
-import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Context;
-import android.content.res.ColorStateList;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.graphics.Color;
-import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
-import android.view.MotionEvent;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.BaseAdapter;
 import android.widget.CursorAdapter;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 
 import com.stockboo.R;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-
-import java.io.IOException;
-import java.io.InputStream;
 
 /**
  * An example full-screen activity that shows and hides the system UI (i.e.
@@ -40,7 +26,7 @@ import java.io.InputStream;
  *
  * @see SystemUiHider
  */
-public class OrganizationSearchActivity extends Activity {
+public class StockListSearchActivity extends Activity implements TextWatcher{
     /**
      * Whether or not the system UI should be auto-hidden after
      * {@link #AUTO_HIDE_DELAY_MILLIS} milliseconds.
@@ -71,37 +57,23 @@ public class OrganizationSearchActivity extends Activity {
 
     private DatabaseHelper dbHelper;
 
+    private StockListAdapter adapter;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        setContentView(R.layout.activity_organization_search);
+        setContentView(R.layout.activity_stocklist_search);
         getActionBar().hide();
-        StringBuffer buffer = new StringBuffer();
-        try {
-            InputStream is = getAssets().open("stocklist.json");
-            byte[] data = new byte[1024];
-            int bytesRead = 0;
-            while((bytesRead = is.read(data)) > 0){
-                buffer.append(new String(data, 0, bytesRead));
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        EditText searchEditText = (EditText) findViewById(R.id.searchEditText);
+        searchEditText.addTextChangedListener(this);
         dbHelper = OpenHelperManager.getHelper(this, DatabaseHelper.class);
-        String jsonStr = buffer.toString();
-        StockList[] startUpData = new Gson().fromJson(jsonStr, StockList[].class);
-
-        RuntimeExceptionDao<StockList, Integer> stockListDao = dbHelper.getStockListDao();
-        int length = startUpData.length;
-        for(int i = 0;i<length; i++){
-            stockListDao.create(startUpData[i]);
-        }
         SQLiteDatabase database = dbHelper.getReadableDatabase();
         String SqlQuery = "SELECT * FROM StockList";
         Cursor cursor = database.rawQuery(SqlQuery, null);
         ListView listView = (ListView) findViewById(R.id.listView);
-        listView.setAdapter(new StockListAdapter(this, cursor, true));
+        adapter = new StockListAdapter(this, cursor, true);
+        listView.setAdapter(adapter);
         // Set up an instance of SystemUiHider to control the system UI for
         // this activity.
     }
@@ -110,6 +82,26 @@ public class OrganizationSearchActivity extends Activity {
     protected void onPostCreate(Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
 
+    }
+
+    @Override
+    public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+    }
+
+    @Override
+    public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+    }
+
+    @Override
+    public void afterTextChanged(Editable s) {
+        String query = null;
+        query = "SELECT * FROM StockList where ScriptName like '" + s.toString() + "%'";
+        SQLiteDatabase database = dbHelper.getReadableDatabase();
+        Cursor cursor = database.rawQuery(query, null);
+        adapter.changeCursor(cursor);
+        adapter.notifyDataSetChanged();
     }
 
     private class StockListAdapter extends CursorAdapter {
@@ -122,14 +114,14 @@ public class OrganizationSearchActivity extends Activity {
         @Override
         public View newView(Context context, Cursor cursor, ViewGroup parent) {
             TextView view = new TextView(context);
-            view.setText(cursor.getString(1));
+            view.setText(cursor.getString(2));
             view.setTextColor(getResources().getColor(android.R.color.black));
             return view;
         }
 
         @Override
         public void bindView(View view, Context context, Cursor cursor) {
-            ((TextView)view).setText(cursor.getString(1));
+            ((TextView)view).setText(cursor.getString(2));
             ((TextView)view).setTextColor(getResources().getColor(android.R.color.black));
         }
     }
