@@ -13,6 +13,7 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.CursorAdapter;
 import android.widget.EditText;
 import android.widget.ListView;
@@ -26,7 +27,7 @@ import com.stockboo.R;
  *
  * @see SystemUiHider
  */
-public class StockListSearchActivity extends Activity implements TextWatcher{
+public class StockListSearchActivity extends Activity implements TextWatcher, AdapterView.OnItemClickListener{
     /**
      * Whether or not the system UI should be auto-hidden after
      * {@link #AUTO_HIDE_DELAY_MILLIS} milliseconds.
@@ -74,6 +75,7 @@ public class StockListSearchActivity extends Activity implements TextWatcher{
         ListView listView = (ListView) findViewById(R.id.listView);
         adapter = new StockListAdapter(this, cursor, true);
         listView.setAdapter(adapter);
+        listView.setOnItemClickListener(this);
         // Set up an instance of SystemUiHider to control the system UI for
         // this activity.
     }
@@ -104,8 +106,12 @@ public class StockListSearchActivity extends Activity implements TextWatcher{
         adapter.notifyDataSetChanged();
     }
 
-    private class StockListAdapter extends CursorAdapter {
+    @Override
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        adapter.get
+    }
 
+    private class StockListAdapter extends CursorAdapter {
 
         public StockListAdapter(Context context, Cursor c, boolean autoRequery) {
             super(context, c, autoRequery);
