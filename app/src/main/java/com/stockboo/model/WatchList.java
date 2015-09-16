@@ -44,7 +44,7 @@ public class WatchList implements Parcelable {
     @DatabaseField
     private String c_fix;
 
-    protected WatchList(Parcel in) {
+    /*protected WatchList(Parcel in) {
         _Id = in.readInt();
         SYMBOL = in.readString();
         ScriptName = in.readString();
@@ -56,7 +56,7 @@ public class WatchList implements Parcelable {
         ScriptID = in.readString();
         c = in.readString();
         c_fix = in.readString();
-    }
+    }*/
 
     public static final Creator<WatchList> CREATOR = new Creator<WatchList>() {
         @Override

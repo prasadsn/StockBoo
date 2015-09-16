@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal" android:layout_width="match_parent"
+    android:background="@drawable/image_placeholder"
+    android:layout_marginBottom="10dp"
+    android:layout_height="@dimen/height_heading">
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/icon_left"
+        android:layout_gravity="center_vertical|left"
+        android:layout_weight="3"
+        android:src="@drawable/dashboard_screen_icon" />
+    <com.stockboo.view.custom.StockBooTextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/title_dashboard"
+        android:layout_weight="1"
+        android:textSize="16dp"
+        android:gravity="center"
+        android:textColor="@android:color/black"
+        android:layout_gravity="center"/>
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/icon_right"
+        android:layout_weight="3"
+        android:layout_gravity="right"
+        android:visibility="invisible"
+        android:src="@drawable/dashboard_screen_icon" />
+</LinearLayout>

@@ -1,0 +1,55 @@
+<resources>
+    <string name="app_name">StockBoo</string>
+
+    <string name="title_section1">Section 1</string>
+    <string name="title_section2">Section 2</string>
+    <string name="title_section3">Section 3</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <string name="action_example">Example action</string>
+
+    <string name="action_settings">Settings</string>
+    <string name="menu_title_search">Search</string>
+    <string name="title_home_navigation_drawer">Home</string>
+    <string name="title_dashboard">Dashboard</string>
+    <string name="heading_stock_message">StockMessages</string>
+    <string name="heading_market_news">Market News</string>
+    <string name="last_updated_label">last updated: %s</string>
+
+    <string name="title_activity_market_news">MarketNewsActivity</string>
+    <string name="dummy_button">Dummy Button</string>
+    <string name="dummy_content">DUMMY\nCONTENT</string>
+
+    <string name="title_activity_splash">SplashActivity</string>
+
+<!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+
+    <string name="title_demo_1">Welcome to StockBoo</string>
+    <string name="message_demo_1">This Blog, Apps, its owner, creator/contributor is not a research analyst and expressing openion only as an individual investor in Indian equities. He/She is not responsible for any loss arising out of any information, post or opinion appearing on this blog. All informationin this blog is posted for personal study, All information posted on blog is as available in public domain.</string>
+    <string name="title_demo_2">Dashboard</string>
+    <string name="message_demo_2">Get the latest market data for Equitey NSE and BSE Indexes</string>
+    <string name="title_demo_3">Recommendations</string>
+    <string name="message_demo_3">Get a detail reports of previous stock recommendations and their performance</string>
+    <string name="title_demo_4">Past Recommendations</string>
+    <string name="message_demo_4">Get a detail reports of previous stock recommendations and their performance</string>
+    <string name="title_demo_5">Watchlist</string>
+    <string name="message_demo_5">Add stocks to your watch list for a personalized stock stream</string>
+    <string name="title_demo_6">Portfolio Management</string>
+    <string name="message_demo_6">Manage your portfolio, analyse your total investment, current market value of your stocks and daily changes</string>
+    <string name="title_demo_7">Market News</string>
+    <string name="message_demo_7">Read the latest news on business, finance, markets, technology, companies, small business, personal finance, savings &amp; investing</string>
+
+    <string name="hello_world">Hello world!</string>
+    <string name="button_skip">SKIP NOW</string>
+    <string name="alert_dialog_no_internet">No internet connection</string>
+    <string name="label_recommended_price">Recommend Price:</string>
+    <string name="label_target_price">Target Price:</string>
+    <string name="heading_current_suggestions">Current Suggestions</string>
+    <string name="title_activity_stock_detail">StockDetailActivity</string>
+    <string name="menu_title_add">Add Stock</string>
+
+    <string name="title_activity_organization_search">OrganizationSearchActivity</string>
+</resources>

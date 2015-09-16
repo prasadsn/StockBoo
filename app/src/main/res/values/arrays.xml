@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <array name="navigation_drawer_items">
+        <item>Home</item>
+        <item>Current Suggestions</item>
+        <item>Past Performance</item>
+        <item>My Watch List</item>
+        <item>Portfolio</item>
+        <item>Brokerage Recos</item>
+        <item>Market News</item>
+        <item>About Us</item>
+        </array>
+</resources>

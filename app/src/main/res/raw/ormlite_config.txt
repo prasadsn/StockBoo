@@ -1,0 +1,36 @@
+#
+# generated on 2015/09/14 01:48:04
+#
+# --table-start--
+dataClass=com.stockboo.model.StockList
+tableName=stocklist
+# --table-fields-start--
+# --field-start--
+fieldName=_Id
+columnName=_id
+generatedId=true
+# --field-end--
+# --field-start--
+fieldName=SYMBOL
+# --field-end--
+# --field-start--
+fieldName=ScriptName
+# --field-end--
+# --field-start--
+fieldName=Status
+# --field-end--
+# --field-start--
+fieldName=ISINNO
+# --field-end--
+# --field-start--
+fieldName=Industry
+# --field-end--
+# --field-start--
+fieldName=Group
+# --field-end--
+# --field-start--
+fieldName=ScriptID
+# --field-end--
+# --table-fields-end--
+# --table-end--
+#################################

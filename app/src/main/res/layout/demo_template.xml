@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content" android:layout_height="300dp" android:background="@drawable/demo_background">
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="200dp"
+        android:id="@+id/demo_icon"
+        android:layout_marginTop="30dp"
+        android:layout_marginRight="30dp"
+        android:layout_marginLeft="30dp"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:scaleType="fitXY"
+        android:background="@android:color/white"
+        android:src="@drawable/ic_launcher" />
+
+    <com.stockboo.view.custom.StockBooBoldTextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/demo_title"
+        android:text="@string/title_demo_1"
+        android:layout_marginTop="20dp"
+        android:textSize="15dp"
+        android:layout_below="@+id/demo_icon"
+        android:textColor="@android:color/white"
+        android:layout_centerHorizontal="true" />
+
+    <com.stockboo.view.custom.StockBooTextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/editText"
+        android:layout_marginLeft="30dp"
+        android:layout_marginRight="30dp"
+        android:text="@string/message_demo_1"
+        android:layout_marginTop="20dp"
+        android:gravity="center_horizontal"
+        android:textSize="13dp"
+        android:layout_below="@+id/demo_title"
+        android:textColor="@android:color/white"
+        android:layout_centerHorizontal="true" />
+</RelativeLayout>

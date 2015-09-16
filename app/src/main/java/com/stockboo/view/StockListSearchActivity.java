@@ -108,7 +108,6 @@ public class StockListSearchActivity extends Activity implements TextWatcher, Ad
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        adapter.get
     }
 
     private class StockListAdapter extends CursorAdapter {
