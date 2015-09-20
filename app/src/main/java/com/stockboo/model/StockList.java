@@ -52,6 +52,39 @@ public class StockList implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(_Id);
+        dest.writeString(SYMBOL);
+        dest.writeString(ScriptName);
+        dest.writeString(Status);
+        dest.writeString(ISINNO);
+        dest.writeString(Industry);
+        dest.writeString(Group);
+    }
+    public int get_Id() {
+        return _Id;
+    }
 
+    public String getSYMBOL() {
+        return SYMBOL;
+    }
+
+    public String getStatus() {
+        return Status;
+    }
+
+    public String getISINNO() {
+        return ISINNO;
+    }
+
+    public String getIndustry() {
+        return Industry;
+    }
+
+    public String getGroup() {
+        return Group;
+    }
+
+    public String getScriptID() {
+        return ScriptID;
     }
 }

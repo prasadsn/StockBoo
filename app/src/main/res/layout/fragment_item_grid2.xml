@@ -6,7 +6,7 @@
     <GridView android:id="@android:id/list" android:layout_width="match_parent"
         android:layout_height="match_parent" android:numColumns="2" />
 
-    <TextView android:id="@android:id/empty" android:layout_width="match_parent"
+    <com.stockboo.view.custom.StockBooTextView android:id="@android:id/empty" android:layout_width="match_parent"
         android:layout_height="match_parent" android:gravity="center" />
 
 </FrameLayout>

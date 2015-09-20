@@ -1,6 +1,10 @@
 package com.stockboo.view;
 
 import com.j256.ormlite.android.apptools.OpenHelperManager;
+import com.j256.ormlite.dao.RuntimeExceptionDao;
+import com.j256.ormlite.stmt.QueryBuilder;
+import com.stockboo.model.StockList;
+import com.stockboo.model.WatchList;
 import com.stockboo.model.db.DatabaseHelper;
 import com.stockboo.view.util.util.SystemUiHider;
 
@@ -9,8 +13,10 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
+import android.os.Parcel;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -20,6 +26,9 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.stockboo.R;
+
+import java.sql.SQLException;
+import java.util.List;
 
 /**
  * An example full-screen activity that shows and hides the system UI (i.e.
@@ -108,6 +117,23 @@ public class StockListSearchActivity extends Activity implements TextWatcher, Ad
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        String symbol = (String) view.getTag();
+        QueryBuilder<StockList, Integer> queryBuilder =
+                dbHelper.getStockListDao().queryBuilder();
+            // list all of the accounts that have the same
+            // name and password field
+        try {
+            queryBuilder.where().eq("SYMBOL",
+                    symbol);
+            List<StockList> results = queryBuilder.query();
+            StockList stockList = results.get(0);
+            WatchList watchList = new WatchList(stockList.getSYMBOL(), stockList.getScriptName(), stockList.getStatus(), stockList.getISINNO(), stockList.getIndustry(), stockList.getGroup(), null, stockList.getScriptID(), null, null);
+            RuntimeExceptionDao<WatchList, Integer> watchListDao = dbHelper.getWatchListRuntimeDao();
+            watchListDao.create(watchList);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
     }
 
     private class StockListAdapter extends CursorAdapter {
@@ -128,6 +154,7 @@ public class StockListSearchActivity extends Activity implements TextWatcher, Ad
         public void bindView(View view, Context context, Cursor cursor) {
             ((TextView)view).setText(cursor.getString(2));
             ((TextView)view).setTextColor(getResources().getColor(android.R.color.black));
+            view.setTag(cursor.getString(1));
         }
     }
 

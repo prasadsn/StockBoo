@@ -268,6 +268,7 @@ public class CurrentSuggestionFragment extends Fragment implements AbsListView.O
             return false;
         }
     }
+
     private class Listener implements Response.Listener<String>, Response.ErrorListener{
         List<ParseObject> objects;
 
@@ -291,6 +292,7 @@ public class CurrentSuggestionFragment extends Fragment implements AbsListView.O
             }
         }
     }
+
     @Override
     public void onDetach() {
         super.onDetach();

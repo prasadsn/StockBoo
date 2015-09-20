@@ -88,7 +88,7 @@ public class MainActivity extends ActionBarActivity
                         .commit();
                 break;
             case 3:
-                mMenu.findItem(R.id.action_search).setVisible(false);
+                //mMenu.findItem(R.id.action_search).setVisible(false);
                 //mMenu.findItem(R.id.action_add).setVisible(true);
                 invalidateOptionsMenu();
                 getFragmentManager().beginTransaction()

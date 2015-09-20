@@ -1,6 +1,9 @@
 package com.stockboo.view;
 
 import android.app.Activity;
+import android.content.Context;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.app.Fragment;
 import android.view.LayoutInflater;
@@ -9,12 +12,26 @@ import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.CursorAdapter;
 import android.widget.ListAdapter;
 import android.widget.TextView;
 
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.j256.ormlite.android.apptools.OpenHelperManager;
+import com.parse.ParseObject;
 import com.stockboo.R;
 
+import com.stockboo.model.WatchList;
+import com.stockboo.model.db.DatabaseHelper;
+import com.stockboo.network.StockBooRequestQueue;
 import com.stockboo.view.dummy.DummyContent;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+
+import java.util.List;
 
 /**
  * A fragment representing a list of Items.
@@ -37,6 +54,7 @@ public class WatchListFragment extends Fragment implements AbsListView.OnItemCli
     private String mParam2;
 
     private OnFragmentInteractionListener mListener;
+    private DatabaseHelper dbHelper;
 
     /**
      * The fragment's ListView/GridView.
@@ -47,7 +65,7 @@ public class WatchListFragment extends Fragment implements AbsListView.OnItemCli
      * The Adapter which will be used to populate the ListView/GridView with
      * Views.
      */
-    private ListAdapter mAdapter;
+    private CursorAdapter mAdapter;
 
     // TODO: Rename and change types of parameters
     public static WatchListFragment newInstance(String param1, String param2) {
@@ -74,10 +92,12 @@ public class WatchListFragment extends Fragment implements AbsListView.OnItemCli
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
-
+        dbHelper = OpenHelperManager.getHelper(getActivity().getApplicationContext(), DatabaseHelper.class);
+        SQLiteDatabase database = dbHelper.getReadableDatabase();
+        String SqlQuery = "SELECT * FROM WatchList";
+        Cursor cursor = database.rawQuery(SqlQuery, null);
         // TODO: Change Adapter to display your content
-        mAdapter = new ArrayAdapter<DummyContent.DummyItem>(getActivity(),
-                android.R.layout.simple_list_item_1, android.R.id.text1, DummyContent.ITEMS);
+        mAdapter = new WatchListAdapter(getActivity().getApplicationContext(), cursor, true);
     }
 
     @Override
@@ -98,6 +118,7 @@ public class WatchListFragment extends Fragment implements AbsListView.OnItemCli
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
+        loadData();
         /*try {
             mListener = (OnFragmentInteractionListener) activity;
         } catch (ClassCastException e) {
@@ -131,6 +152,62 @@ public class WatchListFragment extends Fragment implements AbsListView.OnItemCli
 
         if (emptyView instanceof TextView) {
             ((TextView) emptyView).setText(emptyText);
+        }
+    }
+    private class WatchListAdapter extends CursorAdapter {
+
+        public WatchListAdapter(Context context, Cursor c, boolean autoRequery) {
+            super(context, c, autoRequery);
+        }
+
+        @Override
+        public View newView(Context context, Cursor cursor, ViewGroup parent) {
+            TextView view = new TextView(context);
+            view.setText(cursor.getString(5));
+            view.setTextColor(getResources().getColor(android.R.color.black));
+            return view;
+        }
+
+        @Override
+        public void bindView(View view, Context context, Cursor cursor) {
+            ((TextView)view).setText(cursor.getString(5));
+            ((TextView)view).setTextColor(getResources().getColor(android.R.color.black));
+            view.setTag(cursor.getString(1));
+        }
+    }
+
+    private void loadData(){
+        Listener listener = new Listener();
+        List<WatchList> list = dbHelper.getWatchListRuntimeDao().queryForAll();
+        StringBuffer reqParamBuffer = new StringBuffer();
+        for(WatchList watchList: list){
+            reqParamBuffer.append(watchList.getGroup().equals("A") ? "NSE:"+watchList.getScriptID() : "BOM:"+watchList.getScriptID());
+        }
+        String request = "http://finance.google.com/finance/info?client=ig&q=" + reqParamBuffer;
+        StringRequest bseNseRequest = new StringRequest(StringRequest.Method.GET, request, listener, listener);
+        StockBooRequestQueue.getRequestQueue(getActivity()).add(bseNseRequest);
+
+    }
+
+    private class Listener implements Response.Listener<String>, Response.ErrorListener{
+
+        public Listener(){
+        }
+        @Override
+        public void onErrorResponse(VolleyError error) {
+
+        }
+
+        @Override
+        public void onResponse(String response) {
+            try {
+                if(response.startsWith("\n// "))
+                    response = response.substring(4);
+                JSONArray array = new JSONArray(response);
+                //((AdapterView<ListAdapter>) mListView).setAdapter(new SuggestionAdapter(objects, array));
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
         }
     }
 

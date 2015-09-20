@@ -2,6 +2,7 @@ package com.stockboo.model;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.renderscript.Script;
 
 import com.google.gson.annotations.SerializedName;
 import com.j256.ormlite.field.DatabaseField;
@@ -26,6 +27,54 @@ public class WatchList implements Parcelable {
     @DatabaseField
     private String ISINNO;
 
+    public String getSYMBOL() {
+        return SYMBOL;
+    }
+
+    public void setPrice(String price) {
+        this.price = price;
+    }
+
+    public void setC(String c) {
+        this.c = c;
+    }
+
+    public void setC_fix(String c_fix) {
+        this.c_fix = c_fix;
+    }
+
+    public String getStatus() {
+        return Status;
+    }
+
+    public String getISINNO() {
+        return ISINNO;
+    }
+
+    public String getIndustry() {
+        return Industry;
+    }
+
+    public String getGroup() {
+        return Group;
+    }
+
+    public String getPrice() {
+        return price;
+    }
+
+    public String getScriptID() {
+        return ScriptID;
+    }
+
+    public String getC() {
+        return c;
+    }
+
+    public String getC_fix() {
+        return c_fix;
+    }
+
     @DatabaseField
     private String Industry;
 
@@ -44,7 +93,20 @@ public class WatchList implements Parcelable {
     @DatabaseField
     private String c_fix;
 
-    protected  WatchList(){}
+    public  WatchList(){}
+
+    public  WatchList(String SYMBOL, String ScriptName, String Status, String ISINNO, String Industry, String Group, String price, String ScriptID, String  c, String c_fix){
+        this.SYMBOL = SYMBOL;
+        this.ScriptName = ScriptName;
+        this.Status = Status;
+        this.ISINNO = ISINNO;
+        this.Industry = Industry;
+        this.Group = Group;
+        this.price = price;
+        this.ScriptID = ScriptID;
+        this.c = c;
+        this.c_fix = c_fix;
+    }
 
     protected WatchList(Parcel in) {
         _Id = in.readInt();
