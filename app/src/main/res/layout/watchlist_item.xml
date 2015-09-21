@@ -2,14 +2,14 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:background="@drawable/boxbaground" android:layout_width="match_parent"
     android:layout_height="wrap_content">
-<com.stockboo.view.custom.StockBooTextView android:id="@+id/scriptName" android:textSize="18sp" android:textColor="@android:color/holo_blue_dark" android:layout_marginTop="5dp" android:layout_marginLeft="5dp" android:text="Stock Name" android:layout_width="match_parent"
+<com.stockboo.view.custom.StockBooTextView android:id="@+id/scriptName" android:lines="1" android:textSize="14sp" android:textColor="@android:color/holo_blue_dark" android:layout_marginTop="5dp" android:layout_marginLeft="5dp" android:text="Stock Name" android:layout_width="match_parent"
     android:layout_height="wrap_content"/>
     <com.stockboo.view.custom.StockBooTextView android:id="@+id/scriptID" android:textSize="12sp" android:layout_marginTop="5dp" android:layout_marginLeft="5dp" android:text="Stock ID" android:layout_width="wrap_content"
         android:layout_height="wrap_content" android:layout_below="@id/scriptName"/>
-    <com.stockboo.view.custom.StockBooTextView android:id="@+id/c" android:textSize="4sp" android:layout_marginTop="5dp" android:layout_marginLeft="5dp" android:background="@drawable/oval_background" android:text="Stock ID" android:layout_alignParentRight="true" android:layout_width="wrap_content"
-        android:layout_height="wrap_content" android:layout_alignBaseline="@id/scriptName"/>
+    <com.stockboo.view.custom.StockBooTextView android:id="@+id/c" android:textSize="8sp" android:background="@drawable/oval_background" android:text="Stock ID" android:layout_alignParentRight="true" android:layout_width="wrap_content"
+        android:gravity="center" android:textColor="@android:color/white" android:layout_height="20dp" android:layout_alignBaseline="@id/scriptName"/>
     <com.stockboo.view.custom.StockBooTextView android:id="@+id/price" android:textSize="12sp" android:layout_marginTop="5dp" android:layout_marginLeft="5dp" android:text="Price" android:layout_width="wrap_content"
-        android:layout_height="wrap_content" android:layout_below="@id/scriptID"/>
-    <com.stockboo.view.custom.StockBooTextView android:id="@+id/c_fix" android:textSize="4sp" android:layout_marginTop="5dp" android:layout_marginLeft="5dp" android:background="@drawable/oval_background" android:text="Stock ID" android:layout_alignParentRight="true" android:layout_width="wrap_content"
-        android:layout_height="wrap_content" android:layout_alignBaseline="@id/price"/>
+        android:textStyle="bold" android:layout_height="wrap_content" android:layout_below="@id/scriptID"/>
+    <com.stockboo.view.custom.StockBooTextView android:id="@+id/c_fix" android:textSize="8sp" android:background="@drawable/oval_background" android:text="Stock ID" android:layout_alignParentRight="true" android:layout_width="wrap_content"
+        android:gravity="center" android:textColor="@android:color/white" android:layout_height="20dp" android:layout_alignBaseline="@id/price"/>
 </RelativeLayout>

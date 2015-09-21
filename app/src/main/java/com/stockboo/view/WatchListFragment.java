@@ -14,15 +14,18 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.CursorAdapter;
 import android.widget.ListAdapter;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.j256.ormlite.android.apptools.OpenHelperManager;
+import com.j256.ormlite.dao.RuntimeExceptionDao;
 import com.parse.ParseObject;
 import com.stockboo.R;
 
+import com.stockboo.model.StockList;
 import com.stockboo.model.WatchList;
 import com.stockboo.model.db.DatabaseHelper;
 import com.stockboo.network.StockBooRequestQueue;
@@ -30,6 +33,7 @@ import com.stockboo.view.dummy.DummyContent;
 
 import org.json.JSONArray;
 import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.List;
 
@@ -162,27 +166,42 @@ public class WatchListFragment extends Fragment implements AbsListView.OnItemCli
 
         @Override
         public View newView(Context context, Cursor cursor, ViewGroup parent) {
-            TextView view = new TextView(context);
-            view.setText(cursor.getString(5));
-            view.setTextColor(getResources().getColor(android.R.color.black));
-            return view;
+            RelativeLayout layout = (RelativeLayout) getActivity().getLayoutInflater().inflate(R.layout.watchlist_item, null);
+            return layout;
         }
 
         @Override
         public void bindView(View view, Context context, Cursor cursor) {
-            ((TextView)view).setText(cursor.getString(5));
-            ((TextView)view).setTextColor(getResources().getColor(android.R.color.black));
-            view.setTag(cursor.getString(1));
+            updateView(context, view, cursor);
+        }
+
+        public void updateView(Context context, View view, Cursor cursor){
+            RelativeLayout layout = (RelativeLayout) view;
+            TextView stockNameTv = (TextView) layout.getChildAt(0);
+            TextView stockIdTv = (TextView) layout.getChildAt(1);
+            TextView cTv = (TextView) layout.getChildAt(2);
+            TextView priceTv = (TextView) layout.getChildAt(3);
+            TextView cpFixTv = (TextView) layout.getChildAt(4);
+
+            stockNameTv.setText(cursor.getString(5));
+            stockIdTv.setText(cursor.getString(4));
+            cTv.setText(cursor.getString(8));
+            priceTv.setText(cursor.getString(10));
+            cpFixTv.setText(cursor.getString(9));
         }
     }
 
     private void loadData(){
         Listener listener = new Listener();
+        dbHelper = OpenHelperManager.getHelper(getActivity().getApplicationContext(), DatabaseHelper.class);
         List<WatchList> list = dbHelper.getWatchListRuntimeDao().queryForAll();
         StringBuffer reqParamBuffer = new StringBuffer();
         for(WatchList watchList: list){
-            reqParamBuffer.append(watchList.getGroup().equals("A") ? "NSE:"+watchList.getScriptID() : "BOM:"+watchList.getScriptID());
+            if(watchList.getGroup() == null)
+                continue;
+            reqParamBuffer.append(watchList.getGroup().equals("A") ? "NSE:"+watchList.getScriptID() : "BOM:"+watchList.getScriptID()).append(",");
         }
+        reqParamBuffer.substring(0, reqParamBuffer.length()-2);
         String request = "http://finance.google.com/finance/info?client=ig&q=" + reqParamBuffer;
         StringRequest bseNseRequest = new StringRequest(StringRequest.Method.GET, request, listener, listener);
         StockBooRequestQueue.getRequestQueue(getActivity()).add(bseNseRequest);
@@ -204,10 +223,25 @@ public class WatchListFragment extends Fragment implements AbsListView.OnItemCli
                 if(response.startsWith("\n// "))
                     response = response.substring(4);
                 JSONArray array = new JSONArray(response);
+                List<WatchList> list = dbHelper.getWatchListRuntimeDao().queryForAll();
+                StringBuffer reqParamBuffer = new StringBuffer();
+                RuntimeExceptionDao<WatchList, Integer> watchListDao = dbHelper.getWatchListRuntimeDao();
+                for(int i = 0; i<list.size(); i ++){
+                    WatchList watchList = list.get(i);
+                    JSONObject jsonObject = array.getJSONObject(i);
+                    String cValue = jsonObject.getString("c_fix");
+                    String c_fixValue = jsonObject.getString("cp_fix");
+                    String price = jsonObject.getString("l_cur");
+                    watchList.setC(cValue);
+                    watchList.setC_fix(c_fixValue);
+                    watchList.setPrice(price);
+                    watchListDao.update(watchList);
+                }
                 //((AdapterView<ListAdapter>) mListView).setAdapter(new SuggestionAdapter(objects, array));
             } catch (JSONException e) {
                 e.printStackTrace();
             }
+            mAdapter.notifyDataSetChanged();;
         }
     }
 
