@@ -4,9 +4,14 @@
     android:background="@android:color/white"
     android:layout_height="match_parent" tools:context="com.stockboo.view.WatchListFragment">
 
+    <view
+        class="com.stockboo.view.BackgroundContainer"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/listViewBackground">
     <ListView android:id="@android:id/list" android:layout_width="match_parent"
         android:layout_height="match_parent" android:divider="@android:color/white" android:scrollbars="none" android:layout_marginLeft="10dp" android:layout_marginRight="10dp" android:dividerHeight="10dp" />
-
+</view>
     <com.stockboo.view.custom.StockBooTextView android:id="@android:id/empty" android:layout_width="match_parent"
         android:layout_height="match_parent" android:gravity="center" />
 

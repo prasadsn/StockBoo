@@ -22,6 +22,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.CursorAdapter;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -130,6 +131,7 @@ public class StockListSearchActivity extends Activity implements TextWatcher, Ad
             WatchList watchList = new WatchList(stockList.getSYMBOL(), stockList.getScriptName(), stockList.getStatus(), stockList.getISINNO(), stockList.getIndustry(), stockList.getGroup(), null, stockList.getScriptID(), null, null);
             RuntimeExceptionDao<WatchList, Integer> watchListDao = dbHelper.getWatchListRuntimeDao();
             watchListDao.create(watchList);
+            finish();
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -144,17 +146,20 @@ public class StockListSearchActivity extends Activity implements TextWatcher, Ad
 
         @Override
         public View newView(Context context, Cursor cursor, ViewGroup parent) {
-            TextView view = new TextView(context);
-            view.setText(cursor.getString(2));
-            view.setTextColor(getResources().getColor(android.R.color.black));
+            LinearLayout view = (LinearLayout) getLayoutInflater().inflate(R.layout.stock_search_item, null);
             return view;
         }
 
         @Override
         public void bindView(View view, Context context, Cursor cursor) {
-            ((TextView)view).setText(cursor.getString(2));
-            ((TextView)view).setTextColor(getResources().getColor(android.R.color.black));
+            loadData(view, context, cursor);
             view.setTag(cursor.getString(1));
+        }
+
+        private void loadData(View view, Context context, Cursor cursor){
+            LinearLayout layout = (LinearLayout) view;
+                    ((TextView) ((LinearLayout) view).getChildAt(0)).setText(cursor.getString(2));
+            ((TextView) ((LinearLayout) view).getChildAt(1)).setText(cursor.getString(7));
         }
     }
 

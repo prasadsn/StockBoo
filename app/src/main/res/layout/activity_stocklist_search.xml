@@ -13,11 +13,11 @@
 
     <ListView android:id="@+id/listView" android:layout_width="match_parent"
         android:layout_height="532dp"
-        android:divider="@android:color/white"
+        android:divider="@android:color/darker_gray"
         android:layout_marginRight="10dp"
         android:layout_marginLeft="10dp"
         android:scrollbars="none"
-        android:dividerHeight="10dp"
+        android:dividerHeight="1dp"
         android:layout_gravity="right|bottom" />
 
 </FrameLayout>

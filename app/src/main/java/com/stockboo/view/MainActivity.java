@@ -158,7 +158,7 @@ public class MainActivity extends ActionBarActivity
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_search) {
+        if (id == R.id.action_add) {
             Intent intent = new Intent(MainActivity.this, StockListSearchActivity.class);
             startActivity(intent);
             return true;
