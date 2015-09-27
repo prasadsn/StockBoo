@@ -129,6 +129,7 @@ public class WatchListFragment extends Fragment implements AbsListView.OnItemCli
         // TODO: Change Adapter to display your content
 
     }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {

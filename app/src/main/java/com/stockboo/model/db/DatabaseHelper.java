@@ -10,6 +10,7 @@ import com.j256.ormlite.dao.RuntimeExceptionDao;
 import com.j256.ormlite.support.ConnectionSource;
 import com.j256.ormlite.table.TableUtils;
 import com.stockboo.R;
+import com.stockboo.model.NewsItem;
 import com.stockboo.model.StockList;
 import com.stockboo.model.WatchList;
 
@@ -28,8 +29,12 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
     private Dao<StockList, Integer> StockListDao = null;
     // The DAO object we use to access the WatchList table
     private Dao<WatchList, Integer> favouriteStockListDao = null;
+    // The DAO object we use to access the NewsItem table
+    private Dao<NewsItem, Integer> newsItemDao = null;
+
     private RuntimeExceptionDao<StockList, Integer> StockListRuntimeDao = null;
     private RuntimeExceptionDao<WatchList, Integer> favouriteStockListRuntimeDao = null;
+    private RuntimeExceptionDao<NewsItem, Integer> newsListRuntimeDao = null;
 
     public DatabaseHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION, R.raw.ormlite_config);
@@ -45,6 +50,7 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
             Log.i(DatabaseHelper.class.getName(), "onCreate");
             TableUtils.createTable(connectionSource, StockList.class);
             TableUtils.createTable(connectionSource, WatchList.class);
+            TableUtils.createTable(connectionSource, NewsItem.class);
         } catch (SQLException e) {
             Log.e(DatabaseHelper.class.getName(), "Can't create database", e);
             throw new RuntimeException(e);
@@ -58,6 +64,10 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
         RuntimeExceptionDao<WatchList, Integer> favouriteDao = getWatchListRuntimeDao();
         WatchList watch = new WatchList();
         favouriteDao.create(watch);
+
+        RuntimeExceptionDao<NewsItem, Integer> newsItemDao = getNewsListRuntimeDao();
+        NewsItem newsItem = new NewsItem();
+        newsItemDao.create(newsItem);
     }
 
     /**
@@ -95,6 +105,13 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
         return favouriteStockListDao;
     }
 
+    public Dao<NewsItem, Integer> getNewsListDao() throws SQLException {
+        if (newsItemDao == null) {
+            newsItemDao = getDao(NewsItem.class);
+        }
+        return newsItemDao;
+    }
+
     /**
      * Returns the RuntimeExceptionDao (Database Access Object) version of a Dao for our StockList class. It will
      * create it or just give the cached value. RuntimeExceptionDao only through RuntimeExceptions.
@@ -113,6 +130,13 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
         return favouriteStockListRuntimeDao;
     }
 
+    public RuntimeExceptionDao<NewsItem, Integer> getNewsListRuntimeDao() {
+        if (newsListRuntimeDao == null) {
+            newsListRuntimeDao = getRuntimeExceptionDao(NewsItem.class);
+        }
+        return newsListRuntimeDao;
+    }
+
     /**
      * Close the database connections and clear any cached DAOs.
      */
@@ -124,4 +148,7 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 
         favouriteStockListDao = null;
         favouriteStockListRuntimeDao = null;
+
+        newsItemDao = null;
+        newsListRuntimeDao = null;
     }}
