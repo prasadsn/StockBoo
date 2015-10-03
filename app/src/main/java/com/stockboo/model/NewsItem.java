@@ -25,6 +25,17 @@ public class NewsItem implements Parcelable {
     @DatabaseField
     private String thumbnailLink;
 
+    @DatabaseField
+    private String pubDate;
+
+    public String getPubDate() {
+        return pubDate;
+    }
+
+    public void setPubDate(String pubDate) {
+        this.pubDate = pubDate;
+    }
+
     public String getTitle() {
         return title;
     }

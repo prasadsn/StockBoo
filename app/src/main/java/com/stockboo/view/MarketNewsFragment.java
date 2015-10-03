@@ -22,6 +22,7 @@ import android.widget.TextView;
 
 import com.j256.ormlite.android.apptools.OpenHelperManager;
 import com.j256.ormlite.dao.RuntimeExceptionDao;
+import com.j256.ormlite.stmt.DeleteBuilder;
 import com.j256.ormlite.table.TableUtils;
 import com.stockboo.R;
 
@@ -36,6 +37,7 @@ import org.xmlpull.v1.XmlPullParserFactory;
 
 import java.io.IOException;
 import java.net.URL;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -137,8 +139,8 @@ public class MarketNewsFragment extends Fragment implements AbsListView.OnItemCl
         TextView updatedDateView = (TextView) layout.getChildAt(3);
 
         titleView.setText(cursor.getString(4));
-        descriptionView.setText(cursor.getString(1));
-        updatedDateView.setText(cursor.getString(3));
+        descriptionView.setText(cursor.getString(0));
+        updatedDateView.setText(cursor.getString(2));
    }
 
         @Override
@@ -219,14 +221,18 @@ public class MarketNewsFragment extends Fragment implements AbsListView.OnItemCl
         // TODO: Update argument type and name
         public void onFragmentInteraction(String id);
     }
+
     private class UpdateMarketNewsTask extends AsyncTask<Void, ArrayList<NewsItem>, ArrayList<NewsItem>> {
 
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            SQLiteDatabase database = dbHelper.getReadableDatabase();
-            String SqlQuery = "Delete FROM NewsItem";
-            database.rawQuery(SqlQuery, null);
+            try {
+                DeleteBuilder<NewsItem, Integer> deleteBuilder = dbHelper.getNewsListDao().deleteBuilder();
+                deleteBuilder.delete();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
 
         @Override
@@ -254,8 +260,8 @@ public class MarketNewsFragment extends Fragment implements AbsListView.OnItemCl
         ArrayList<NewsItem> headlines = new ArrayList<NewsItem>();
         //URL url = new URL("http://www.moneycontrol.com/rss/MCtopnews.xml");
         //URL url = new URL("http://news.google.co.in/news?pz=1&cf=all&ned=in&hl=en&topic=b&output=rss");
-        URL url = new URL("http://economictimes.indiatimes.com/rssfeedsdefault.cms");
-        //URL url = new URL("http://www.livemint.com/rss/money");
+        //URL url = new URL("http://economictimes.indiatimes.com/rssfeedsdefault.cms");
+        URL url = new URL("http://www.livemint.com/rss/money");
 
         RuntimeExceptionDao<NewsItem, Integer> newsListDao = dbHelper.getNewsListRuntimeDao();
         XmlPullParserFactory factory=XmlPullParserFactory.newInstance();
@@ -264,9 +270,15 @@ public class MarketNewsFragment extends Fragment implements AbsListView.OnItemCl
 
         xpp.setInput(url.openConnection().getInputStream(), "UTF_8");
 
-        int eventType=xpp.getEventType();
-        NewsItem item = new NewsItem();
-        while(eventType!=XmlPullParser.END_DOCUMENT){
+        int eventType = xpp.getEventType();
+        String name = null;
+        while(name == null || !name.equalsIgnoreCase("item")) {
+            eventType = xpp.next();
+            name = xpp.getName();
+        }
+            NewsItem item = new NewsItem();
+
+        while(eventType!=XmlPullParser.END_DOCUMENT) {
             // Looking for a start tag
             if(eventType==XmlPullParser.START_TAG){
                 //We look for "title" tag in XML response
@@ -274,21 +286,25 @@ public class MarketNewsFragment extends Fragment implements AbsListView.OnItemCl
                     item.setTitle(xpp.nextText());
                 else if(xpp.getName().equalsIgnoreCase("link"))
                     item.setLink(xpp.nextText());
-                else if(xpp.getName().equalsIgnoreCase("description"))
-                    item.setDescription(xpp.nextText());
+                else if(xpp.getName().equalsIgnoreCase("description")) {
+                    String desc = xpp.nextText();
+                    desc = desc.substring(desc.indexOf("\">") + 2);
+                    item.setDescription(desc);
+                }
                 else if(xpp.getName().equalsIgnoreCase("thumbnail"))
                     item.setThumbnailLink(xpp.nextText());
-                else if(xpp.getName().equalsIgnoreCase("item")){
-                    //headlines.add(item);
+                else if(xpp.getName().equalsIgnoreCase("pubDate"))
+                    item.setPubDate(xpp.nextText());
+            }else if(eventType==XmlPullParser.END_TAG){
+                if(xpp.getName().equalsIgnoreCase("item")){
                     newsListDao.create(item);
                     item = new NewsItem();
                 }
             }
-            //headlines.add(item);
-            newsListDao.create(item);
             //mAdapter.changeCursor(getCursor());
             eventType=xpp.next();
         }
+        newsListDao.create(item);
         return headlines;
     }
 }

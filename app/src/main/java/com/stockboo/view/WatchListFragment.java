@@ -233,6 +233,8 @@ public class WatchListFragment extends Fragment implements AbsListView.OnItemCli
                     continue;
                 reqParamBuffer.append(watchList.getGroup().equals("A") ? "NSE:"+watchList.getScriptID() : "BOM:"+watchList.getScriptID()).append(",");
             }
+            if(reqParamBuffer.length()<1)
+                return null;
             reqParamBuffer.substring(0, reqParamBuffer.length()-2);
             return reqParamBuffer.toString();
         }
