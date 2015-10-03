@@ -253,7 +253,7 @@ public class MainActivity extends ActionBarActivity
                 LinearLayout mainLayout = (LinearLayout) getActivity().findViewById(R.id.main_layout);
                 LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
                 params.setMargins(20, 10, 10, 10);
-                for(int i = 2; i < headlines.size(); i = i+2) {
+                for(int i = 4; i < headlines.size(); i = i+2) {
                     final int linkPosition = i + 1;
                     LinearLayout layout = (LinearLayout) getActivity().getLayoutInflater().inflate(R.layout.headlines_tv, null);
                     TextView tv = (TextView) layout.getChildAt(0);

@@ -1,8 +1,10 @@
 package com.stockboo.view;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.AsyncTask;
@@ -63,9 +65,15 @@ public class MarketNewsFragment extends Fragment implements AbsListView.OnItemCl
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
 
+    private static final String RSS_GOOGLE_NEWS = "http://news.google.co.in/news?pz=1&cf=all&ned=in&hl=en&topic=b&output=rss";
+    private static final String RSS_ECONOMIC_TIMES = "http://economictimes.indiatimes.com/rssfeedsdefault.cms";
+    private static final String RSS_LIVEMINT = "http://www.livemint.com/rss/money";
+
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
+
+    private static final long UPDATE_INTERVAL = 3 * 60 * 60 * 1000;
 
     private DatabaseHelper dbHelper;
 
@@ -142,8 +150,10 @@ public class MarketNewsFragment extends Fragment implements AbsListView.OnItemCl
         RelativeLayout layout = (RelativeLayout) view;
         final String link = cursor.getString(1);
 
-        if(link.contains("news.google.com"))
+        if( link!=null && link.contains("news.google.com"))
             layout.getChildAt(1).setVisibility(View.GONE);
+        else
+            layout.getChildAt(1).setVisibility(View.VISIBLE);
         layout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -213,7 +223,10 @@ public class MarketNewsFragment extends Fragment implements AbsListView.OnItemCl
     @Override
     public void onStart() {
         super.onStart();
-        new UpdateMarketNewsTask().execute();
+        SharedPreferences preferences = getActivity().getPreferences(Context.MODE_PRIVATE);
+        long lastUpdatedTime = preferences.getLong("last_update", 0);
+        if((System.currentTimeMillis() - lastUpdatedTime) > UPDATE_INTERVAL)
+            new UpdateMarketNewsTask().execute();
     }
 
     @Override
@@ -261,10 +274,15 @@ public class MarketNewsFragment extends Fragment implements AbsListView.OnItemCl
 
     private class UpdateMarketNewsTask extends AsyncTask<Void, ArrayList<NewsItem>, ArrayList<NewsItem>> {
 
+        ProgressDialog dialog = new ProgressDialog(getActivity());
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
             try {
+                dialog.setIndeterminate(true);
+                dialog.setCanceledOnTouchOutside(false);
+                dialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+                dialog.show();
                 DeleteBuilder<NewsItem, Integer> deleteBuilder = dbHelper.getNewsListDao().deleteBuilder();
                 deleteBuilder.delete();
             } catch (SQLException e) {
@@ -275,8 +293,10 @@ public class MarketNewsFragment extends Fragment implements AbsListView.OnItemCl
         @Override
         protected ArrayList<NewsItem> doInBackground(Void... params) {
             try {
-
-                return updateMarketNews();
+                updateMarketNews(new URL(RSS_LIVEMINT));
+                updateMarketNews(new URL(RSS_ECONOMIC_TIMES));
+                updateMarketNews(new URL(RSS_GOOGLE_NEWS));
+                return null;
             } catch (IOException e) {
                 e.printStackTrace();
             } catch (XmlPullParserException e) {
@@ -288,15 +308,20 @@ public class MarketNewsFragment extends Fragment implements AbsListView.OnItemCl
         @Override
         protected void onPostExecute(final ArrayList<NewsItem> headlines) {
             super.onPostExecute(headlines);
+            SharedPreferences preferences = getActivity().getPreferences(Context.MODE_PRIVATE);
+            SharedPreferences.Editor editor = preferences.edit();
+            editor.putLong("last_update", System.currentTimeMillis());
+            editor.apply();
             mAdapter.changeCursor(getCursor());
             mAdapter.notifyDataSetChanged();
+            dialog.hide();
         }
    }
-    private ArrayList<NewsItem> updateMarketNews() throws IOException, XmlPullParserException {
+    private ArrayList<NewsItem> updateMarketNews(URL url) throws IOException, XmlPullParserException {
         //StringBuilder builder=new StringBuilder();
         ArrayList<NewsItem> headlines = new ArrayList<NewsItem>();
         //URL url = new URL("http://www.moneycontrol.com/rss/MCtopnews.xml");
-        URL url = new URL("http://news.google.co.in/news?pz=1&cf=all&ned=in&hl=en&topic=b&output=rss");
+        //URL url = new URL("http://news.google.co.in/news?pz=1&cf=all&ned=in&hl=en&topic=b&output=rss");
         //URL url = new URL("http://economictimes.indiatimes.com/rssfeedsdefault.cms");
         //URL url = new URL("http://www.livemint.com/rss/money");
 
