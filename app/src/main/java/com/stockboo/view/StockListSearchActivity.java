@@ -10,6 +10,7 @@ import com.stockboo.view.util.util.SystemUiHider;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
@@ -121,21 +122,20 @@ public class StockListSearchActivity extends Activity implements TextWatcher, Ad
         String symbol = (String) view.getTag();
         QueryBuilder<StockList, Integer> queryBuilder =
                 dbHelper.getStockListDao().queryBuilder();
-            // list all of the accounts that have the same
-            // name and password field
+        // list all of the accounts that have the same
+        // name and password field
         try {
             queryBuilder.where().eq("SYMBOL",
                     symbol);
             List<StockList> results = queryBuilder.query();
             StockList stockList = results.get(0);
-            WatchList watchList = new WatchList(stockList.getSYMBOL(), stockList.getScriptName(), stockList.getStatus(), stockList.getISINNO(), stockList.getIndustry(), stockList.getGroup(), null, stockList.getScriptID(), null, null);
-            RuntimeExceptionDao<WatchList, Integer> watchListDao = dbHelper.getWatchListRuntimeDao();
-            watchListDao.create(watchList);
+            Intent data = getIntent();
+            data.putExtra("Stock", stockList);
+            setResult(RESULT_OK, data);
             finish();
         } catch (SQLException e) {
             e.printStackTrace();
         }
-
     }
 
     private class StockListAdapter extends CursorAdapter {

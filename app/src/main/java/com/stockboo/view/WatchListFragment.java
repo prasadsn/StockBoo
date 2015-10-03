@@ -2,6 +2,7 @@ package com.stockboo.view;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.AsyncTask;
@@ -14,8 +15,10 @@ import android.view.ViewConfiguration;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.widget.AbsListView;
+import android.widget.Adapter;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.BaseAdapter;
 import android.widget.CursorAdapter;
 import android.widget.ListAdapter;
 import android.widget.ListView;
@@ -28,6 +31,7 @@ import com.android.volley.toolbox.StringRequest;
 import com.j256.ormlite.android.apptools.OpenHelperManager;
 import com.j256.ormlite.dao.RuntimeExceptionDao;
 import com.j256.ormlite.stmt.DeleteBuilder;
+import com.j256.ormlite.stmt.QueryBuilder;
 import com.parse.ParseObject;
 import com.stockboo.R;
 
@@ -84,7 +88,7 @@ public class WatchListFragment extends Fragment implements AbsListView.OnItemCli
      * The Adapter which will be used to populate the ListView/GridView with
      * Views.
      */
-    private CursorAdapter mAdapter;
+    private ListAdapter mAdapter;
 
     // TODO: Rename and change types of parameters
     public static WatchListFragment newInstance(String param1, String param2) {
@@ -117,17 +121,29 @@ public class WatchListFragment extends Fragment implements AbsListView.OnItemCli
     public void onResume() {
         super.onResume();
         new WatchListTask().execute();
-        mAdapter = new WatchListAdapter(getActivity().getApplicationContext(), getCursor(), true);
+        mAdapter = new WatchListAdapter(getWatchList());
         ((AdapterView<ListAdapter>) mListView).setAdapter(mAdapter);
     }
 
-    private Cursor getCursor(){
+    /*private Cursor getCursor(){
         SQLiteDatabase database = dbHelper.getReadableDatabase();
         String SqlQuery = "SELECT * FROM WatchList";
         Cursor cursor = database.rawQuery(SqlQuery, null);
         return cursor;
-        // TODO: Change Adapter to display your content
+    }*/
 
+    private List<WatchList> getWatchList(){
+        RuntimeExceptionDao<WatchList, Integer> watchListDao = dbHelper.getWatchListRuntimeDao();
+        return watchListDao.queryForAll();
+    }
+
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if(resultCode!=getActivity().RESULT_OK)
+            return;
+        StockList stockList = data.getParcelableExtra("Stock");
+        WatchList watchList = new WatchList(stockList.getSYMBOL(), stockList.getScriptName(), stockList.getStatus(), stockList.getISINNO(), stockList.getIndustry(), stockList.getGroup(), null, stockList.getScriptID(), null, null);
+        RuntimeExceptionDao<WatchList, Integer> watchListDao = dbHelper.getWatchListRuntimeDao();
+        watchListDao.create(watchList);
     }
 
     @Override
@@ -184,25 +200,14 @@ public class WatchListFragment extends Fragment implements AbsListView.OnItemCli
             ((TextView) emptyView).setText(emptyText);
         }
     }
-    private class WatchListAdapter extends CursorAdapter {
+    private class WatchListAdapter extends BaseAdapter {
 
-        public WatchListAdapter(Context context, Cursor c, boolean autoRequery) {
-            super(context, c, autoRequery);
+        List<WatchList> mList = null;
+
+        public WatchListAdapter(List<WatchList> list){
+            mList = list;
         }
-
-        @Override
-        public View newView(Context context, Cursor cursor, ViewGroup parent) {
-            RelativeLayout layout = (RelativeLayout) getActivity().getLayoutInflater().inflate(R.layout.watchlist_item, null);
-            layout.setOnTouchListener(mTouchListener);
-            return layout;
-        }
-
-        @Override
-        public void bindView(View view, Context context, Cursor cursor) {
-            updateView(context, view, cursor);
-        }
-
-        public void updateView(Context context, View view, Cursor cursor){
+        public void updateView(Context context, View view, WatchList watchList){
             RelativeLayout layout = (RelativeLayout) view;
             TextView stockNameTv = (TextView) layout.getChildAt(0);
             TextView stockIdTv = (TextView) layout.getChildAt(1);
@@ -210,13 +215,54 @@ public class WatchListFragment extends Fragment implements AbsListView.OnItemCli
             TextView priceTv = (TextView) layout.getChildAt(3);
             TextView cpFixTv = (TextView) layout.getChildAt(4);
 
-            stockNameTv.setText(cursor.getString(5));
-            stockIdTv.setText(cursor.getString(4));
-            cTv.setText(cursor.getString(8));
-            priceTv.setText(cursor.getString(10));
-            cpFixTv.setText(cursor.getString(9));
+            stockNameTv.setText(watchList.getScriptName());
+            stockIdTv.setText(watchList.getScriptID());
+            priceTv.setText(watchList.getPrice());
+            Double c = null;
+            Double cp_fix = null;
+            if(watchList.getC()!=null && !watchList.getC().isEmpty()){
+            c = new Double(watchList.getC());
+            if(c!=null && c.doubleValue() < 0)
+                cTv.setBackgroundResource(R.drawable.oval_background_red);
+            else
+                cTv.setBackgroundResource(R.drawable.oval_background_green);
+            cTv.setText(c.toString());
+            } else
+                cTv.setVisibility(View.INVISIBLE);
+            if(watchList.getC_fix()!=null && !watchList.getC_fix().isEmpty()) {
+                cp_fix = new Double(watchList.getC_fix());
+                if (cp_fix != null && cp_fix.doubleValue() < 0)
+                    cpFixTv.setBackgroundResource(R.drawable.oval_background_red);
+                else
+                    cpFixTv.setBackgroundResource(R.drawable.oval_background_green);
+                cpFixTv.setText(watchList.getC_fix());
+            } else
+                cpFixTv.setVisibility(View.INVISIBLE);
+            view.setTag(watchList.get_Id());
+        }
 
-            view.setTag(cursor.getInt(7));
+        @Override
+        public int getCount() {
+            return mList.size();
+        }
+
+        @Override
+        public Object getItem(int position) {
+            return null;
+        }
+
+        @Override
+        public long getItemId(int position) {
+            return 0;
+        }
+
+        @Override
+        public View getView(int position, View convertView, ViewGroup parent) {
+            if(convertView == null)
+                convertView = (RelativeLayout) getActivity().getLayoutInflater().inflate(R.layout.watchlist_item, null);
+            convertView.setOnTouchListener(mTouchListener);
+            updateView(getActivity(), convertView, mList.get(position));
+            return convertView;
         }
     }
 
@@ -243,7 +289,7 @@ public class WatchListFragment extends Fragment implements AbsListView.OnItemCli
         protected void onPostExecute(String reqParamBuffer) {
             super.onPostExecute(reqParamBuffer);
             if(reqParamBuffer!=null)
-            loadData(reqParamBuffer);
+                loadData(reqParamBuffer);
         }
     }
     private void loadData(String reqParamBuffer){
@@ -251,7 +297,6 @@ public class WatchListFragment extends Fragment implements AbsListView.OnItemCli
         String request = "http://finance.google.com/finance/info?client=ig&q=" + reqParamBuffer;
         StringRequest bseNseRequest = new StringRequest(StringRequest.Method.GET, request, listener, listener);
         StockBooRequestQueue.getInstance(getActivity()).getRequestQueue().add(bseNseRequest);
-
     }
 
     private class Listener implements Response.Listener<String>, Response.ErrorListener{
@@ -269,12 +314,17 @@ public class WatchListFragment extends Fragment implements AbsListView.OnItemCli
                 if(response.startsWith("\n// "))
                     response = response.substring(4);
                 JSONArray array = new JSONArray(response);
-                List<WatchList> list = dbHelper.getWatchListRuntimeDao().queryForAll();
+                //List<WatchList> list = dbHelper.getWatchListRuntimeDao().queryForAll();
                 StringBuffer reqParamBuffer = new StringBuffer();
                 RuntimeExceptionDao<WatchList, Integer> watchListDao = dbHelper.getWatchListRuntimeDao();
-                for(int i = 0; i<list.size(); i ++){
-                    WatchList watchList = list.get(i);
+                for(int i = 0; i<array.length(); i ++){
                     JSONObject jsonObject = array.getJSONObject(i);
+                    List<WatchList> list = watchListDao.queryBuilder().where().eq("ScriptID", jsonObject.getString("t")).query();
+                    if(list.size() == 0)
+                        list = watchListDao.queryBuilder().where().eq("SYMBOL", jsonObject.getString("t")).query();
+                    if(list.size() == 0)
+                        continue;
+                    WatchList watchList = list.get(0);
                     String cValue = jsonObject.getString("c_fix");
                     String c_fixValue = jsonObject.getString("cp_fix");
                     String price = jsonObject.getString("l_cur");
@@ -286,9 +336,11 @@ public class WatchListFragment extends Fragment implements AbsListView.OnItemCli
                 //((AdapterView<ListAdapter>) mListView).setAdapter(new SuggestionAdapter(objects, array));
             } catch (JSONException e) {
                 e.printStackTrace();
+            } catch (SQLException e) {
+                e.printStackTrace();
             }
-            mAdapter.changeCursor(getCursor());
-            mAdapter.notifyDataSetChanged();;
+            mAdapter = new WatchListAdapter(getWatchList());
+            ((AdapterView<ListAdapter>) mListView).setAdapter(mAdapter);
         }
     }
 
@@ -439,8 +491,8 @@ public class WatchListFragment extends Fragment implements AbsListView.OnItemCli
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        mAdapter.changeCursor(getCursor());
-        mAdapter.notifyDataSetChanged();
+        mAdapter = new WatchListAdapter(getWatchList());
+        ((AdapterView<ListAdapter>) mListView).setAdapter(mAdapter);
         //int position = mListView.getPositionForView(viewToRemove);
         //mAdapter.remove(mAdapter.getItem(position));
 

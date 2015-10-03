@@ -1,11 +1,11 @@
 package com.stockboo.view;
 
 import android.app.Activity;
+import android.app.Fragment;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBar;
-import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -52,12 +52,17 @@ public class MainActivity extends ActionBarActivity
     private SearchView mAddView;
     private SearchView mSearchView;
     private Menu mMenu;
+    private enum FRAGMENTS {HOME, CURRENT_SUGGESTION, PAST_PERFORMANCE, MY_WATCH_LIST, PORTFOLIO, BROKERAGE_RECOS, MARKET_NEWS, ABOUT_US};
+
+    private FRAGMENTS mCurrentFragment;
+
+    private final static int WATCH_STOCK_LIST_REQUEST_CODE = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
+        mCurrentFragment = FRAGMENTS.HOME;
         mNavigationDrawerFragment = (NavigationDrawerFragment)
                 getSupportFragmentManager().findFragmentById(R.id.navigation_drawer);
         mTitle = getTitle();
@@ -78,11 +83,13 @@ public class MainActivity extends ActionBarActivity
         // update the main content by replacing fragments
         switch (position){
             case 0:
-                getSupportFragmentManager().beginTransaction()
+                mCurrentFragment = FRAGMENTS.HOME;
+                getFragmentManager().beginTransaction()
                         .replace(R.id.container, PlaceholderFragment.newInstance(position + 1))
                         .commit();
                 break;
             case 1:
+                mCurrentFragment = FRAGMENTS.CURRENT_SUGGESTION;
                 getFragmentManager().beginTransaction()
                         .replace(R.id.container, CurrentSuggestionFragment.newInstance("", ""))
                         .commit();
@@ -90,6 +97,7 @@ public class MainActivity extends ActionBarActivity
             case 3:
                 //mMenu.findItem(R.id.action_search).setVisible(false);
                 //mMenu.findItem(R.id.action_add).setVisible(true);
+                mCurrentFragment = FRAGMENTS.MY_WATCH_LIST;
                 invalidateOptionsMenu();
                 getFragmentManager().beginTransaction()
                         .replace(R.id.container, WatchListFragment.newInstance("", ""))
@@ -98,6 +106,7 @@ public class MainActivity extends ActionBarActivity
             case 6:
                 //mMenu.findItem(R.id.action_search).setVisible(false);
                 //mMenu.findItem(R.id.action_add).setVisible(true);
+                mCurrentFragment = FRAGMENTS.MARKET_NEWS;
                 invalidateOptionsMenu();
                 getFragmentManager().beginTransaction()
                         .replace(R.id.container, MarketNewsFragment.newInstance("", ""))
@@ -167,12 +176,26 @@ public class MainActivity extends ActionBarActivity
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_add) {
-            Intent intent = new Intent(MainActivity.this, StockListSearchActivity.class);
-            startActivity(intent);
-            return true;
+            switch (mCurrentFragment){
+                case MY_WATCH_LIST:
+                    Intent intent = new Intent(MainActivity.this, StockListSearchActivity.class);
+                    startActivityForResult(intent, WATCH_STOCK_LIST_REQUEST_CODE);
+                    return true;
+            }
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode ,data);
+        switch (requestCode){
+            case WATCH_STOCK_LIST_REQUEST_CODE:
+                WatchListFragment f = (WatchListFragment) getFragmentManager().findFragmentById(R.id.container);
+                f.onActivityResult(requestCode, resultCode, data);
+                break;
+        }
     }
 
     /**
@@ -248,11 +271,19 @@ public class MainActivity extends ActionBarActivity
             @Override
             protected void onPostExecute(final ArrayList<String> headlines) {
                 super.onPostExecute(headlines);
+                try {
+                    if (((MainActivity) getActivity()).mCurrentFragment != FRAGMENTS.HOME)
+                        return;
+                }catch (NullPointerException e){
+                    return;
+                }
                 //ListView lv = (ListView) findViewById(R.id.listView);
                 //lv.setAdapter(new NewsHeadlineAdapter(MainActivity.this, headlines));
                 LinearLayout mainLayout = (LinearLayout) getActivity().findViewById(R.id.main_layout);
                 LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
                 params.setMargins(20, 10, 10, 10);
+                if(headlines == null)
+                    return;
                 for(int i = 4; i < headlines.size(); i = i+2) {
                     final int linkPosition = i + 1;
                     LinearLayout layout = (LinearLayout) getActivity().getLayoutInflater().inflate(R.layout.headlines_tv, null);
@@ -270,6 +301,7 @@ public class MainActivity extends ActionBarActivity
                 }
             }
         }
+
         private ArrayList<String> updateMarketNews() throws IOException, XmlPullParserException {
             //StringBuilder builder=new StringBuilder();
             ArrayList<String> headlines = new ArrayList<String>();
@@ -330,7 +362,5 @@ public class MainActivity extends ActionBarActivity
                 }
             }
         }
-
     }
-
 }

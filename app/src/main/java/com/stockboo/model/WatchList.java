@@ -31,6 +31,8 @@ public class WatchList implements Parcelable {
         return SYMBOL;
     }
 
+    public int get_Id() { return _Id; }
+
     public void setPrice(String price) {
         this.price = price;
     }

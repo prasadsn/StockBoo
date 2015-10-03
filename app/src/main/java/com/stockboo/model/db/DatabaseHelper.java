@@ -55,19 +55,6 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
             Log.e(DatabaseHelper.class.getName(), "Can't create database", e);
             throw new RuntimeException(e);
         }
-
-        // here we try inserting data in the on-create as a test
-        RuntimeExceptionDao<StockList, Integer> dao = getStockListDao();
-        StockList simple = new StockList();
-        dao.create(simple);
-
-        RuntimeExceptionDao<WatchList, Integer> favouriteDao = getWatchListRuntimeDao();
-        WatchList watch = new WatchList();
-        favouriteDao.create(watch);
-
-        RuntimeExceptionDao<NewsItem, Integer> newsItemDao = getNewsListRuntimeDao();
-        NewsItem newsItem = new NewsItem();
-        newsItemDao.create(newsItem);
     }
 
     /**

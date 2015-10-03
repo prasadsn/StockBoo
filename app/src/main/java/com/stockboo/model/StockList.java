@@ -50,6 +50,21 @@ public class StockList implements Parcelable {
         return 0;
     }
 
+    public StockList(){
+
+    }
+
+    public StockList(Parcel in) {
+        _Id = in.readInt();
+        SYMBOL = in.readString();
+        ScriptName = in.readString();
+        Status = in.readString();
+        ISINNO = in.readString();
+        Industry = in.readString();
+        Group = in.readString();
+        ScriptID = in.readString();
+    }
+
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeInt(_Id);
@@ -59,6 +74,7 @@ public class StockList implements Parcelable {
         dest.writeString(ISINNO);
         dest.writeString(Industry);
         dest.writeString(Group);
+        dest.writeString(ScriptID);
     }
     public int get_Id() {
         return _Id;
@@ -87,4 +103,14 @@ public class StockList implements Parcelable {
     public String getScriptID() {
         return ScriptID;
     }
+
+    public static final Parcelable.Creator<StockList> CREATOR = new Parcelable.Creator<StockList>() {
+        public StockList createFromParcel(Parcel source) {
+            return new StockList(source);
+        }
+
+        public StockList[] newArray(int size) {
+            return new StockList[size];
+        }
+    };
 }
