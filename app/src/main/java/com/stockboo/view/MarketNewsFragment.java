@@ -20,6 +20,7 @@ import android.widget.ListAdapter;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.android.volley.toolbox.NetworkImageView;
 import com.j256.ormlite.android.apptools.OpenHelperManager;
 import com.j256.ormlite.dao.RuntimeExceptionDao;
 import com.j256.ormlite.stmt.DeleteBuilder;
@@ -29,6 +30,7 @@ import com.stockboo.R;
 import com.stockboo.model.NewsItem;
 import com.stockboo.model.StockList;
 import com.stockboo.model.db.DatabaseHelper;
+import com.stockboo.network.StockBooRequestQueue;
 import com.stockboo.view.dummy.DummyContent;
 
 import org.xmlpull.v1.XmlPullParser;
@@ -38,7 +40,11 @@ import org.xmlpull.v1.XmlPullParserFactory;
 import java.io.IOException;
 import java.net.URL;
 import java.sql.SQLException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -134,13 +140,44 @@ public class MarketNewsFragment extends Fragment implements AbsListView.OnItemCl
 
     private void updateView(View view, Context context, Cursor cursor){
         RelativeLayout layout = (RelativeLayout) view;
-        TextView titleView = (TextView) layout.getChildAt(0);
-        TextView descriptionView = (TextView) layout.getChildAt(2);
-        TextView updatedDateView = (TextView) layout.getChildAt(3);
+        final String link = cursor.getString(1);
 
+        if(link.contains("news.google.com"))
+            layout.getChildAt(1).setVisibility(View.GONE);
+        layout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getActivity(), MarketNewsActivity.class);
+                intent.putExtra("link", link);
+                startActivity(intent);
+            }
+        });
+
+        TextView titleView = (TextView) layout.getChildAt(0);
+        TextView descriptionView = (TextView) layout.findViewById(R.id.textView11);
+        TextView updatedDateView = (TextView) layout.getChildAt(2);
+        NetworkImageView imageView = (NetworkImageView) layout.findViewById(R.id.networkImageView);
+
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("EEE, d MMM yyyy HH:mm:ss z");
+        Date pubDate = null;
+        try {
+            pubDate = simpleDateFormat.parse(cursor.getString(2));
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        Calendar calendar1 = Calendar.getInstance();
+        calendar1.setTime(pubDate);
+        int difference = (int) (System.currentTimeMillis() - calendar1.getTimeInMillis()) + (5 * 60 * 60 * 1000);
+        int days = (int) (difference / (1000*60*60*24));
+        int hours = 0;
+        hours = (int) ((difference - (1000*60*60*24) * days) / (1000*60*60));
+        if(days>1)
+            hours = hours % 24;
+        String time = days > 1? days + " day ago" : hours + " hours ago";
         titleView.setText(cursor.getString(4));
         descriptionView.setText(cursor.getString(0));
-        updatedDateView.setText(cursor.getString(2));
+        updatedDateView.setText(time);
+        imageView.setImageUrl(cursor.getString(3), StockBooRequestQueue.getInstance(getActivity().getApplicationContext()).getImageLoader());
    }
 
         @Override
@@ -259,9 +296,9 @@ public class MarketNewsFragment extends Fragment implements AbsListView.OnItemCl
         //StringBuilder builder=new StringBuilder();
         ArrayList<NewsItem> headlines = new ArrayList<NewsItem>();
         //URL url = new URL("http://www.moneycontrol.com/rss/MCtopnews.xml");
-        //URL url = new URL("http://news.google.co.in/news?pz=1&cf=all&ned=in&hl=en&topic=b&output=rss");
+        URL url = new URL("http://news.google.co.in/news?pz=1&cf=all&ned=in&hl=en&topic=b&output=rss");
         //URL url = new URL("http://economictimes.indiatimes.com/rssfeedsdefault.cms");
-        URL url = new URL("http://www.livemint.com/rss/money");
+        //URL url = new URL("http://www.livemint.com/rss/money");
 
         RuntimeExceptionDao<NewsItem, Integer> newsListDao = dbHelper.getNewsListRuntimeDao();
         XmlPullParserFactory factory=XmlPullParserFactory.newInstance();
@@ -288,7 +325,9 @@ public class MarketNewsFragment extends Fragment implements AbsListView.OnItemCl
                     item.setLink(xpp.nextText());
                 else if(xpp.getName().equalsIgnoreCase("description")) {
                     String desc = xpp.nextText();
-                    desc = desc.substring(desc.indexOf("\">") + 2);
+                    int index = desc.indexOf("\">");
+                    if( index > 0 )
+                    desc = desc.substring(index + 2);
                     item.setDescription(desc);
                 }
                 else if(xpp.getName().equalsIgnoreCase("thumbnail"))
@@ -304,7 +343,7 @@ public class MarketNewsFragment extends Fragment implements AbsListView.OnItemCl
             //mAdapter.changeCursor(getCursor());
             eventType=xpp.next();
         }
-        newsListDao.create(item);
+        //newsListDao.create(item);
         return headlines;
     }
 }

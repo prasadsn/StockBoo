@@ -140,7 +140,7 @@ public class CurrentSuggestionFragment extends Fragment implements AbsListView.O
                     Listener listener = new Listener(objects);
                     String request = "http://finance.google.com/finance/info?client=ig&q=" + reqParamBuffer;
                     StringRequest bseNseRequest = new StringRequest(StringRequest.Method.GET, request, listener, listener);
-                    StockBooRequestQueue.getRequestQueue(getActivity()).add(bseNseRequest);
+                    StockBooRequestQueue.getInstance(getActivity()).getRequestQueue().add(bseNseRequest);
                } else {
                 }
             }

@@ -210,7 +210,7 @@ public class MainActivity extends ActionBarActivity
             DashboardResponseListener listener = new DashboardResponseListener();
             StringRequest bseNseRequest = new StringRequest(StringRequest.Method.GET, "http://finance.google.com/finance/info?client=ig&q=INDEXBOM:SENSEX,NSE:NIFTY", listener, listener);
             //StringRequest marketNewsRequest = new StringRequest(StringRequest.Method.GET, "http://www.moneycontrol.com/rss/MCtopnews.xml", listener, listener);
-            StockBooRequestQueue.getRequestQueue(getActivity()).add(bseNseRequest);
+            StockBooRequestQueue.getInstance(getActivity()).getRequestQueue().add(bseNseRequest);
             //StockBooRequestQueue.getRequestQueue(this).add(marketNewsRequest);
             new UpdateMarketNewsTask().execute();
         }

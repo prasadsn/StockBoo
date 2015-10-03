@@ -103,7 +103,7 @@ public class StockDetailFragment extends Fragment {
         String strUrl = "https://www.google.com/finance/company_news?q=" + mList.get(6) + "&output=json";
         Listener listener = new Listener();
         StringRequest bseNseRequest = new StringRequest(StringRequest.Method.GET, strUrl, listener, listener);
-        StockBooRequestQueue.getRequestQueue(getActivity()).add(bseNseRequest);
+        StockBooRequestQueue.getInstance(getActivity()).getRequestQueue().add(bseNseRequest);
         return view;
     }
 
