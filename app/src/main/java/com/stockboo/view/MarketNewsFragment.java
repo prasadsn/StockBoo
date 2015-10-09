@@ -9,15 +9,12 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.CursorAdapter;
-import android.widget.LinearLayout;
 import android.widget.ListAdapter;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -26,11 +23,9 @@ import com.android.volley.toolbox.NetworkImageView;
 import com.j256.ormlite.android.apptools.OpenHelperManager;
 import com.j256.ormlite.dao.RuntimeExceptionDao;
 import com.j256.ormlite.stmt.DeleteBuilder;
-import com.j256.ormlite.table.TableUtils;
 import com.stockboo.R;
 
 import com.stockboo.model.NewsItem;
-import com.stockboo.model.StockList;
 import com.stockboo.model.db.DatabaseHelper;
 import com.stockboo.network.StockBooRequestQueue;
 import com.stockboo.view.dummy.DummyContent;
@@ -47,7 +42,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.List;
 
 /**
  * A fragment representing a list of Items.
@@ -58,7 +52,7 @@ import java.util.List;
  * Activities containing this fragment MUST implement the {@link OnFragmentInteractionListener}
  * interface.
  */
-public class MarketNewsFragment extends Fragment implements AbsListView.OnItemClickListener {
+public class MarketNewsFragment extends RSSFeedFragment implements AbsListView.OnItemClickListener {
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -128,68 +122,6 @@ public class MarketNewsFragment extends Fragment implements AbsListView.OnItemCl
 
     }
 
-    private class NewsListAdapter extends CursorAdapter {
-
-        public NewsListAdapter(Context context, Cursor c, boolean autoRequery) {
-            super(context, c, autoRequery);
-        }
-
-        @Override
-        public View newView(Context context, Cursor cursor, ViewGroup parent) {
-            RelativeLayout layout = (RelativeLayout) getActivity().getLayoutInflater().inflate(R.layout.market_news_list_item, null);
-            return layout;
-        }
-
-        @Override
-        public void bindView(View view, Context context, Cursor cursor) {
-            updateView(view, context, cursor);
-        }
-    }
-
-    private void updateView(View view, Context context, Cursor cursor){
-        RelativeLayout layout = (RelativeLayout) view;
-        final String link = cursor.getString(1);
-
-        if( link!=null && link.contains("news.google.com"))
-            layout.getChildAt(1).setVisibility(View.GONE);
-        else
-            layout.getChildAt(1).setVisibility(View.VISIBLE);
-        layout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(getActivity(), MarketNewsActivity.class);
-                intent.putExtra("link", link);
-                startActivity(intent);
-            }
-        });
-
-        TextView titleView = (TextView) layout.getChildAt(0);
-        TextView descriptionView = (TextView) layout.findViewById(R.id.textView11);
-        TextView updatedDateView = (TextView) layout.getChildAt(2);
-        NetworkImageView imageView = (NetworkImageView) layout.findViewById(R.id.networkImageView);
-
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("EEE, d MMM yyyy HH:mm:ss z");
-        Date pubDate = null;
-        try {
-            pubDate = simpleDateFormat.parse(cursor.getString(2));
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-        Calendar calendar1 = Calendar.getInstance();
-        calendar1.setTime(pubDate);
-        int difference = (int) (System.currentTimeMillis() - calendar1.getTimeInMillis()) + (5 * 60 * 60 * 1000);
-        int days = (int) (difference / (1000*60*60*24));
-        int hours = 0;
-        hours = (int) ((difference - (1000*60*60*24) * days) / (1000*60*60));
-        if(days>1)
-            hours = hours % 24;
-        String time = days > 1? days + " day ago" : hours + " hours ago";
-        titleView.setText(cursor.getString(4));
-        descriptionView.setText(cursor.getString(0));
-        updatedDateView.setText(time);
-        imageView.setImageUrl(cursor.getString(3), StockBooRequestQueue.getInstance(getActivity().getApplicationContext()).getImageLoader());
-   }
-
         @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -200,7 +132,7 @@ public class MarketNewsFragment extends Fragment implements AbsListView.OnItemCl
         ((AdapterView<ListAdapter>) mListView).setAdapter(mAdapter);
 
             // TODO: Change Adapter to display your content
-            mAdapter = new NewsListAdapter(getActivity(), getCursor(), true);
+            mAdapter = new RSSFeedAdapter(getActivity(), getCursor(), true);
             mListView.setAdapter(mAdapter);
         // Set OnItemClickListener so we can be notified on item clicks
         mListView.setOnItemClickListener(this);
@@ -226,7 +158,7 @@ public class MarketNewsFragment extends Fragment implements AbsListView.OnItemCl
         SharedPreferences preferences = getActivity().getPreferences(Context.MODE_PRIVATE);
         long lastUpdatedTime = preferences.getLong("last_update", 0);
         if((System.currentTimeMillis() - lastUpdatedTime) > UPDATE_INTERVAL)
-            new UpdateMarketNewsTask().execute();
+            new UpdateMarketNewsTask().execute(RSS_LIVEMINT, RSS_ECONOMIC_TIMES, RSS_GOOGLE_NEWS);
     }
 
     @Override
@@ -272,9 +204,10 @@ public class MarketNewsFragment extends Fragment implements AbsListView.OnItemCl
         public void onFragmentInteraction(String id);
     }
 
-    private class UpdateMarketNewsTask extends AsyncTask<Void, ArrayList<NewsItem>, ArrayList<NewsItem>> {
+    private class UpdateMarketNewsTask extends AsyncTask<String, ArrayList<NewsItem>, ArrayList<NewsItem>> {
 
         ProgressDialog dialog = new ProgressDialog(getActivity());
+
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
@@ -291,11 +224,10 @@ public class MarketNewsFragment extends Fragment implements AbsListView.OnItemCl
         }
 
         @Override
-        protected ArrayList<NewsItem> doInBackground(Void... params) {
+        protected ArrayList<NewsItem> doInBackground(String... params) {
             try {
-                updateMarketNews(new URL(RSS_LIVEMINT));
-                updateMarketNews(new URL(RSS_ECONOMIC_TIMES));
-                updateMarketNews(new URL(RSS_GOOGLE_NEWS));
+                for(String url: params)
+                    updateMarketNews(new URL(url));
                 return null;
             } catch (IOException e) {
                 e.printStackTrace();
