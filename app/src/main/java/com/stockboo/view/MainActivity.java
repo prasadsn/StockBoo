@@ -22,6 +22,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.stockboo.R;
+import com.stockboo.model.BrokerageRecos;
 import com.stockboo.network.StockBooRequestQueue;
 
 import org.json.JSONArray;
@@ -56,7 +57,8 @@ public class MainActivity extends ActionBarActivity
 
     private FRAGMENTS mCurrentFragment;
 
-    private final static int WATCH_STOCK_LIST_REQUEST_CODE = 1;
+    final static int WATCH_STOCK_LIST_REQUEST_CODE = 1;
+    final static int PORTFOLIO_REQUEST_CODE = 2;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -102,6 +104,18 @@ public class MainActivity extends ActionBarActivity
                 getFragmentManager().beginTransaction()
                         .replace(R.id.container, WatchListFragment.newInstance("", ""))
                         .commit();
+                break;
+            case 4:
+                mCurrentFragment = FRAGMENTS.PORTFOLIO;
+                invalidateOptionsMenu();
+                getFragmentManager().beginTransaction()
+                        .replace(R.id.container, PortfolioFragment.newInstance("", ""))
+                        .commit();
+                break;
+            case 5:
+                mCurrentFragment = FRAGMENTS.BROKERAGE_RECOS;
+                invalidateOptionsMenu();
+                getFragmentManager().beginTransaction().replace(R.id.container, new BrokerageRecosFragment()).commit();
                 break;
             case 6:
                 //mMenu.findItem(R.id.action_search).setVisible(false);
@@ -153,7 +167,7 @@ public class MainActivity extends ActionBarActivity
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        mMenu = menu;
+        /*mMenu = menu;
         if (!mNavigationDrawerFragment.isDrawerOpen()) {
             // Only show items in the action bar relevant to this screen
             // if the drawer is not showing. Otherwise, let the drawer
@@ -163,7 +177,7 @@ public class MainActivity extends ActionBarActivity
             //mAddView = (SearchView) menu.findItem(R.id.action_add).getActionView();
             //mSearchView = (SearchView) menu.findItem(R.id.action_search).getActionView();
             return true;
-        }
+        }*/
         return super.onCreateOptionsMenu(menu);
     }
 

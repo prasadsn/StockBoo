@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="horizontal" android:layout_width="match_parent"
-    android:background="@drawable/image_placeholder"
+    android:background="@drawable/stock_headline"
     android:layout_marginBottom="10dp"
     android:layout_height="@dimen/height_heading">
 
@@ -26,7 +26,7 @@
         android:layout_height="wrap_content"
         android:id="@+id/icon_right"
         android:layout_weight="3"
-        android:layout_gravity="right"
         android:visibility="invisible"
+        android:layout_gravity="center_vertical"
         android:src="@drawable/dashboard_screen_icon" />
 </LinearLayout>

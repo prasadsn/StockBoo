@@ -2,6 +2,7 @@ package com.stockboo.view;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -20,6 +21,8 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.CursorAdapter;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
@@ -157,6 +160,19 @@ public class WatchListFragment extends Fragment implements AbsListView.OnItemCli
 
         // Set OnItemClickListener so we can be notified on item clicks
         mListView.setOnItemClickListener(this);
+        LinearLayout watchListHeading = (LinearLayout) getActivity().getLayoutInflater().inflate(R.layout.stockboo_heading_layout, mListView, false);
+        ((ImageView) watchListHeading.getChildAt(0)).setImageResource(R.drawable.mywatch_icon);
+        ((TextView) watchListHeading.getChildAt(1)).setText(R.string.title_demo_5);
+        ((ImageView) watchListHeading.getChildAt(2)).setImageResource(android.R.drawable.ic_menu_add);
+        watchListHeading.getChildAt(2).setVisibility(View.VISIBLE);
+        watchListHeading.getChildAt(2).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getActivity(), StockListSearchActivity.class);
+                startActivityForResult(intent, MainActivity.WATCH_STOCK_LIST_REQUEST_CODE);
+            }
+        });
+        ((ListView) mListView).addHeaderView(watchListHeading);
         mBackgroundContainer = (BackgroundContainer) view.findViewById(R.id.listViewBackground);
         return view;
     }

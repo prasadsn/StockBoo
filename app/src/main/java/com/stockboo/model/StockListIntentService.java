@@ -38,10 +38,8 @@ public class StockListIntentService extends IntentService {
         long length = startUpData.length;
         if(recordCount == length)
             return;
-        for(int i = 0;i<length; i++){
-            if(!startUpData[i].getStatus().equalsIgnoreCase("Delisted"))
-                stockListDao.create(startUpData[i]);
-        }
+        for(int i = 0;i<length; i++)
+            stockListDao.create(startUpData[i]);
 
     }
 

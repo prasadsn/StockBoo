@@ -3,12 +3,12 @@ package com.stockboo.view;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,60 +16,33 @@ import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.CursorAdapter;
 import android.widget.ListAdapter;
-import android.widget.RelativeLayout;
-import android.widget.TextView;
 
-import com.android.volley.toolbox.NetworkImageView;
 import com.j256.ormlite.android.apptools.OpenHelperManager;
 import com.j256.ormlite.dao.RuntimeExceptionDao;
 import com.j256.ormlite.stmt.DeleteBuilder;
 import com.stockboo.R;
-
-import com.stockboo.model.NewsItem;
+import com.stockboo.model.BrokerageRecos;
 import com.stockboo.model.db.DatabaseHelper;
-import com.stockboo.network.StockBooRequestQueue;
-import com.stockboo.view.dummy.DummyContent;
 
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 import org.xmlpull.v1.XmlPullParserFactory;
 
 import java.io.IOException;
+import java.io.StringReader;
 import java.net.URL;
 import java.sql.SQLException;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
 
 /**
- * A fragment representing a list of Items.
- * <p/>
- * Large screen devices (such as tablets) are supported by replacing the ListView
- * with a GridView.
- * <p/>
- * Activities containing this fragment MUST implement the {@link OnFragmentInteractionListener}
- * interface.
+ * Created by prsn0001 on 10/10/2015.
  */
-public class MarketNewsFragment extends RSSFeedFragment implements AbsListView.OnItemClickListener {
+public class BrokerageRecosFragment extends RSSFeedFragment {
 
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-
-    private static final String RSS_GOOGLE_NEWS = "http://news.google.co.in/news?pz=1&cf=all&ned=in&hl=en&topic=b&output=rss";
-    private static final String RSS_ECONOMIC_TIMES = "http://economictimes.indiatimes.com/rssfeedsdefault.cms";
-    private static final String RSS_LIVEMINT = "http://www.livemint.com/rss/money";
-
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
+    private static final String LINK_BROKERAGE_RECOS = "http://www.moneycontrol.com/rss/brokeragerecos.xml";
 
     private DatabaseHelper dbHelper;
 
-    private OnFragmentInteractionListener mListener;
 
     /**
      * The fragment's ListView/GridView.
@@ -82,45 +55,8 @@ public class MarketNewsFragment extends RSSFeedFragment implements AbsListView.O
      */
     private CursorAdapter mAdapter;
 
-    // TODO: Rename and change types of parameters
-    public static MarketNewsFragment newInstance(String param1, String param2) {
-        MarketNewsFragment fragment = new MarketNewsFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
-
-    /**
-     * Mandatory empty constructor for the fragment manager to instantiate the
-     * fragment (e.g. upon screen orientation changes).
-     */
-    public MarketNewsFragment() {
-    }
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
-
-    }
-
-
-    private Cursor getCursor(){
-        SQLiteDatabase database = dbHelper.getReadableDatabase();
-        String SqlQuery = "SELECT * FROM NewsItem";
-        Cursor cursor = database.rawQuery(SqlQuery, null);
-        return cursor;
-        // TODO: Change Adapter to display your content
-
-    }
-
-        @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_item3, container, false);
@@ -129,15 +65,13 @@ public class MarketNewsFragment extends RSSFeedFragment implements AbsListView.O
         mListView = (AbsListView) view.findViewById(android.R.id.list);
         ((AdapterView<ListAdapter>) mListView).setAdapter(mAdapter);
 
-            // TODO: Change Adapter to display your content
-            mAdapter = new RSSFeedAdapter(getActivity(), getCursor(), true);
-            mListView.setAdapter(mAdapter);
+        // TODO: Change Adapter to display your content
+        mAdapter = new RSSFeedAdapter(getActivity(), getCursor(), true);
+        mListView.setAdapter(mAdapter);
         // Set OnItemClickListener so we can be notified on item clicks
-        mListView.setOnItemClickListener(this);
 
         return view;
     }
-
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
@@ -150,59 +84,24 @@ public class MarketNewsFragment extends RSSFeedFragment implements AbsListView.O
         }
     }
 
+    private Cursor getCursor(){
+        SQLiteDatabase database = dbHelper.getReadableDatabase();
+        String SqlQuery = "SELECT * FROM BrokerageRecos";
+        Cursor cursor = database.rawQuery(SqlQuery, null);
+        return cursor;
+        // TODO: Change Adapter to display your content
+
+    }
     @Override
     public void onStart() {
         super.onStart();
         SharedPreferences preferences = getActivity().getPreferences(Context.MODE_PRIVATE);
-        long lastUpdatedTime = preferences.getLong("last_update", 0);
+        long lastUpdatedTime = preferences.getLong("brokerage_recos_last_update", 0);
         if((System.currentTimeMillis() - lastUpdatedTime) > UPDATE_INTERVAL)
-            new UpdateMarketNewsTask().execute(RSS_LIVEMINT, RSS_ECONOMIC_TIMES, RSS_GOOGLE_NEWS);
+            new UpdateBrokageRecosTask().execute(LINK_BROKERAGE_RECOS);
     }
 
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        mListener = null;
-    }
-
-    @Override
-    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        if (null != mListener) {
-            // Notify the active callbacks interface (the activity, if the
-            // fragment is attached to one) that an item has been selected.
-            mListener.onFragmentInteraction(DummyContent.ITEMS.get(position).id);
-        }
-    }
-
-    /**
-     * The default content for this Fragment has a TextView that is shown when
-     * the list is empty. If you would like to change the text, call this method
-     * to supply the text it should use.
-     */
-    public void setEmptyText(CharSequence emptyText) {
-        View emptyView = mListView.getEmptyView();
-
-        if (emptyView instanceof TextView) {
-            ((TextView) emptyView).setText(emptyText);
-        }
-    }
-
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p/>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
-     */
-    public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
-        public void onFragmentInteraction(String id);
-    }
-
-    private class UpdateMarketNewsTask extends AsyncTask<String, ArrayList<NewsItem>, ArrayList<NewsItem>> {
+    private class UpdateBrokageRecosTask extends AsyncTask<String, ArrayList<BrokerageRecos>, ArrayList<BrokerageRecos>> {
 
         ProgressDialog dialog = new ProgressDialog(getActivity());
 
@@ -214,7 +113,7 @@ public class MarketNewsFragment extends RSSFeedFragment implements AbsListView.O
                 dialog.setCanceledOnTouchOutside(false);
                 dialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
                 dialog.show();
-                DeleteBuilder<NewsItem, Integer> deleteBuilder = dbHelper.getNewsListDao().deleteBuilder();
+                DeleteBuilder<BrokerageRecos, Integer> deleteBuilder = dbHelper.getBrokerageRecosRuntimeDao().deleteBuilder();
                 deleteBuilder.delete();
             } catch (SQLException e) {
                 e.printStackTrace();
@@ -222,10 +121,10 @@ public class MarketNewsFragment extends RSSFeedFragment implements AbsListView.O
         }
 
         @Override
-        protected ArrayList<NewsItem> doInBackground(String... params) {
+        protected ArrayList<BrokerageRecos> doInBackground(String... params) {
             try {
                 for(String url: params)
-                    updateMarketNews(new URL(url));
+                    updateBrokerageRecos(new URL(url));
                 return null;
             } catch (IOException e) {
                 e.printStackTrace();
@@ -236,26 +135,27 @@ public class MarketNewsFragment extends RSSFeedFragment implements AbsListView.O
         }
 
         @Override
-        protected void onPostExecute(final ArrayList<NewsItem> headlines) {
+        protected void onPostExecute(final ArrayList<BrokerageRecos> headlines) {
             super.onPostExecute(headlines);
             SharedPreferences preferences = getActivity().getPreferences(Context.MODE_PRIVATE);
             SharedPreferences.Editor editor = preferences.edit();
-            editor.putLong("last_update", System.currentTimeMillis());
+            editor.putLong("brokerage_recos_last_update", System.currentTimeMillis());
             editor.apply();
             mAdapter.changeCursor(getCursor());
             mAdapter.notifyDataSetChanged();
             dialog.hide();
         }
-   }
-    private ArrayList<NewsItem> updateMarketNews(URL url) throws IOException, XmlPullParserException {
+    }
+
+    private ArrayList<BrokerageRecos> updateBrokerageRecos(URL url) throws IOException, XmlPullParserException {
         //StringBuilder builder=new StringBuilder();
-        ArrayList<NewsItem> headlines = new ArrayList<NewsItem>();
+        ArrayList<BrokerageRecos> headlines = new ArrayList<BrokerageRecos>();
         //URL url = new URL("http://www.moneycontrol.com/rss/MCtopnews.xml");
         //URL url = new URL("http://news.google.co.in/news?pz=1&cf=all&ned=in&hl=en&topic=b&output=rss");
         //URL url = new URL("http://economictimes.indiatimes.com/rssfeedsdefault.cms");
         //URL url = new URL("http://www.livemint.com/rss/money");
 
-        RuntimeExceptionDao<NewsItem, Integer> newsListDao = dbHelper.getNewsListRuntimeDao();
+        RuntimeExceptionDao<BrokerageRecos, Integer> brokerageRecosDao = dbHelper.getBrokerageRecosRuntimeDao();
         XmlPullParserFactory factory=XmlPullParserFactory.newInstance();
         factory.setNamespaceAware(true);
         XmlPullParser xpp=factory.newPullParser();
@@ -268,7 +168,7 @@ public class MarketNewsFragment extends RSSFeedFragment implements AbsListView.O
             eventType = xpp.next();
             name = xpp.getName();
         }
-            NewsItem item = new NewsItem();
+        BrokerageRecos item = new BrokerageRecos();
 
         while(eventType!=XmlPullParser.END_DOCUMENT) {
             // Looking for a start tag
@@ -280,9 +180,22 @@ public class MarketNewsFragment extends RSSFeedFragment implements AbsListView.O
                     item.setLink(xpp.nextText());
                 else if(xpp.getName().equalsIgnoreCase("description")) {
                     String desc = xpp.nextText();
-                    int index = desc.indexOf("\">");
+                    XmlPullParserFactory factory1 = XmlPullParserFactory.newInstance();
+                    XmlPullParser xpp1 = factory1.newPullParser();
+
+                    xpp1.setInput( new StringReader( desc ) );
+                    int eventType1 = xpp1.getEventType();
+                    while (eventType1 != XmlPullParser.END_DOCUMENT) {
+                        if(eventType1 == XmlPullParser.START_TAG && "img".equals(xpp1.getName())) {
+                            String nextText = xpp1.getAttributeValue(null, "src");
+                            item.setThumbnailLink(nextText);
+                            break;
+                        }
+                        eventType1 = xpp1.next();
+                    }
+                    int index = desc.indexOf("/>");
                     if( index > 0 )
-                    desc = desc.substring(index + 2);
+                        desc = desc.substring(index + 2).trim();
                     item.setDescription(desc);
                 }
                 else if(xpp.getName().equalsIgnoreCase("thumbnail"))
@@ -291,14 +204,14 @@ public class MarketNewsFragment extends RSSFeedFragment implements AbsListView.O
                     item.setPubDate(xpp.nextText());
             }else if(eventType==XmlPullParser.END_TAG){
                 if(xpp.getName().equalsIgnoreCase("item")){
-                    newsListDao.create(item);
-                    item = new NewsItem();
+                    brokerageRecosDao.create(item);
+                    item = new BrokerageRecos();
                 }
             }
             //mAdapter.changeCursor(getCursor());
             eventType=xpp.next();
         }
-        //newsListDao.create(item);
+        //brokerageRecosDao.create(item);
         return headlines;
     }
 }
