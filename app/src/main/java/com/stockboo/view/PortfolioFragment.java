@@ -111,10 +111,6 @@ public class PortfolioFragment extends Fragment {
         mAdapter = new PortfolioAdapter(portfolioList);
         mListView.setAdapter(mAdapter);
 
-        LinearLayout totalInvestementlayout = (LinearLayout) view.findViewById(R.id.portfolio_total_investement);
-        LinearLayout netWorthlayout = (LinearLayout) view.findViewById(R.id.portfolio_networth);
-        LinearLayout totalInvestementlayout = (LinearLayout) view.findViewById(R.id.portfolio_total_investement);
-
         LinearLayout portfolioHeading = (LinearLayout) view.findViewById(R.id.portfolio_heading);
         ((ImageView) portfolioHeading.getChildAt(0)).setImageResource(R.drawable.myportfolio);
         ((TextView) portfolioHeading.getChildAt(1)).setText(R.string.title_demo_6);
@@ -211,7 +207,7 @@ public class PortfolioFragment extends Fragment {
             currentPriceTv.setText(String.format(getString(R.string.label_portfolio_current_price), portfolio.getCurrentPrice()));
             buyingCostTv.setText(String.format(getString(R.string.label_portfolio_buying_cost), portfolio.getPrice()));
             investementTv.setText(String.format(getString(R.string.label_portfolio_investement), portfolio.getPrice() * portfolio.getQuantity()));
-            currentValueTv.setText(String.format(getString(R.string.label_portfolio_current_price), portfolio.getCurrentPrice() * portfolio.getQuantity()));
+            currentValueTv.setText(String.format(getString(R.string.label_portfolio_current_value), portfolio.getCurrentPrice() * portfolio.getQuantity()));
             scriptName.setText(portfolio.getScriptName() + " (" + portfolio.getQuantity() +" Units)");
             return convertView;
         }
@@ -290,6 +286,26 @@ public class PortfolioFragment extends Fragment {
             }
             mAdapter = new PortfolioAdapter(getPortfolio());
             ((AdapterView<ListAdapter>) mListView).setAdapter(mAdapter);
+            updatePortFolioBoard();
+        }
+
+        private void updatePortFolioBoard(){
+
+            int totalInvestement = 0;
+            int netWorth = 0;
+            List<Portfolio> list = dbHelper.getPortfolioRuntimeDao().queryForAll();
+            for(Portfolio portfolio:list){
+                totalInvestement += portfolio.getPrice() * portfolio.getQuantity();
+                netWorth += portfolio.getCurrentPrice() * portfolio.getQuantity();
+            }
+            LinearLayout totalInvestementlayout = (LinearLayout) getActivity().findViewById(R.id.portfolio_total_investement);
+            LinearLayout netWorthlayout = (LinearLayout) getActivity().findViewById(R.id.portfolio_networth);
+            LinearLayout totalChangelayout = (LinearLayout) getActivity().findViewById(R.id.portfolio_total_change);
+            ((TextView) totalInvestementlayout.getChildAt(0)).setText("TOTAL INVESTMENT");
+            ((TextView) totalInvestementlayout.getChildAt(1)).setText("\u20B9" + totalInvestement);
+            ((TextView) netWorthlayout.getChildAt(0)).setText("MY NETWORTH");
+            ((TextView) netWorthlayout.getChildAt(1)).setText("\u20B9" + netWorth);
+            ((TextView) totalChangelayout.getChildAt(0)).setText("TOTAL DAY CHANGE");
         }
     }
 
