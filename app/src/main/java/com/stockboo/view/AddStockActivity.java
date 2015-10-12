@@ -29,6 +29,7 @@ public class AddStockActivity extends AppCompatActivity implements View.OnClickL
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_stock);
         findViewById(R.id.button).setOnClickListener(this);
+        findViewById(R.id.stock_selection_button).setOnClickListener(this);
         quantityEditText = (EditText) findViewById(R.id.quantity_edit_text);
         priceEditText = (EditText) findViewById(R.id.price_edit_text);
         dbHelper = OpenHelperManager.getHelper(this, DatabaseHelper.class);

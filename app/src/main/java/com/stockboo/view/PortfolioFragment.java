@@ -3,6 +3,7 @@ package com.stockboo.view;
 import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.app.Fragment;
 import android.view.LayoutInflater;
@@ -14,13 +15,24 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListAdapter;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
 import com.j256.ormlite.android.apptools.OpenHelperManager;
+import com.j256.ormlite.dao.RuntimeExceptionDao;
 import com.stockboo.R;
 import com.stockboo.model.Portfolio;
 import com.stockboo.model.db.DatabaseHelper;
+import com.stockboo.network.StockBooRequestQueue;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.sql.SQLException;
 import java.util.List;
 
 /**
@@ -99,16 +111,20 @@ public class PortfolioFragment extends Fragment {
         mAdapter = new PortfolioAdapter(portfolioList);
         mListView.setAdapter(mAdapter);
 
-        LinearLayout currentSuggestionHeading = (LinearLayout) getActivity().getLayoutInflater().inflate(R.layout.stockboo_heading_layout, mListView, false);
-        ((ImageView) currentSuggestionHeading.getChildAt(0)).setImageResource(R.drawable.myportfolio);
-        ((TextView) currentSuggestionHeading.getChildAt(1)).setText(R.string.title_demo_6);
-        ((ImageView) currentSuggestionHeading.getChildAt(2)).setImageResource(android.R.drawable.ic_menu_add);
-        currentSuggestionHeading.getChildAt(2).setVisibility(View.VISIBLE);
-        currentSuggestionHeading.getChildAt(2).setOnClickListener(new View.OnClickListener() {
+        LinearLayout totalInvestementlayout = (LinearLayout) view.findViewById(R.id.portfolio_total_investement);
+        LinearLayout netWorthlayout = (LinearLayout) view.findViewById(R.id.portfolio_networth);
+        LinearLayout totalInvestementlayout = (LinearLayout) view.findViewById(R.id.portfolio_total_investement);
+
+        LinearLayout portfolioHeading = (LinearLayout) view.findViewById(R.id.portfolio_heading);
+        ((ImageView) portfolioHeading.getChildAt(0)).setImageResource(R.drawable.myportfolio);
+        ((TextView) portfolioHeading.getChildAt(1)).setText(R.string.title_demo_6);
+        ((ImageView) portfolioHeading.getChildAt(2)).setImageResource(android.R.drawable.ic_menu_add);
+        portfolioHeading.getChildAt(2).setVisibility(View.VISIBLE);
+        portfolioHeading.getChildAt(2).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(getActivity(), StockListSearchActivity.class);
-                startActivityForResult(intent, MainActivity.PORTFOLIO_REQUEST_CODE);
+                Intent intent = new Intent(getActivity(), AddStockActivity.class);
+                startActivity(intent);
             }
         });
         return view;
@@ -117,10 +133,6 @@ public class PortfolioFragment extends Fragment {
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        LinearLayout currentSuggestionHeading = (LinearLayout) getActivity().getLayoutInflater().inflate(R.layout.stockboo_heading_layout, mListView, false);
-        ((ImageView) currentSuggestionHeading.getChildAt(0)).setImageResource(R.drawable.voice_icon);
-        ((TextView) currentSuggestionHeading.getChildAt(1)).setText(R.string.heading_current_suggestions);
-        ((ListView) mListView).addHeaderView(currentSuggestionHeading);
     }
 
     // TODO: Rename method, update argument and hook method into UI event
@@ -128,6 +140,12 @@ public class PortfolioFragment extends Fragment {
         if (mListener != null) {
             mListener.onFragmentInteraction(uri);
         }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        new PortfolioTask().execute();
     }
 
     @Override
@@ -183,7 +201,96 @@ public class PortfolioFragment extends Fragment {
         public View getView(int position, View convertView, ViewGroup parent) {
             if(convertView == null)
                 convertView = getActivity().getLayoutInflater().inflate(R.layout.portfolio_list_item, null);
+            Portfolio portfolio = mList.get(position);
+            RelativeLayout layout = (RelativeLayout) convertView;
+            TextView scriptName = (TextView) layout.getChildAt(0);
+            TextView currentPriceTv = (TextView) layout.getChildAt(1);
+            TextView buyingCostTv = (TextView) layout.getChildAt(3);
+            TextView investementTv = (TextView) layout.getChildAt(2);
+            TextView currentValueTv = (TextView) layout.getChildAt(4);
+            currentPriceTv.setText(String.format(getString(R.string.label_portfolio_current_price), portfolio.getCurrentPrice()));
+            buyingCostTv.setText(String.format(getString(R.string.label_portfolio_buying_cost), portfolio.getPrice()));
+            investementTv.setText(String.format(getString(R.string.label_portfolio_investement), portfolio.getPrice() * portfolio.getQuantity()));
+            currentValueTv.setText(String.format(getString(R.string.label_portfolio_current_price), portfolio.getCurrentPrice() * portfolio.getQuantity()));
+            scriptName.setText(portfolio.getScriptName() + " (" + portfolio.getQuantity() +" Units)");
             return convertView;
         }
     }
+    private class PortfolioTask extends AsyncTask<Void, String, String> {
+
+        @Override
+        protected String doInBackground(Void... params) {
+            List<Portfolio> list = dbHelper.getPortfolioRuntimeDao().queryForAll();
+            if(list.size()<1)
+                return null;
+            StringBuffer reqParamBuffer = new StringBuffer();
+            for(Portfolio Portfolio: list){
+                if(Portfolio.getGroup() == null)
+                    continue;
+                reqParamBuffer.append(Portfolio.getGroup().equals("A") ? "NSE:"+Portfolio.getScriptID() : "BOM:"+Portfolio.getScriptID()).append(",");
+            }
+            if(reqParamBuffer.length()<1)
+                return null;
+            reqParamBuffer.substring(0, reqParamBuffer.length()-2);
+            return reqParamBuffer.toString();
+        }
+
+        @Override
+        protected void onPostExecute(String reqParamBuffer) {
+            super.onPostExecute(reqParamBuffer);
+            if(reqParamBuffer!=null)
+                loadData(reqParamBuffer);
+        }
+    }
+    private void loadData(String reqParamBuffer){
+        Listener listener = new Listener();
+        String request = "http://finance.google.com/finance/info?client=ig&q=" + reqParamBuffer;
+        StringRequest bseNseRequest = new StringRequest(StringRequest.Method.GET, request, listener, listener);
+        StockBooRequestQueue.getInstance(getActivity()).getRequestQueue().add(bseNseRequest);
+    }
+
+    private List<Portfolio> getPortfolio(){
+        return dbHelper.getPortfolioRuntimeDao().queryForAll();
+    }
+    private class Listener implements Response.Listener<String>, Response.ErrorListener{
+
+        public Listener(){
+        }
+        @Override
+        public void onErrorResponse(VolleyError error) {
+
+        }
+
+        @Override
+        public void onResponse(String response) {
+            try {
+                if(response.startsWith("\n// "))
+                    response = response.substring(4);
+                JSONArray array = new JSONArray(response);
+                //List<Portfolio> list = dbHelper.getPortfolioRuntimeDao().queryForAll();
+                StringBuffer reqParamBuffer = new StringBuffer();
+                RuntimeExceptionDao<Portfolio, Integer> portfolioDao = dbHelper.getPortfolioRuntimeDao();
+                for(int i = 0; i<array.length(); i ++){
+                    JSONObject jsonObject = array.getJSONObject(i);
+                    List<Portfolio> list = portfolioDao.queryBuilder().where().eq("ScriptID", jsonObject.getString("t")).query();
+                    if(list.size() == 0)
+                        list = portfolioDao.queryBuilder().where().eq("SYMBOL", jsonObject.getString("t")).query();
+                    if(list.size() == 0)
+                        continue;
+                    Portfolio portfolio = list.get(0);
+                    String price = jsonObject.getString("l_fix");
+                    portfolio.setCurrentPrice((int) Float.parseFloat(price));
+                    portfolioDao.update(portfolio);
+                }
+                //((AdapterView<ListAdapter>) mListView).setAdapter(new SuggestionAdapter(objects, array));
+            } catch (JSONException e) {
+                e.printStackTrace();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+            mAdapter = new PortfolioAdapter(getPortfolio());
+            ((AdapterView<ListAdapter>) mListView).setAdapter(mAdapter);
+        }
+    }
+
 }

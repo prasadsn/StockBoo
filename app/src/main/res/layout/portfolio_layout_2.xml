@@ -7,6 +7,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_weight="1"
+        android:id="@+id/portfolio_total_investement"
         layout="@layout/portfolio_layout_2_element" />
     <include
         android:layout_width="match_parent"
@@ -14,10 +15,12 @@
         android:layout_weight="1"
         android:layout_marginRight="3dp"
         android:layout_marginLeft="3dp"
+        android:id="@+id/portfolio_networth"
         layout="@layout/portfolio_layout_2_element" />
     <include
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_weight="1"
+        android:id="@+id/portfolio_total_change"
         layout="@layout/portfolio_layout_2_element" />
 </LinearLayout>

@@ -8,6 +8,9 @@ import com.stockboo.model.StockList;
  */
 public class Portfolio extends StockList {
 
+    public Portfolio(){
+
+    }
     public Portfolio(StockList list, int quantity, int price){
         super(list);
         this.quantity = quantity;
@@ -18,6 +21,30 @@ public class Portfolio extends StockList {
 
     @DatabaseField
     private int price;
+
+    public int getQuantity() {
+        return quantity;
+    }
+
+    public void setQuantity(int quantity) {
+        this.quantity = quantity;
+    }
+
+    public int getPrice() {
+        return price;
+    }
+
+    public void setPrice(int price) {
+        this.price = price;
+    }
+
+    public int getCurrentPrice() {
+        return currentPrice;
+    }
+
+    public void setCurrentPrice(int currentPrice) {
+        this.currentPrice = currentPrice;
+    }
 
     @DatabaseField
     private int currentPrice;
