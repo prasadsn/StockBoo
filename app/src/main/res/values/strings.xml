@@ -52,4 +52,9 @@
     <string name="menu_title_add">Add Stock</string>
 
     <string name="title_activity_organization_search">OrganizationSearchActivity</string>
+    <string name="title_activity_add_stock">AddStockActivity</string>
+    <string name="label_portfolio_current_price">Current Price: %s</string>
+    <string name="label_portfolio_investement">Investement: %s</string>
+    <string name="label_portfolio_buying_cost">Buying Cost: %s</string>
+    <string name="label_portfolio_current_value">Current Value: %s</string>
 </resources>

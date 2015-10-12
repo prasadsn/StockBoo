@@ -12,6 +12,7 @@ import com.j256.ormlite.table.TableUtils;
 import com.stockboo.R;
 import com.stockboo.model.BrokerageRecos;
 import com.stockboo.model.NewsItem;
+import com.stockboo.model.Portfolio;
 import com.stockboo.model.StockList;
 import com.stockboo.model.WatchList;
 
@@ -34,11 +35,14 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
     private Dao<NewsItem, Integer> newsItemDao = null;
     // The DAO object we use to access the BrokerageRecos table
     private Dao<BrokerageRecos, Integer> brokerageRecosItemDao = null;
+    // The DAO object we use to access the Portfolio table
+    private Dao<Portfolio, Integer> portfolioDao = null;
 
     private RuntimeExceptionDao<StockList, Integer> StockListRuntimeDao = null;
     private RuntimeExceptionDao<WatchList, Integer> favouriteStockListRuntimeDao = null;
     private RuntimeExceptionDao<NewsItem, Integer> newsListRuntimeDao = null;
     private RuntimeExceptionDao<BrokerageRecos, Integer> brokerageRecosRuntimeDao = null;
+    private RuntimeExceptionDao<Portfolio, Integer> portfolioRuntimeDao = null;
 
     public DatabaseHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION, R.raw.ormlite_config);
@@ -56,6 +60,7 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
             TableUtils.createTable(connectionSource, WatchList.class);
             TableUtils.createTable(connectionSource, NewsItem.class);
             TableUtils.createTable(connectionSource, BrokerageRecos.class);
+            TableUtils.createTable(connectionSource, Portfolio.class);
         } catch (SQLException e) {
             Log.e(DatabaseHelper.class.getName(), "Can't create database", e);
             throw new RuntimeException(e);
@@ -102,6 +107,13 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
         return brokerageRecosItemDao;
     }
 
+    public Dao<Portfolio, Integer> getPortfolioDao() throws SQLException {
+        if (portfolioDao == null) {
+            portfolioDao = getDao(Portfolio.class);
+        }
+        return portfolioDao;
+    }
+
     /**
      * Returns the RuntimeExceptionDao (Database Access Object) version of a Dao for our StockList class. It will
      * create it or just give the cached value. RuntimeExceptionDao only through RuntimeExceptions.
@@ -134,6 +146,13 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
         return brokerageRecosRuntimeDao;
     }
 
+    public RuntimeExceptionDao<Portfolio, Integer> getPortfolioRuntimeDao() {
+        if (portfolioRuntimeDao == null) {
+            portfolioRuntimeDao = getRuntimeExceptionDao(Portfolio.class);
+        }
+        return portfolioRuntimeDao;
+    }
+
     /**
      * Close the database connections and clear any cached DAOs.
      */
@@ -151,4 +170,7 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 
         brokerageRecosItemDao = null;
         brokerageRecosRuntimeDao = null;
+
+        portfolioDao = null;
+        portfolioRuntimeDao = null;
     }}

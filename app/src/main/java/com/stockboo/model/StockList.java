@@ -51,7 +51,16 @@ public class StockList implements Parcelable {
     }
 
     public StockList(){
+    }
 
+    public StockList(StockList list){
+        SYMBOL = list.getSYMBOL();
+        ScriptName = list.getScriptName();
+        Status = list.getStatus();
+        ISINNO = list.getISINNO();
+        Industry = list.getIndustry();
+        Group = list.getGroup();
+        ScriptID = list.ScriptID;
     }
 
     public StockList(Parcel in) {

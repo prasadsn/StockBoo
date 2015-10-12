@@ -9,13 +9,19 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.j256.ormlite.android.apptools.OpenHelperManager;
 import com.stockboo.R;
+import com.stockboo.model.Portfolio;
+import com.stockboo.model.db.DatabaseHelper;
+
+import java.util.List;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -36,6 +42,8 @@ public class PortfolioFragment extends Fragment {
     private String mParam2;
 
     private OnFragmentInteractionListener mListener;
+
+    private DatabaseHelper dbHelper;
 
     /**
      * The fragment's ListView/GridView.
@@ -87,7 +95,9 @@ public class PortfolioFragment extends Fragment {
 
         // Set the adapter
         mListView = (ListView) view.findViewById(android.R.id.list);
-        ((AdapterView<ListAdapter>) mListView).setAdapter(mAdapter);
+        List<Portfolio> portfolioList = dbHelper.getPortfolioRuntimeDao().queryForAll();
+        mAdapter = new PortfolioAdapter(portfolioList);
+        mListView.setAdapter(mAdapter);
 
         LinearLayout currentSuggestionHeading = (LinearLayout) getActivity().getLayoutInflater().inflate(R.layout.stockboo_heading_layout, mListView, false);
         ((ImageView) currentSuggestionHeading.getChildAt(0)).setImageResource(R.drawable.myportfolio);
@@ -123,12 +133,7 @@ public class PortfolioFragment extends Fragment {
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
-        try {
-            //mListener = (OnFragmentInteractionListener) activity;
-        } catch (ClassCastException e) {
-            throw new ClassCastException(activity.toString()
-                    + " must implement OnFragmentInteractionListener");
-        }
+        dbHelper = OpenHelperManager.getHelper(getActivity().getApplicationContext(), DatabaseHelper.class);
     }
 
     @Override
@@ -152,4 +157,33 @@ public class PortfolioFragment extends Fragment {
         public void onFragmentInteraction(Uri uri);
     }
 
+    private class PortfolioAdapter extends BaseAdapter {
+
+        private List<Portfolio> mList;
+
+        public PortfolioAdapter (List<Portfolio> list){
+            mList = list;
+        }
+        @Override
+        public int getCount() {
+            return mList.size();
+        }
+
+        @Override
+        public Object getItem(int position) {
+            return mList.get(position);
+        }
+
+        @Override
+        public long getItemId(int position) {
+            return 0;
+        }
+
+        @Override
+        public View getView(int position, View convertView, ViewGroup parent) {
+            if(convertView == null)
+                convertView = getActivity().getLayoutInflater().inflate(R.layout.portfolio_list_item, null);
+            return convertView;
+        }
+    }
 }

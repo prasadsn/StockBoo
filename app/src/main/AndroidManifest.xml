@@ -45,6 +45,11 @@
             android:name=".model.StockListIntentService"
             android:exported="false" >
         </service>
+
+        <activity
+            android:name=".view.AddStockActivity"
+            android:label="@string/title_activity_add_stock" >
+        </activity>
     </application>
 
 </manifest>
