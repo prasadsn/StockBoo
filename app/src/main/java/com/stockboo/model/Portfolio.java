@@ -22,6 +22,17 @@ public class Portfolio extends StockList {
     @DatabaseField
     private int price;
 
+    @DatabaseField
+    private double change;
+
+    public double getChange() {
+        return change;
+    }
+
+    public void setChange(double change) {
+        this.change = change;
+    }
+
     public int getQuantity() {
         return quantity;
     }

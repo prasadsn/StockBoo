@@ -15,10 +15,15 @@
         layout="@layout/portfolio_layout_2"
         android:layout_gravity="center_horizontal|top" />
 
-    <ListView
+    <view
+        class="com.stockboo.view.BackgroundContainer"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@android:id/list"
-        android:layout_gravity="center_horizontal" />
-
+        android:layout_height="match_parent"
+        android:id="@+id/listViewBackground">
+        <ListView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@android:id/list"
+            android:layout_gravity="center_horizontal" />
+        </view>
 </LinearLayout>
