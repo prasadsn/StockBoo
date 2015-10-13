@@ -200,10 +200,10 @@ public class PortfolioFragment extends Fragment {
             Portfolio portfolio = mList.get(position);
             RelativeLayout layout = (RelativeLayout) convertView;
             TextView scriptName = (TextView) layout.getChildAt(0);
-            TextView currentPriceTv = (TextView) layout.getChildAt(1);
-            TextView buyingCostTv = (TextView) layout.getChildAt(3);
-            TextView investementTv = (TextView) layout.getChildAt(2);
-            TextView currentValueTv = (TextView) layout.getChildAt(4);
+            TextView currentPriceTv = (TextView) layout.findViewById(R.id.textView17);
+            TextView buyingCostTv = (TextView) layout.findViewById(R.id.textView19);
+            TextView investementTv = (TextView) layout.findViewById(R.id.textView18);
+            TextView currentValueTv = (TextView) layout.findViewById(R.id.textView20);
             currentPriceTv.setText(String.format(getString(R.string.label_portfolio_current_price), portfolio.getCurrentPrice()));
             buyingCostTv.setText(String.format(getString(R.string.label_portfolio_buying_cost), portfolio.getPrice()));
             investementTv.setText(String.format(getString(R.string.label_portfolio_investement), portfolio.getPrice() * portfolio.getQuantity()));
