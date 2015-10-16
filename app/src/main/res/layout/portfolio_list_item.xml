@@ -10,7 +10,7 @@
         android:paddingLeft="10dp"
         android:background="@drawable/stock_headline"
         android:gravity="center_vertical"
-        android:textColor="@color/background_color_action_bar"
+        android:textColor="@color/stockboo_color_light_blue"
         android:id="@+id/textView16" />
 
     <LinearLayout

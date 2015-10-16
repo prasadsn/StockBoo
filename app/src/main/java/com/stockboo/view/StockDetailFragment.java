@@ -2,6 +2,9 @@ package com.stockboo.view;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.GradientDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.app.Fragment;
@@ -11,6 +14,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
+import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ListAdapter;
 import android.widget.ListView;
@@ -49,7 +53,7 @@ import javax.xml.transform.TransformerException;
  * Use the {@link StockDetailFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class StockDetailFragment extends Fragment {
+public class StockDetailFragment extends Fragment implements View.OnClickListener {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -104,6 +108,8 @@ public class StockDetailFragment extends Fragment {
         Listener listener = new Listener();
         StringRequest bseNseRequest = new StringRequest(StringRequest.Method.GET, strUrl, listener, listener);
         StockBooRequestQueue.getInstance(getActivity()).getRequestQueue().add(bseNseRequest);
+        view.findViewById(R.id.button_messages).setOnClickListener(this);
+        view.findViewById(R.id.button_news).setOnClickListener(this);
         return view;
     }
 
@@ -130,6 +136,30 @@ public class StockDetailFragment extends Fragment {
     public void onDetach() {
         super.onDetach();
         mListener = null;
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()){
+            case R.id.button_messages:
+                Button msgButton = (Button) v;
+                msgButton.setBackgroundResource(R.drawable.button_left_sided_round_corner_white_fill);
+                msgButton.setTextColor(getResources().getColor(R.color.stockboo_color_light_blue));
+
+                Button newsButton = (Button) getActivity().findViewById(R.id.button_news);
+                newsButton.setBackgroundResource(R.drawable.button_right_sided_round_corner);
+                newsButton.setTextColor(Color.WHITE);
+                break;
+            case R.id.button_news:
+                Button msgButton1 = (Button) getActivity().findViewById(R.id.button_messages);
+                msgButton1.setBackgroundResource(R.drawable.button_left_sided_round_corner);
+                msgButton1.setTextColor(Color.WHITE);
+
+                Button newsButton1 = (Button) v;
+                newsButton1.setBackgroundResource(R.drawable.button_right_sided_round_corner_white_fill);
+                newsButton1.setTextColor(getResources().getColor(R.color.stockboo_color_light_blue));
+                break;
+        }
     }
 
     private class Listener implements Response.Listener<String>, Response.ErrorListener{

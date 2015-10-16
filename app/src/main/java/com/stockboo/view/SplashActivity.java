@@ -9,6 +9,7 @@ import android.os.Handler;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -17,7 +18,7 @@ import com.stockboo.R;
 import com.stockboo.model.StockListIntentService;
 import com.stockboo.view.util.PreferenceManager;
 
-public class SplashActivity extends ActionBarActivity {
+public class SplashActivity extends AppCompatActivity {
 
     private static final long SPLASH_DISPLAY_LENGHT = 3000;
 

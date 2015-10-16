@@ -12,10 +12,10 @@
     <!-- ActionBar styles -->
     <style name="StockBooActionBar"
         parent="@style/Widget.AppCompat.Light.ActionBar.Solid.Inverse">
-        <item name="android:background">@color/background_color_action_bar</item>
+        <item name="android:background">@color/stockboo_color_light_blue</item>
 
         <!-- Support library compatibility -->
-        <item name="background">@color/background_color_action_bar</item>
+        <item name="background">@color/stockboo_color_light_blue</item>
     </style>
 
     <style name="FullscreenTheme" parent="android:Theme.NoTitleBar">

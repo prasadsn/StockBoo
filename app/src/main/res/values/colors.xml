@@ -2,7 +2,7 @@
 
 <!-- See also values-xlarge for specializations for xlarge screens -->
 <resources>
-    <color name="background_color_action_bar">#95c9e8</color>
+    <color name="stockboo_color_light_blue">#95c9e8</color>
 
     <color name="black_overlay">#66000000</color>
 

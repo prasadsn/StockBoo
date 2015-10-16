@@ -15,16 +15,18 @@
         android:id="@+id/linearLayout">
         <Button
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="30sp"
             android:text="Messages"
-            android:background="@xml/button_left_sided_round_corner"
+            android:textColor="@color/stockboo_color_light_blue"
+            android:background="@drawable/button_left_sided_round_corner_white_fill"
             android:id="@+id/button_messages"
             android:layout_gravity="left|center_vertical" />
         <Button
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="30sp"
             android:text="News"
-            android:background="@xml/button_right_sided_round_corner"
+            android:textColor="@android:color/white"
+            android:background="@drawable/button_right_sided_round_corner"
             android:id="@+id/button_news"
             android:layout_gravity="left|center_vertical" />
 
