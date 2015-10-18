@@ -21,6 +21,9 @@ import android.widget.TextView;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
+import com.google.android.gms.ads.AdListener;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.InterstitialAd;
 import com.stockboo.R;
 import com.stockboo.model.BrokerageRecos;
 import com.stockboo.network.StockBooRequestQueue;
@@ -45,6 +48,7 @@ public class MainActivity extends ActionBarActivity
      */
     private NavigationDrawerFragment mNavigationDrawerFragment;
 
+    InterstitialAd mInterstitialAd;
     private MenuItem mSearchMenuItem;
     /**
      * Used to store the last screen title. For use in {@link #restoreActionBar()}.
@@ -73,7 +77,27 @@ public class MainActivity extends ActionBarActivity
         mNavigationDrawerFragment.setUp(
                 R.id.navigation_drawer,
                 (DrawerLayout) findViewById(R.id.drawer_layout));
+        mInterstitialAd = new InterstitialAd(this);
+        mInterstitialAd.setAdUnitId("ca-app-pub-9023139403489240/8056856614");
+
+        mInterstitialAd.setAdListener(new AdListener() {
+            @Override
+            public void onAdClosed() {
+                requestNewInterstitial();
+            }
+        });
+
+        requestNewInterstitial();
     }
+
+    private void requestNewInterstitial() {
+        AdRequest adRequest = new AdRequest.Builder()
+                .addTestDevice("B1166B5E58D7D8172322BE3B3D50EC00")
+                .build();
+
+        mInterstitialAd.loadAd(adRequest);
+    }
+
 
     @Override
     public void onNavigationDrawerItemSelected(int position) {
@@ -99,6 +123,8 @@ public class MainActivity extends ActionBarActivity
             case 3:
                 //mMenu.findItem(R.id.action_search).setVisible(false);
                 //mMenu.findItem(R.id.action_add).setVisible(true);
+                if (mInterstitialAd.isLoaded())
+                    mInterstitialAd.show();
                 mCurrentFragment = FRAGMENTS.MY_WATCH_LIST;
                 invalidateOptionsMenu();
                 getFragmentManager().beginTransaction()
@@ -107,6 +133,8 @@ public class MainActivity extends ActionBarActivity
                 break;
             case 4:
                 mCurrentFragment = FRAGMENTS.PORTFOLIO;
+                if (mInterstitialAd.isLoaded())
+                    mInterstitialAd.show();
                 invalidateOptionsMenu();
                 getFragmentManager().beginTransaction()
                         .replace(R.id.container, PortfolioFragment.newInstance("", ""))

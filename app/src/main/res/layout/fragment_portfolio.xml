@@ -1,17 +1,23 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
-    android:layout_height="match_parent" android:orientation="vertical" tools:context="com.stockboo.view.PortfolioFragment">
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:ads="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    tools:context="com.stockboo.view.PortfolioFragment">
 
     <include
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/portfolio_heading"
+        android:layout_weight="1"
         layout="@layout/stockboo_heading_layout"
         android:layout_gravity="center_horizontal|top" />
 
     <include
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_weight="1"
         layout="@layout/portfolio_layout_2"
         android:layout_gravity="center_horizontal|top" />
 
@@ -19,6 +25,7 @@
         class="com.stockboo.view.BackgroundContainer"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_weight="500"
         android:id="@+id/listViewBackground">
         <ListView
             android:layout_width="match_parent"
@@ -26,4 +33,14 @@
             android:id="@android:id/list"
             android:layout_gravity="center_horizontal" />
         </view>
+    <com.google.android.gms.ads.AdView
+        android:id="@+id/adView"
+        android:layout_width="wrap_content"
+        android:layout_height="60dp"
+        android:layout_weight="1"
+        android:layout_gravity="center"
+        ads:adSize="BANNER"
+        ads:adUnitId="@string/banner_ad_unit_id">
+    </com.google.android.gms.ads.AdView>
+
 </LinearLayout>

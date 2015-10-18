@@ -1,10 +1,13 @@
 package com.stockboo.view;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.database.DataSetObserver;
 import android.os.Bundle;
 import android.app.Fragment;
+import android.provider.Settings;
+import android.telephony.TelephonyManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,6 +25,8 @@ import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
 import com.parse.FindCallback;
 import com.parse.Parse;
 import com.parse.ParseObject;
@@ -145,6 +150,12 @@ public class CurrentSuggestionFragment extends Fragment implements AbsListView.O
                 }
             }
         });
+        AdView mAdView = (AdView) view.findViewById(R.id.adView);
+        AdRequest adRequest = new AdRequest.Builder()
+                //.addTestDevice(AdRequest.DEVICE_ID_EMULATOR)
+                //.addTestDevice("B1166B5E58D7D8172322BE3B3D50EC00")
+                .build();
+        mAdView.loadAd(adRequest);
         //setListAdapter(new SuggestionAdapter());
         return view;
     }

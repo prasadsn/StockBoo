@@ -21,7 +21,7 @@
             android:theme="@style/FullscreenTheme" >
         </activity>
         <activity
-            android:name=".view.SplashActivity"
+            android:name="com.stockboo.view.SplashActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="@string/title_activity_splash" >
             <intent-filter>

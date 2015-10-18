@@ -20,6 +20,8 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.android.volley.toolbox.NetworkImageView;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
 import com.j256.ormlite.android.apptools.OpenHelperManager;
 import com.j256.ormlite.dao.RuntimeExceptionDao;
 import com.j256.ormlite.stmt.DeleteBuilder;
@@ -134,6 +136,12 @@ public class MarketNewsFragment extends RSSFeedFragment implements AbsListView.O
             mListView.setAdapter(mAdapter);
         // Set OnItemClickListener so we can be notified on item clicks
         mListView.setOnItemClickListener(this);
+            AdView mAdView = (AdView) view.findViewById(R.id.adView);
+            AdRequest adRequest = new AdRequest.Builder()
+                    //.addTestDevice(AdRequest.DEVICE_ID_EMULATOR)
+                    //.addTestDevice("B1166B5E58D7D8172322BE3B3D50EC00")
+                    .build();
+            mAdView.loadAd(adRequest);
 
         return view;
     }

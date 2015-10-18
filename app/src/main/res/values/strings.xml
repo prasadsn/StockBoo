@@ -57,4 +57,9 @@
     <string name="label_portfolio_investement">Investement: %s</string>
     <string name="label_portfolio_buying_cost">Buying Cost: %s</string>
     <string name="label_portfolio_current_value">Current Value: %s</string>
+
+    <!-- Test Ad unit id for debug purpose -->
+    <!-- <string name="banner_ad_unit_id">ca-app-pub-3940256099942544/6300978111</string>-->
+
+    <string name="banner_ad_unit_id">ca-app-pub-9023139403489240/3626657013</string>
 </resources>

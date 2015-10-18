@@ -31,6 +31,8 @@ import android.widget.TextView;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
 import com.j256.ormlite.android.apptools.OpenHelperManager;
 import com.j256.ormlite.dao.RuntimeExceptionDao;
 import com.j256.ormlite.stmt.DeleteBuilder;
@@ -174,6 +176,12 @@ public class WatchListFragment extends Fragment implements AbsListView.OnItemCli
         });
         ((ListView) mListView).addHeaderView(watchListHeading);
         mBackgroundContainer = (BackgroundContainer) view.findViewById(R.id.listViewBackground);
+        AdView mAdView = (AdView) view.findViewById(R.id.adView);
+        AdRequest adRequest = new AdRequest.Builder()
+                //.addTestDevice(AdRequest.DEVICE_ID_EMULATOR)
+                //.addTestDevice("B1166B5E58D7D8172322BE3B3D50EC00")
+                .build();
+        mAdView.loadAd(adRequest);
         return view;
     }
 
