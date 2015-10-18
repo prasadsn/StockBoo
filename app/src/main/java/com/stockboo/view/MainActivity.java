@@ -3,6 +3,7 @@ package com.stockboo.view;
 import android.app.Activity;
 import android.app.Fragment;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBar;
@@ -61,6 +62,9 @@ public class MainActivity extends ActionBarActivity
 
     private FRAGMENTS mCurrentFragment;
 
+    private static final String PREF_INSERTIAL_AD_INTERVAL = "pref_insertial_ad_intervl";
+    private static final long INSERTIAL_AD_INTERVAL = 3 * 60 * 60 * 1000;
+
     final static int WATCH_STOCK_LIST_REQUEST_CODE = 1;
     final static int PORTFOLIO_REQUEST_CODE = 2;
 
@@ -83,21 +87,33 @@ public class MainActivity extends ActionBarActivity
         mInterstitialAd.setAdListener(new AdListener() {
             @Override
             public void onAdClosed() {
-                requestNewInterstitial();
+                updateInertAdTime();
             }
         });
 
-        requestNewInterstitial();
+        if(canPlayInsertAd())
+            requestNewInterstitial();
     }
 
     private void requestNewInterstitial() {
         AdRequest adRequest = new AdRequest.Builder()
-                .addTestDevice("B1166B5E58D7D8172322BE3B3D50EC00")
+                //.addTestDevice("B1166B5E58D7D8172322BE3B3D50EC00")
                 .build();
-
         mInterstitialAd.loadAd(adRequest);
     }
 
+    private void updateInertAdTime(){
+        SharedPreferences preferences = getSharedPreferences(PREF_INSERTIAL_AD_INTERVAL, MODE_PRIVATE);
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putLong(PREF_INSERTIAL_AD_INTERVAL, System.currentTimeMillis());
+        editor.commit();
+    }
+
+    private boolean canPlayInsertAd(){
+        SharedPreferences preferences = getSharedPreferences(PREF_INSERTIAL_AD_INTERVAL, MODE_PRIVATE);
+        long time = preferences.getLong(PREF_INSERTIAL_AD_INTERVAL, 0);
+        return (System.currentTimeMillis() - time) > INSERTIAL_AD_INTERVAL;
+    }
 
     @Override
     public void onNavigationDrawerItemSelected(int position) {
@@ -123,7 +139,7 @@ public class MainActivity extends ActionBarActivity
             case 3:
                 //mMenu.findItem(R.id.action_search).setVisible(false);
                 //mMenu.findItem(R.id.action_add).setVisible(true);
-                if (mInterstitialAd.isLoaded())
+                if (mInterstitialAd.isLoaded() && canPlayInsertAd())
                     mInterstitialAd.show();
                 mCurrentFragment = FRAGMENTS.MY_WATCH_LIST;
                 invalidateOptionsMenu();
@@ -133,7 +149,7 @@ public class MainActivity extends ActionBarActivity
                 break;
             case 4:
                 mCurrentFragment = FRAGMENTS.PORTFOLIO;
-                if (mInterstitialAd.isLoaded())
+                if (mInterstitialAd.isLoaded() && canPlayInsertAd())
                     mInterstitialAd.show();
                 invalidateOptionsMenu();
                 getFragmentManager().beginTransaction()
