@@ -125,7 +125,7 @@ public class PastPerformanceFragment extends Fragment implements View.OnClickLis
                         reqParamBuffer.append(scriptCode).append(",");
                     }
                     accuracy = (profitableCalls * 100) / total_calls;
-
+                    accuracy = truncate(accuracy, 2);
                     reqParamBuffer.substring(0, reqParamBuffer.length() - 2);
                     initiPastPerformanceSummary(total_calls, profitableCalls, lossCalls, truncate(totalProfit, 2), accuracy);
                 } else {
