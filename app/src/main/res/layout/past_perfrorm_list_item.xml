@@ -6,7 +6,7 @@
     <com.stockboo.view.custom.StockBooTextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/view2"
+        android:id="@+id/title"
         android:textSize="18sp"
         android:text="Title" />
     <View
@@ -32,6 +32,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="right"
                 android:gravity="right"
+                android:id="@+id/entry_price"
                 android:text="995"
                 android:layout_weight="1"/>
         </LinearLayout>
@@ -50,6 +51,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="right"
                 android:gravity="right"
+                android:id="@+id/exit_price"
                 android:text="995"
                 android:layout_weight="1"/>
 
@@ -64,6 +66,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="10 May"
+            android:id="@+id/created_date"
             android:layout_gravity="center"
             android:gravity="center"
             android:textColor="@android:color/darker_gray"
@@ -73,6 +76,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="10 May"
+            android:id="@+id/updated_date"
             android:layout_gravity="center"
             android:gravity="center"
             android:textColor="@android:color/darker_gray"
@@ -97,6 +101,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="right"
                 android:gravity="right"
+                android:id="@+id/gain_price"
                 android:text="995"
                 android:layout_weight="1"/>
         </LinearLayout>
@@ -115,6 +120,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="right"
                 android:gravity="right"
+                android:id="@+id/gain_percentage"
                 android:text="995"
                 android:layout_weight="1"/>
 

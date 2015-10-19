@@ -7,8 +7,10 @@ import android.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import com.android.volley.Response;
@@ -48,6 +50,8 @@ public class PastPerformanceFragment extends Fragment implements View.OnClickLis
     private static final int[] PP_SUMMARY_ICONS = new int[]{R.drawable.profitablecalls, R.drawable.loss_calls, R.drawable.total_profitbooked, R.drawable.accuracy};
 
     private static final String[] PP_SUMMARY_LABEL = new String[]{"Profitable calls", "Loss calls", "Total Profit Booked", "Accuracy"};
+    private ListView mListView;
+
     /**
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
@@ -83,7 +87,9 @@ public class PastPerformanceFragment extends Fragment implements View.OnClickLis
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_past_performance, container, false);
+        View view = inflater.inflate(R.layout.fragment_past_performance, container, false);
+        mListView = (ListView) view.findViewById(android.R.id.list);
+        return view;
     }
 
     @Override
@@ -128,6 +134,8 @@ public class PastPerformanceFragment extends Fragment implements View.OnClickLis
                     accuracy = truncate(accuracy, 2);
                     reqParamBuffer.substring(0, reqParamBuffer.length() - 2);
                     initiPastPerformanceSummary(total_calls, profitableCalls, lossCalls, truncate(totalProfit, 2), accuracy);
+                    PerformanceAdapter adapter = new PerformanceAdapter(objects);
+                    mListView.setAdapter(adapter);
                 } else {
                 }
 
@@ -227,6 +235,52 @@ public class PastPerformanceFragment extends Fragment implements View.OnClickLis
             case R.id.textView24:
                 v.setBackgroundResource(R.drawable.button_right_sided_round_corner);
                 break;
+        }
+    }
+    private class PerformanceAdapter extends BaseAdapter {
+
+        private List<ParseObject> list;
+
+        public PerformanceAdapter(List<ParseObject> list){
+            this.list = list;
+        }
+        @Override
+        public int getCount() {
+            return list.size();
+        }
+
+        @Override
+        public Object getItem(int position) {
+            return null;
+        }
+
+        @Override
+        public long getItemId(int position) {
+            return 0;
+        }
+
+        @Override
+        public View getView(int position, View convertView, ViewGroup parent) {
+            if(convertView == null)
+                convertView = getActivity().getLayoutInflater().inflate(R.layout.past_perfrorm_list_item, null);
+            ParseObject parseObject = list.get(position);
+            LinearLayout layout = (LinearLayout) convertView;
+            String stockId = parseObject.get("stockId").toString();
+            String bookingPrice = parseObject.get("bookingPrice").toString();
+            String buyPrice = parseObject.get("buyPrice").toString();
+            Date createdAt = parseObject.getCreatedAt();
+            Date updatedAt = parseObject.getUpdatedAt();
+            Float profit = new Float(bookingPrice).floatValue() - new Float(buyPrice).floatValue();
+            double profit_percentage = (profit.floatValue() * 100)/new Float(buyPrice).floatValue();
+            profit_percentage = truncate(profit_percentage, 2);
+            ((TextView) convertView.findViewById(R.id.title)).setText(stockId);
+            ((TextView) convertView.findViewById(R.id.exit_price)).setText(bookingPrice);
+            ((TextView) convertView.findViewById(R.id.entry_price)).setText(buyPrice);
+            ((TextView) convertView.findViewById(R.id.gain_price)).setText(profit.toString());
+            ((TextView) convertView.findViewById(R.id.gain_percentage)).setText(profit_percentage + "");
+            ((TextView) convertView.findViewById(R.id.created_date)).setText(createdAt.toString());
+            ((TextView) convertView.findViewById(R.id.updated_date)).setText(updatedAt.toString());
+            return convertView;
         }
     }
 
