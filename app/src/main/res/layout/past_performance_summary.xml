@@ -25,11 +25,12 @@
             android:textSize="18sp"/>
     </LinearLayout>
     <LinearLayout
+        android:id="@+id/layout2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" android:orientation="vertical" android:layout_below="@id/layout1">
-            <include layout="@layout/past_performance_summary_element" android:layout_width="match_parent" android:layout_height="wrap_content"/>
-            <include layout="@layout/past_performance_summary_element" android:layout_width="match_parent" android:layout_height="wrap_content"/>
-            <include layout="@layout/past_performance_summary_element" android:layout_width="match_parent" android:layout_height="wrap_content"/>
-            <include layout="@layout/past_performance_summary_element" android:layout_width="match_parent" android:layout_height="wrap_content"/>
+            <include android:id="@+id/profitable_calls_layout" layout="@layout/past_performance_summary_element" android:layout_width="match_parent" android:layout_height="wrap_content"/>
+            <include android:id="@+id/loss_calls_layout" layout="@layout/past_performance_summary_element" android:layout_width="match_parent" android:layout_height="wrap_content"/>
+            <include android:id="@+id/total_profit_booked_layout" layout="@layout/past_performance_summary_element" android:layout_width="match_parent" android:layout_height="wrap_content"/>
+            <include android:id="@+id/accuracy_layout" layout="@layout/past_performance_summary_element" android:layout_width="match_parent" android:layout_height="wrap_content"/>
     </LinearLayout>
 </RelativeLayout>

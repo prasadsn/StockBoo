@@ -7,6 +7,7 @@ import android.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -17,6 +18,9 @@ import com.parse.ParseObject;
 import com.parse.ParseQuery;
 import com.stockboo.R;
 import com.stockboo.network.StockBooRequestQueue;
+import com.stockboo.view.custom.StockBooBoldTextView;
+
+import org.w3c.dom.Text;
 
 import java.util.Date;
 import java.util.List;
@@ -41,6 +45,9 @@ public class PastPerformanceFragment extends Fragment implements View.OnClickLis
 
     private OnFragmentInteractionListener mListener;
 
+    private static final int[] PP_SUMMARY_ICONS = new int[]{R.drawable.profitablecalls, R.drawable.loss_calls, R.drawable.total_profitbooked, R.drawable.accuracy};
+
+    private static final String[] PP_SUMMARY_LABEL = new String[]{"Profitable calls", "Loss calls", "Total Profit Booked", "Accuracy"};
     /**
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
@@ -106,21 +113,51 @@ public class PastPerformanceFragment extends Fragment implements View.OnClickLis
                         String buyPrice = parseObject.get("buyPrice").toString();
                         Date createdAt = parseObject.getCreatedAt();
                         Date updatedAt = parseObject.getUpdatedAt();
-                        int profit = new Integer(bookingPrice).intValue() -  new Integer(buyPrice).intValue();
-                        if( profit > 0)
+                        int profit = new Integer(bookingPrice).intValue() - new Integer(buyPrice).intValue();
+                        if (profit > 0)
                             profitableCalls++;
                         else
                             lossCalls++;
-                        totalProfit = ( profit /  new Integer(buyPrice).intValue() ) * 100;
+                        totalProfit = (profit / new Integer(buyPrice).intValue()) * 100;
                         reqParamBuffer.append(scriptCode).append(",");
                     }
                     reqParamBuffer.substring(0, reqParamBuffer.length() - 2);
+                    initiPastPerformanceSummary(objects.size(), profitableCalls, lossCalls, );
                 } else {
                 }
 
             }
         });
 
+    }
+
+    private void initiPastPerformanceSummary(int total_calls_given, int profitable_calls, int loss_calls, double total_profit_booked, double accuracy){
+        LinearLayout layout4 = (LinearLayout) getActivity().findViewById(R.id.layout1);
+        ((StockBooBoldTextView) layout4.getChildAt(1)).setText(new Integer(total_calls_given));
+        LinearLayout layout = (LinearLayout) getActivity().findViewById(R.id.layout2);
+        for(int i = 0; i < layout.getChildCount(); i++){
+            LinearLayout layout1 = (LinearLayout) layout.getChildAt(i);
+            LinearLayout layout2 = (LinearLayout) layout1.getChildAt(0);
+            ImageView imageView = (ImageView) layout2.getChildAt(0);
+            imageView.setImageResource(PP_SUMMARY_ICONS[i]);
+            TextView textView = (TextView) layout2.getChildAt(1);
+            textView.setText(PP_SUMMARY_LABEL[i]);
+            TextView textView1 = (TextView) layout1.getChildAt(1);
+            switch (i){
+                case 0:
+                    textView1.setText(new Integer(profitable_calls));
+                    break;
+                case 1:
+                    textView1.setText(new Integer(loss_calls));
+                    break;
+                case 2:
+                    textView1.setText(new Double(total_profit_booked).toString());
+                    break;
+                case 3:
+                    textView1.setText(new Double(accuracy).toString());
+                    break;
+            }
+        }
     }
     // TODO: Rename method, update argument and hook method into UI event
     public void onButtonPressed(Uri uri) {
