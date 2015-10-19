@@ -95,6 +95,7 @@ public class PastPerformanceFragment extends Fragment implements View.OnClickLis
     private void getData(){
         ParseQuery<ParseObject> query = ParseQuery.getQuery("stock");
         query.include("Advisor");
+        query.whereLessThan("updatedAt", new java.sql.Date(System.currentTimeMillis() - 365 * 24 * 60 * 60 * 1000));
         query.whereEqualTo("status", new Integer(1));
         query.addDescendingOrder("createdAt");
         //ParseUser user = ParseUser.getCurrentUser();
@@ -106,23 +107,27 @@ public class PastPerformanceFragment extends Fragment implements View.OnClickLis
                     StringBuffer reqParamBuffer = new StringBuffer();
                     int profitableCalls = 0;
                     int lossCalls = 0;
+                    double accuracy;
                     double totalProfit = 0;
+                    int total_calls = objects.size();
                     for (ParseObject parseObject : objects) {
                         String scriptCode = parseObject.get("scriptCode").toString();
                         String bookingPrice = parseObject.get("bookingPrice").toString();
                         String buyPrice = parseObject.get("buyPrice").toString();
                         Date createdAt = parseObject.getCreatedAt();
                         Date updatedAt = parseObject.getUpdatedAt();
-                        int profit = new Integer(bookingPrice).intValue() - new Integer(buyPrice).intValue();
+                        Float profit = new Float(bookingPrice).floatValue() - new Float(buyPrice).floatValue();
                         if (profit > 0)
                             profitableCalls++;
                         else
                             lossCalls++;
-                        totalProfit = (profit / new Integer(buyPrice).intValue()) * 100;
+                        totalProfit += (profit / new Double(buyPrice).doubleValue()) * 100;
                         reqParamBuffer.append(scriptCode).append(",");
                     }
+                    accuracy = (profitableCalls * 100) / total_calls;
+
                     reqParamBuffer.substring(0, reqParamBuffer.length() - 2);
-                    initiPastPerformanceSummary(objects.size(), profitableCalls, lossCalls, );
+                    initiPastPerformanceSummary(total_calls, profitableCalls, lossCalls, truncate(totalProfit, 2), accuracy);
                 } else {
                 }
 
@@ -130,10 +135,20 @@ public class PastPerformanceFragment extends Fragment implements View.OnClickLis
         });
 
     }
+    double truncate(double number, int precision)
+    {
+        double prec = Math.pow(10, precision);
+        int integerPart = (int) number;
+        double fractionalPart = number - integerPart;
+        fractionalPart *= prec;
+        int fractPart = (int) fractionalPart;
+        fractionalPart = (double) (integerPart) + (double) (fractPart)/prec;
+        return fractionalPart;
+    }
 
     private void initiPastPerformanceSummary(int total_calls_given, int profitable_calls, int loss_calls, double total_profit_booked, double accuracy){
         LinearLayout layout4 = (LinearLayout) getActivity().findViewById(R.id.layout1);
-        ((StockBooBoldTextView) layout4.getChildAt(1)).setText(new Integer(total_calls_given));
+        ((StockBooBoldTextView) layout4.getChildAt(1)).setText(new Integer(total_calls_given).toString());
         LinearLayout layout = (LinearLayout) getActivity().findViewById(R.id.layout2);
         for(int i = 0; i < layout.getChildCount(); i++){
             LinearLayout layout1 = (LinearLayout) layout.getChildAt(i);
@@ -145,16 +160,16 @@ public class PastPerformanceFragment extends Fragment implements View.OnClickLis
             TextView textView1 = (TextView) layout1.getChildAt(1);
             switch (i){
                 case 0:
-                    textView1.setText(new Integer(profitable_calls));
+                    textView1.setText(new Integer(profitable_calls).toString());
                     break;
                 case 1:
-                    textView1.setText(new Integer(loss_calls));
+                    textView1.setText(new Integer(loss_calls).toString());
                     break;
                 case 2:
-                    textView1.setText(new Double(total_profit_booked).toString());
+                    textView1.setText(new Float(total_profit_booked).toString() + " %");
                     break;
                 case 3:
-                    textView1.setText(new Double(accuracy).toString());
+                    textView1.setText(new Float(accuracy).toString() + " %");
                     break;
             }
         }

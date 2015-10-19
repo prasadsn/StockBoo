@@ -14,7 +14,7 @@
             android:layout_gravity="center_vertical"
             android:text="Total calls given"
             android:layout_marginLeft="10dp"
-            android:textSize="18sp"/>
+            android:textSize="16sp"/>
         <com.stockboo.view.custom.StockBooBoldTextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -22,7 +22,7 @@
             android:layout_gravity="right|center_vertical"
             android:gravity="right"
             android:layout_marginRight="50dp"
-            android:textSize="18sp"/>
+            android:textSize="16sp"/>
     </LinearLayout>
     <LinearLayout
         android:id="@+id/layout2"
