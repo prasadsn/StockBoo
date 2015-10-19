@@ -9,7 +9,7 @@
                 android:angle="270.0"
                 android:color="#FFFFFF" />
             <stroke
-                android:width="2dp"
+                android:width="1dp"
                 android:color="@color/stockboo_color_light_blue" />
             <corners android:topRightRadius="8dp" android:bottomRightRadius="8dp"/>
         </shape>

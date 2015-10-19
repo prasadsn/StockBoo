@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/layout1"
+        android:background="@drawable/stock_headline">
+        <com.stockboo.view.custom.StockBooBoldTextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:text="Total calls given"
+            android:layout_marginLeft="10dp"
+            android:textSize="18sp"/>
+        <com.stockboo.view.custom.StockBooBoldTextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="14"
+            android:layout_gravity="right|center_vertical"
+            android:gravity="right"
+            android:layout_marginRight="50dp"
+            android:textSize="18sp"/>
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" android:orientation="vertical" android:layout_below="@id/layout1">
+            <include layout="@layout/past_performance_summary_element" android:layout_width="match_parent" android:layout_height="wrap_content"/>
+            <include layout="@layout/past_performance_summary_element" android:layout_width="match_parent" android:layout_height="wrap_content"/>
+            <include layout="@layout/past_performance_summary_element" android:layout_width="match_parent" android:layout_height="wrap_content"/>
+            <include layout="@layout/past_performance_summary_element" android:layout_width="match_parent" android:layout_height="wrap_content"/>
+    </LinearLayout>
+</RelativeLayout>

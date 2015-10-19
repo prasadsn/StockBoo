@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal" android:layout_width="match_parent" android:layout_gravity="center" android:gravity="center_horizontal"
+    android:layout_height="match_parent" android:id="@+id/past_performance_butons">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="last month"
+        android:padding="5dp"
+        android:textColor="@android:color/white"
+        android:background="@drawable/button_left_sided_round_corner"
+        android:id="@+id/textView21" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="3 months"
+        android:padding="5dp"
+        android:textColor="@color/stockboo_color_light_blue"
+        android:background="@drawable/button_sqare_white_fill"
+        android:id="@+id/textView22" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="6 months"
+        android:padding="5dp"
+        android:textColor="@color/stockboo_color_light_blue"
+        android:background="@drawable/button_sqare_white_fill"
+        android:id="@+id/textView23" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="1 year"
+        android:padding="5dp"
+        android:textColor="@color/stockboo_color_light_blue"
+        android:background="@drawable/button_right_sided_round_corner_white_fill"
+        android:id="@+id/textView24" />
+</LinearLayout>

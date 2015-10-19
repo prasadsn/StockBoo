@@ -136,6 +136,12 @@ public class MainActivity extends ActionBarActivity
                         .replace(R.id.container, CurrentSuggestionFragment.newInstance("", ""))
                         .commit();
                 break;
+            case 2:
+                mCurrentFragment = FRAGMENTS.PAST_PERFORMANCE;
+                getFragmentManager().beginTransaction()
+                        .replace(R.id.container, PastPerformanceFragment.newInstance("", ""))
+                        .commit();
+                break;
             case 3:
                 //mMenu.findItem(R.id.action_search).setVisible(false);
                 //mMenu.findItem(R.id.action_add).setVisible(true);
