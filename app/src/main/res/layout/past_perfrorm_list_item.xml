@@ -7,7 +7,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/title"
-        android:textSize="18sp"
+        android:textSize="14sp"
+        android:layout_marginTop="15dp"
+        android:textColor="@android:color/black"
         android:text="Title" />
     <View
         android:layout_width="match_parent"
@@ -15,7 +17,9 @@
         android:background="@android:color/darker_gray" />
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_marginRight="15dp"
+        android:layout_marginLeft="15dp">
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content" android:layout_weight="1"
@@ -25,7 +29,9 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="left"
                 android:gravity="left"
-                android:text="Entry price"
+                android:textSize="12sp"
+                android:textColor="@android:color/black"
+                android:text="Entry Price"
                 android:layout_weight="1"/>
             <com.stockboo.view.custom.StockBooTextView
                 android:layout_width="match_parent"
@@ -33,6 +39,8 @@
                 android:layout_gravity="right"
                 android:gravity="right"
                 android:id="@+id/entry_price"
+                android:textColor="@android:color/black"
+                android:textSize="12sp"
                 android:text="995"
                 android:layout_weight="1"/>
         </LinearLayout>
@@ -44,7 +52,9 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="left"
                 android:gravity="left"
-                android:text="Exit price"
+                android:textColor="@android:color/black"
+                android:text="Exit Price"
+                android:textSize="12sp"
                 android:layout_weight="1"/>
             <com.stockboo.view.custom.StockBooTextView
                 android:layout_width="match_parent"
@@ -52,7 +62,9 @@
                 android:layout_gravity="right"
                 android:gravity="right"
                 android:id="@+id/exit_price"
+                android:textColor="@android:color/black"
                 android:text="995"
+                android:textSize="12sp"
                 android:layout_weight="1"/>
 
         </LinearLayout>
@@ -60,12 +72,17 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="2dp"
+        android:layout_marginBottom="2dp"
+        android:layout_marginRight="15dp"
+        android:layout_marginLeft="15dp"
         android:orientation="horizontal">
         <com.stockboo.view.custom.StockBooTextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="10 May"
+            android:textSize="12sp"
             android:id="@+id/created_date"
             android:layout_gravity="center"
             android:gravity="center"
@@ -76,6 +93,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="10 May"
+            android:textSize="12sp"
             android:id="@+id/updated_date"
             android:layout_gravity="center"
             android:gravity="center"
@@ -84,7 +102,10 @@
     </LinearLayout>
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_marginRight="15dp"
+        android:layout_marginLeft="15dp"
+        android:layout_marginBottom="10dp">
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content" android:layout_weight="1"
@@ -94,7 +115,9 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="left"
                 android:gravity="left"
-                android:text="Entry price"
+                android:textColor="@android:color/black"
+                android:text="Gain Price"
+                android:textSize="12sp"
                 android:layout_weight="1"/>
             <com.stockboo.view.custom.StockBooTextView
                 android:layout_width="match_parent"
@@ -102,6 +125,8 @@
                 android:layout_gravity="right"
                 android:gravity="right"
                 android:id="@+id/gain_price"
+                android:textColor="@android:color/black"
+                android:textSize="12sp"
                 android:text="995"
                 android:layout_weight="1"/>
         </LinearLayout>
@@ -113,7 +138,9 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="left"
                 android:gravity="left"
-                android:text="Exit price"
+                android:text="Gain of"
+                android:textSize="12sp"
+                android:textColor="@android:color/black"
                 android:layout_weight="1"/>
             <com.stockboo.view.custom.StockBooTextView
                 android:layout_width="match_parent"
@@ -122,6 +149,8 @@
                 android:gravity="right"
                 android:id="@+id/gain_percentage"
                 android:text="995"
+                android:textSize="12sp"
+                android:textColor="@android:color/black"
                 android:layout_weight="1"/>
 
         </LinearLayout>

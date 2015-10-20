@@ -20,6 +20,10 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@android:id/list"
+        android:layout_marginRight="15dp"
+        android:layout_marginLeft="15dp"
+        android:divider="@color/stockboo_color_light_blue"
+        android:dividerHeight="2dp"
         android:layout_gravity="center_horizontal" />
 
 </LinearLayout>

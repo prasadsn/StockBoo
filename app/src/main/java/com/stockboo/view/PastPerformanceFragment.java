@@ -24,6 +24,8 @@ import com.stockboo.view.custom.StockBooBoldTextView;
 
 import org.w3c.dom.Text;
 
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -101,9 +103,9 @@ public class PastPerformanceFragment extends Fragment implements View.OnClickLis
     private void getData(){
         ParseQuery<ParseObject> query = ParseQuery.getQuery("stock");
         query.include("Advisor");
-        query.whereLessThan("updatedAt", new java.sql.Date(System.currentTimeMillis() - 365 * 24 * 60 * 60 * 1000));
+        query.whereLessThan("updatedAt", new Date(System.currentTimeMillis() - 365 * 24 * 60 * 60 * 1000));
         query.whereEqualTo("status", new Integer(1));
-        query.addDescendingOrder("createdAt");
+        query.addDescendingOrder("updatedAt");
         //ParseUser user = ParseUser.getCurrentUser();
         //query.whereEqualTo("owners", user);
         query.findInBackground(new FindCallback<ParseObject>() {
@@ -116,12 +118,17 @@ public class PastPerformanceFragment extends Fragment implements View.OnClickLis
                     double accuracy;
                     double totalProfit = 0;
                     int total_calls = objects.size();
+                    List<ParseObject> localList = new ArrayList<ParseObject>();
                     for (ParseObject parseObject : objects) {
                         String scriptCode = parseObject.get("scriptCode").toString();
                         String bookingPrice = parseObject.get("bookingPrice").toString();
                         String buyPrice = parseObject.get("buyPrice").toString();
                         Date createdAt = parseObject.getCreatedAt();
                         Date updatedAt = parseObject.getUpdatedAt();
+                        long updatedTime = updatedAt.getTime();
+                        long currentTime = System.currentTimeMillis();
+                        if((System.currentTimeMillis() - updatedAt.getTime()) > (365 * 24 * 60 * 60 * 1000))
+                            continue;
                         Float profit = new Float(bookingPrice).floatValue() - new Float(buyPrice).floatValue();
                         if (profit > 0)
                             profitableCalls++;
@@ -129,12 +136,13 @@ public class PastPerformanceFragment extends Fragment implements View.OnClickLis
                             lossCalls++;
                         totalProfit += (profit / new Double(buyPrice).doubleValue()) * 100;
                         reqParamBuffer.append(scriptCode).append(",");
+                        localList.add(parseObject);
                     }
-                    accuracy = (profitableCalls * 100) / total_calls;
+                    accuracy = (profitableCalls * 100) / (double)total_calls;
                     accuracy = truncate(accuracy, 2);
                     reqParamBuffer.substring(0, reqParamBuffer.length() - 2);
                     initiPastPerformanceSummary(total_calls, profitableCalls, lossCalls, truncate(totalProfit, 2), accuracy);
-                    PerformanceAdapter adapter = new PerformanceAdapter(objects);
+                    PerformanceAdapter adapter = new PerformanceAdapter(localList);
                     mListView.setAdapter(adapter);
                 } else {
                 }
@@ -270,6 +278,9 @@ public class PastPerformanceFragment extends Fragment implements View.OnClickLis
             String buyPrice = parseObject.get("buyPrice").toString();
             Date createdAt = parseObject.getCreatedAt();
             Date updatedAt = parseObject.getUpdatedAt();
+
+            SimpleDateFormat format = new SimpleDateFormat("dd MMMM");
+
             Float profit = new Float(bookingPrice).floatValue() - new Float(buyPrice).floatValue();
             double profit_percentage = (profit.floatValue() * 100)/new Float(buyPrice).floatValue();
             profit_percentage = truncate(profit_percentage, 2);
@@ -277,9 +288,9 @@ public class PastPerformanceFragment extends Fragment implements View.OnClickLis
             ((TextView) convertView.findViewById(R.id.exit_price)).setText(bookingPrice);
             ((TextView) convertView.findViewById(R.id.entry_price)).setText(buyPrice);
             ((TextView) convertView.findViewById(R.id.gain_price)).setText(profit.toString());
-            ((TextView) convertView.findViewById(R.id.gain_percentage)).setText(profit_percentage + "");
-            ((TextView) convertView.findViewById(R.id.created_date)).setText(createdAt.toString());
-            ((TextView) convertView.findViewById(R.id.updated_date)).setText(updatedAt.toString());
+            ((TextView) convertView.findViewById(R.id.gain_percentage)).setText(profit_percentage + " %");
+            ((TextView) convertView.findViewById(R.id.created_date)).setText(format.format(createdAt));
+            ((TextView) convertView.findViewById(R.id.updated_date)).setText(format.format(updatedAt));
             return convertView;
         }
     }
