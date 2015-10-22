@@ -98,7 +98,13 @@ public class StockDetailFragment extends Fragment implements View.OnClickListene
         View view = inflater.inflate(R.layout.fragment_stock_detail, container, false);
         RelativeLayout layout = (RelativeLayout) view.findViewById(R.id.stock_detail);
         ((TextView) layout.findViewById(R.id.tvCpValue)).setText(mList.get(0));
-        ((TextView) layout.findViewById(R.id.tvc_c_fix_value)).setText(mList.get(1));
+        String tvc_c_fix_value = mList.get(1);
+        if(tvc_c_fix_value.trim().startsWith("-")){
+            ((TextView) layout.findViewById(R.id.tvc_c_fix_value)).setTextColor(Color.RED);
+        }
+        else
+            ((TextView) layout.findViewById(R.id.tvc_c_fix_value)).setTextColor(Color.GREEN);
+        ((TextView) layout.findViewById(R.id.tvc_c_fix_value)).setText(tvc_c_fix_value);
         ((TextView) layout.findViewById(R.id.textView6)).setText(mList.get(2));
         ((TextView) layout.findViewById(R.id.tvUpdatedAt)).setText(mList.get(3));
         ((TextView) layout.findViewById(R.id.tvrBuyPrice)).setText(mList.get(4));

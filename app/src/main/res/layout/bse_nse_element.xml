@@ -30,6 +30,6 @@
         android:layout_weight="5"
         android:gravity="right"
         android:layout_marginRight="20dp"
-        android:textColor="@android:color/holo_red_light"
+        android:textColor="@android:color/holo_green_light"
         android:id="@+id/textView4" />
 </LinearLayout>

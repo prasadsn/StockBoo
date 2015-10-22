@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.Fragment;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.os.AsyncTask;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBar;
@@ -422,10 +423,20 @@ public class MainActivity extends ActionBarActivity
                     JSONArray array = new JSONArray(response);
                     JSONObject bseJsonObj = array.getJSONObject(0);
                     LinearLayout layout = (LinearLayout) getActivity().findViewById(R.id.bse_layout);
+                    double cp = new Double(bseJsonObj.getString("cp")).doubleValue();
+                    if(cp<0){
+                        ((TextView) layout.getChildAt(1)).setTextColor(Color.RED);
+                        ((TextView) layout.getChildAt(2)).setTextColor(Color.RED);
+                    }
                     ((TextView) layout.getChildAt(1)).setText(bseJsonObj.getString("l_fix"));
                     ((TextView) layout.getChildAt(2)).setText(bseJsonObj.getString("c") + " (" + bseJsonObj.getString("cp") + "%)");
                     JSONObject nseJsonObj = array.getJSONObject(1);
                     layout = (LinearLayout) getActivity().findViewById(R.id.nse_layout);
+                    cp = new Double(nseJsonObj.getString("cp")).doubleValue();
+                    if(cp<0){
+                        ((TextView) layout.getChildAt(1)).setTextColor(Color.RED);
+                        ((TextView) layout.getChildAt(2)).setTextColor(Color.RED);
+                    }
                     ((TextView) layout.getChildAt(0)).setText("NSE");
                     ((TextView) layout.getChildAt(1)).setText(nseJsonObj.getString("l_fix"));
                     ((TextView) layout.getChildAt(2)).setText(nseJsonObj.getString("c") + " (" + nseJsonObj.getString("cp") + "%)");

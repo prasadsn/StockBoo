@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.database.DataSetObserver;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.app.Fragment;
 import android.provider.Settings;
@@ -256,7 +257,13 @@ public class CurrentSuggestionFragment extends Fragment implements AbsListView.O
                 layout = (RelativeLayout) getActivity().getLayoutInflater().inflate(R.layout.current_suggestion_list_item, null);
             ArrayList<String> list = (ArrayList<String>) getItem(position);
             ((TextView) layout.findViewById(R.id.tvCpValue)).setText(list.get(0));
-            ((TextView) layout.findViewById(R.id.tvc_c_fix_value)).setText(list.get(1));
+            String tvc_c_fix_value = list.get(1);
+            if(tvc_c_fix_value.trim().startsWith("-")){
+                ((TextView) layout.findViewById(R.id.tvc_c_fix_value)).setTextColor(Color.RED);
+            }
+            else
+                ((TextView) layout.findViewById(R.id.tvc_c_fix_value)).setTextColor(Color.GREEN);
+            ((TextView) layout.findViewById(R.id.tvc_c_fix_value)).setText(tvc_c_fix_value);
             ((TextView) layout.findViewById(R.id.textView6)).setText(list.get(2));
             ((TextView) layout.findViewById(R.id.tvUpdatedAt)).setText(list.get(3));
             ((TextView) layout.findViewById(R.id.tvrBuyPrice)).setText(list.get(4));
