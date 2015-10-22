@@ -76,11 +76,12 @@ public class MainActivity extends ActionBarActivity
         mNavigationDrawerFragment = (NavigationDrawerFragment)
                 getSupportFragmentManager().findFragmentById(R.id.navigation_drawer);
         mTitle = getTitle();
-
+        restoreActionBar();
         // Set up the drawer.
         mNavigationDrawerFragment.setUp(
                 R.id.navigation_drawer,
                 (DrawerLayout) findViewById(R.id.drawer_layout));
+
         mInterstitialAd = new InterstitialAd(this);
         mInterstitialAd.setAdUnitId("ca-app-pub-9023139403489240/8056856614");
 
@@ -176,6 +177,14 @@ public class MainActivity extends ActionBarActivity
                         .replace(R.id.container, MarketNewsFragment.newInstance("", ""))
                         .commit();
                 break;
+            case 7:
+                mCurrentFragment = FRAGMENTS.ABOUT_US;
+                invalidateOptionsMenu();
+                getFragmentManager().beginTransaction()
+                        .replace(R.id.container, AboutUsFragment.newInstance("", ""))
+                        .commit();
+                break;
+
         }
     }
 
@@ -198,6 +207,7 @@ public class MainActivity extends ActionBarActivity
         ActionBar actionBar = getSupportActionBar();
         //actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
         actionBar.setDisplayShowTitleEnabled(false);
+
         //actionBar.setTitle(mTitle);
         View view = getLayoutInflater().inflate(R.layout.stockboo_action_bar, null);
         actionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);

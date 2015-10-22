@@ -1,6 +1,8 @@
 package com.stockboo.view;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.app.Fragment;
@@ -26,6 +28,7 @@ import org.w3c.dom.Text;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -47,6 +50,14 @@ public class PastPerformanceFragment extends Fragment implements View.OnClickLis
     private String mParam1;
     private String mParam2;
 
+    private List<ParseObject> mLastMonthList = new ArrayList<ParseObject>();
+    private List<ParseObject> m3MonthList = new ArrayList<ParseObject>();
+    private List<ParseObject> m6MonthList = new ArrayList<ParseObject>();
+    private List<ParseObject> m1YearList = new ArrayList<ParseObject>();
+
+    private PerformanceAdapter mAdapter;
+
+    private ProgressDialog mProgressDialog;
     private OnFragmentInteractionListener mListener;
 
     private static final int[] PP_SUMMARY_ICONS = new int[]{R.drawable.profitablecalls, R.drawable.loss_calls, R.drawable.total_profitbooked, R.drawable.accuracy};
@@ -91,19 +102,30 @@ public class PastPerformanceFragment extends Fragment implements View.OnClickLis
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_past_performance, container, false);
         mListView = (ListView) view.findViewById(android.R.id.list);
+        LinearLayout layout = (LinearLayout) view.findViewById(R.id.past_performance_butons);
+        for(int i = 0; i<layout.getChildCount(); i++)
+            layout.getChildAt(i).setOnClickListener(this);
         return view;
     }
 
     @Override
     public void onStart() {
         super.onStart();
+        mProgressDialog = new ProgressDialog(getActivity(), ProgressDialog.STYLE_SPINNER);
+        mProgressDialog.setCanceledOnTouchOutside(false);
+        mProgressDialog.setCancelable(false);
+        mProgressDialog.setIndeterminate(true);
+        mProgressDialog.show();
         getData();
+        mProgressDialog.dismiss();
     }
 
     private void getData(){
         ParseQuery<ParseObject> query = ParseQuery.getQuery("stock");
         query.include("Advisor");
-        query.whereLessThan("updatedAt", new Date(System.currentTimeMillis() - 365 * 24 * 60 * 60 * 1000));
+        Calendar cal = Calendar.getInstance();
+        cal.roll(Calendar.YEAR, -1);
+        query.whereGreaterThan("updatedAt", new Date(cal.getTimeInMillis()));
         query.whereEqualTo("status", new Integer(1));
         query.addDescendingOrder("updatedAt");
         //ParseUser user = ParseUser.getCurrentUser();
@@ -112,38 +134,32 @@ public class PastPerformanceFragment extends Fragment implements View.OnClickLis
             @Override
             public void done(List<ParseObject> objects, com.parse.ParseException e) {
                 if (e == null) {
-                    StringBuffer reqParamBuffer = new StringBuffer();
-                    int profitableCalls = 0;
-                    int lossCalls = 0;
-                    double accuracy;
-                    double totalProfit = 0;
-                    int total_calls = objects.size();
-                    List<ParseObject> localList = new ArrayList<ParseObject>();
+                   List<ParseObject> localList = new ArrayList<ParseObject>();
                     for (ParseObject parseObject : objects) {
-                        String scriptCode = parseObject.get("scriptCode").toString();
-                        String bookingPrice = parseObject.get("bookingPrice").toString();
-                        String buyPrice = parseObject.get("buyPrice").toString();
-                        Date createdAt = parseObject.getCreatedAt();
                         Date updatedAt = parseObject.getUpdatedAt();
                         long updatedTime = updatedAt.getTime();
-                        long currentTime = System.currentTimeMillis();
-                        if((System.currentTimeMillis() - updatedAt.getTime()) > (365 * 24 * 60 * 60 * 1000))
-                            continue;
-                        Float profit = new Float(bookingPrice).floatValue() - new Float(buyPrice).floatValue();
-                        if (profit > 0)
-                            profitableCalls++;
-                        else
-                            lossCalls++;
-                        totalProfit += (profit / new Double(buyPrice).doubleValue()) * 100;
-                        reqParamBuffer.append(scriptCode).append(",");
+
+                        Calendar cal = Calendar.getInstance();
+                        Calendar cal1 = Calendar.getInstance();
+                        cal1.setTimeInMillis(updatedTime);
+                        cal.roll(Calendar.MONTH, -1);
+                        int equal = cal.compareTo(cal1);
+                        if(equal == -1)
+                            mLastMonthList.add(parseObject);
+                        cal.roll(Calendar.MONTH, -2);
+                        equal = cal.compareTo(cal1);
+                        if(equal == -1)
+                            m3MonthList.add(parseObject);
+                        cal.roll(Calendar.MONTH, -3);
+                        equal = cal.compareTo(cal1);
+                        if(equal == -1)
+                            m6MonthList.add(parseObject);
+                        m1YearList.add(parseObject);
                         localList.add(parseObject);
                     }
-                    accuracy = (profitableCalls * 100) / (double)total_calls;
-                    accuracy = truncate(accuracy, 2);
-                    reqParamBuffer.substring(0, reqParamBuffer.length() - 2);
-                    initiPastPerformanceSummary(total_calls, profitableCalls, lossCalls, truncate(totalProfit, 2), accuracy);
-                    PerformanceAdapter adapter = new PerformanceAdapter(localList);
-                    mListView.setAdapter(adapter);
+                    initiPastPerformanceSummary(mLastMonthList);
+                    mAdapter = new PerformanceAdapter(mLastMonthList);
+                    mListView.setAdapter(mAdapter);
                 } else {
                 }
 
@@ -162,9 +178,32 @@ public class PastPerformanceFragment extends Fragment implements View.OnClickLis
         return fractionalPart;
     }
 
-    private void initiPastPerformanceSummary(int total_calls_given, int profitable_calls, int loss_calls, double total_profit_booked, double accuracy){
+    private void initiPastPerformanceSummary(List<ParseObject> list){
+        int profitableCalls = 0;
+        int lossCalls = 0;
+        double accuracy;
+        double totalProfit = 0;
+        int total_calls = list.size();
+        for (ParseObject parseObject : list) {
+            String scriptCode = parseObject.get("scriptCode").toString();
+            String bookingPrice = parseObject.get("bookingPrice").toString();
+            String buyPrice = parseObject.get("buyPrice").toString();
+            Date updatedAt = parseObject.getUpdatedAt();
+            long updatedTime = updatedAt.getTime();
+            long currentTime = System.currentTimeMillis();
+
+            Float profit = new Float(bookingPrice).floatValue() - new Float(buyPrice).floatValue();
+            if (profit > 0)
+                profitableCalls++;
+            else
+                lossCalls++;
+            totalProfit += (profit / new Double(buyPrice).doubleValue()) * 100;
+            totalProfit = truncate(totalProfit, 2);
+        }
+        accuracy = (profitableCalls * 100) / (double)total_calls;
+        accuracy = truncate(accuracy, 2);
         LinearLayout layout4 = (LinearLayout) getActivity().findViewById(R.id.layout1);
-        ((StockBooBoldTextView) layout4.getChildAt(1)).setText(new Integer(total_calls_given).toString());
+        ((StockBooBoldTextView) layout4.getChildAt(1)).setText(new Integer(total_calls).toString());
         LinearLayout layout = (LinearLayout) getActivity().findViewById(R.id.layout2);
         for(int i = 0; i < layout.getChildCount(); i++){
             LinearLayout layout1 = (LinearLayout) layout.getChildAt(i);
@@ -176,16 +215,16 @@ public class PastPerformanceFragment extends Fragment implements View.OnClickLis
             TextView textView1 = (TextView) layout1.getChildAt(1);
             switch (i){
                 case 0:
-                    textView1.setText(new Integer(profitable_calls).toString());
+                    textView1.setText(new Integer(profitableCalls).toString());
                     break;
                 case 1:
-                    textView1.setText(new Integer(loss_calls).toString());
+                    textView1.setText(new Integer(lossCalls).toString());
                     break;
                 case 2:
-                    textView1.setText(new Float(total_profit_booked).toString() + " %");
+                    textView1.setText(new Double(totalProfit).toString() + " %");
                     break;
                 case 3:
-                    textView1.setText(new Float(accuracy).toString() + " %");
+                    textView1.setText(new Double(accuracy).toString() + " %");
                     break;
             }
         }
@@ -221,35 +260,54 @@ public class PastPerformanceFragment extends Fragment implements View.OnClickLis
             ((TextView) layout.getChildAt(i)).setTextColor(getResources().getColor(R.color.stockboo_color_light_blue));
             switch (i){
                 case 0:
-                    v.setBackgroundResource(R.drawable.button_left_sided_round_corner_white_fill);
+                    ((TextView) layout.getChildAt(i)).setBackgroundResource(R.drawable.button_left_sided_round_corner_white_fill);
                     break;
                 case 1:
                 case 2:
-                    v.setBackgroundResource(R.drawable.button_sqare_white_fill);
+                    ((TextView) layout.getChildAt(i)).setBackgroundResource(R.drawable.button_sqare_white_fill);
                     break;
                 case 3:
-                    v.setBackgroundResource(R.drawable.button_right_sided_round_corner_white_fill);
+                    ((TextView) layout.getChildAt(i)).setBackgroundResource(R.drawable.button_right_sided_round_corner_white_fill);
                     break;
             }
         }
         switch (v.getId()){
             case R.id.textView21:
+                ((TextView)v).setTextColor(Color.WHITE);
                 v.setBackgroundResource(R.drawable.button_left_sided_round_corner);
+                initiPastPerformanceSummary(mLastMonthList);
+                mAdapter.setData(mLastMonthList);
                 break;
             case R.id.textView22:
+                mAdapter.setData(m3MonthList);
+                ((TextView)v).setTextColor(Color.WHITE);
+                initiPastPerformanceSummary(m3MonthList);
+                v.setBackgroundResource(R.drawable.button_square);
+                break;
             case R.id.textView23:
+                initiPastPerformanceSummary(m6MonthList);
+                mAdapter.setData(m6MonthList);
+                ((TextView)v).setTextColor(Color.WHITE);
                 v.setBackgroundResource(R.drawable.button_square);
                 break;
             case R.id.textView24:
+                initiPastPerformanceSummary(m1YearList);
+                mAdapter.setData(m1YearList);
+                ((TextView)v).setTextColor(Color.WHITE);
                 v.setBackgroundResource(R.drawable.button_right_sided_round_corner);
                 break;
         }
+        mAdapter.notifyDataSetChanged();
     }
     private class PerformanceAdapter extends BaseAdapter {
 
         private List<ParseObject> list;
 
         public PerformanceAdapter(List<ParseObject> list){
+            this.list = list;
+        }
+
+        public void setData(List<ParseObject> list){
             this.list = list;
         }
         @Override

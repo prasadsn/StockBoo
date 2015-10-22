@@ -19,8 +19,7 @@
         <com.stockboo.view.custom.StockBooTextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:text="Profitable calls"/>
+            android:layout_gravity="center_vertical" />
     </LinearLayout>
     <com.stockboo.view.custom.StockBooBoldTextView
         android:layout_width="match_parent"
@@ -28,7 +27,6 @@
         android:layout_gravity="center"
         android:layout_weight="2"
         android:gravity="center"
-        android:text="13"
         android:background="@drawable/pp_back_right"
         android:textColor="@android:color/white"/>
 
