@@ -305,6 +305,7 @@ public class MainActivity extends ActionBarActivity
             LinearLayout marketNewsLayout = (LinearLayout) getActivity().findViewById(R.id.heading_market_news);
             ((ImageView) marketNewsLayout.getChildAt(0)).setImageResource(R.drawable.newsicon);
             ((TextView) marketNewsLayout.getChildAt(1)).setText(R.string.heading_market_news);
+            updateStockMessages();
             DashboardResponseListener listener = new DashboardResponseListener();
             StringRequest bseNseRequest = new StringRequest(StringRequest.Method.GET, "http://finance.google.com/finance/info?client=ig&q=INDEXBOM:SENSEX,NSE:NIFTY", listener, listener);
             //StringRequest marketNewsRequest = new StringRequest(StringRequest.Method.GET, "http://www.moneycontrol.com/rss/MCtopnews.xml", listener, listener);
@@ -374,6 +375,29 @@ public class MainActivity extends ActionBarActivity
                         }
                     });
                 }
+            }
+        }
+
+        private void updateStockMessages(){
+            SharedPreferences preferences = getActivity().getSharedPreferences("stock_messages", MODE_PRIVATE);
+            String msgs = preferences.getString("stock_messages", null);
+            if(msgs == null)
+                return;
+            try {
+                LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+                params.setMargins(20, 10, 10, 10);
+                LinearLayout stockMsgsLayout = (LinearLayout) getActivity().findViewById(R.id.layout_stock_msgs);
+                JSONArray array = new JSONArray(msgs);
+            for(int i = 0; i < array.length(); i = i++) {
+                JSONObject obj = array.getJSONObject(i);
+                final int linkPosition = i + 1;
+                LinearLayout layout = (LinearLayout) getActivity().getLayoutInflater().inflate(R.layout.headlines_tv, null);
+                TextView tv = (TextView) layout.getChildAt(0);
+                tv.setText(obj.getString("content"));
+                stockMsgsLayout.addView(layout, params);
+            }
+            } catch (JSONException e) {
+                e.printStackTrace();
             }
         }
 
