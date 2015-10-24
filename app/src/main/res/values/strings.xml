@@ -48,7 +48,7 @@
     <string name="label_recommended_price">Recommend Price:</string>
     <string name="label_target_price">Target Price:</string>
     <string name="heading_current_suggestions">Current Suggestions</string>
-    <string name="title_activity_stock_detail">StockDetailActivity</string>
+    <string name="title_activity_stock_detail">Current Suggestions</string>
     <string name="menu_title_add">Add Stock</string>
 
     <string name="title_activity_organization_search">OrganizationSearchActivity</string>

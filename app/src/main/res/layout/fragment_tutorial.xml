@@ -23,14 +23,7 @@
     <android.support.v4.view.ViewPager
         android:id="@+id/pager"
         android:layout_width="match_parent"
-        android:layout_height="600dp"
-        android:layout_centerInParent="true"
-        />
-    <com.viewpagerindicator.CirclePageIndicator
-        android:id="@+id/indicator"
-        android:padding="10dip"
-        android:layout_height="wrap_content"
-        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:layout_centerInParent="true"
         />
     <Button
@@ -43,6 +36,17 @@
         android:textSize="14dp"
         android:textColor="@android:color/white"
         android:background="@xml/customborder"
-        android:layout_marginBottom="90dp"
+        android:paddingLeft="20dp"
+        android:paddingRight="20dp"
+        android:layout_marginBottom="30dp"
         android:layout_alignParentBottom="true" />
+    <com.viewpagerindicator.CirclePageIndicator
+        android:id="@+id/indicator"
+        android:padding="10dip"
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:layout_centerHorizontal="true"
+        android:layout_above="@id/skip_button"
+        android:layout_marginBottom="30dp"
+        />
 </RelativeLayout>

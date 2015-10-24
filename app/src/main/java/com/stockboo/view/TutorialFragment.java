@@ -57,7 +57,7 @@ public class TutorialFragment extends Fragment {
 
     private class DemoAdapter extends PagerAdapter{
 
-        private int[] icons = new int[]{R.drawable.ic_launcher, R.drawable.demo_dashboard, R.drawable.demo_recommenations, R.drawable.demo_past_recommendations, R.drawable.demo_watchlist, R.drawable.demo_portfolio, R.drawable.demo_market_news };
+        private int[] icons = new int[]{R.drawable.ic_launcher, R.drawable.demo_dashboard, R.drawable.demo_recommenations, R.drawable.demo_recommendations, R.drawable.demo_watchlist, R.drawable.demo_portfolio, R.drawable.demo_market_news };
         private int[] titles = new int[]{R.string.title_demo_1, R.string.title_demo_2, R.string.title_demo_3, R.string.title_demo_4, R.string.title_demo_5, R.string.title_demo_6, R.string.title_demo_7 };
         private int[] messages = new int[]{R.string.message_demo_1, R.string.message_demo_2, R.string.message_demo_3, R.string.message_demo_4, R.string.message_demo_5, R.string.message_demo_6, R.string.message_demo_7 };
         @Override

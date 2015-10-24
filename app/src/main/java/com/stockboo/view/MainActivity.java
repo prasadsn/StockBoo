@@ -29,6 +29,7 @@ import com.google.android.gms.ads.InterstitialAd;
 import com.stockboo.R;
 import com.stockboo.model.BrokerageRecos;
 import com.stockboo.network.StockBooRequestQueue;
+import com.stockboo.scheduler.SampleAlarmReceiver;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -78,6 +79,7 @@ public class MainActivity extends ActionBarActivity
                 getSupportFragmentManager().findFragmentById(R.id.navigation_drawer);
         mTitle = getTitle();
         restoreActionBar();
+        new SampleAlarmReceiver().setAlarm(this);
         // Set up the drawer.
         mNavigationDrawerFragment.setUp(
                 R.id.navigation_drawer,

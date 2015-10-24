@@ -67,6 +67,8 @@ public class StockDetailFragment extends Fragment implements View.OnClickListene
     private ListView mListView;
     private NewsAdapter newsAdapter;
     private NewsAdapter messageAdapter;
+    private Button mNewsButton;
+    private Button mMesgButton;
 
     /**
      * Use this factory method to create a new instance of
@@ -114,21 +116,23 @@ public class StockDetailFragment extends Fragment implements View.OnClickListene
         ((TextView) layout.findViewById(R.id.tvrBuyPrice)).setText(mList.get(4));
         ((TextView) layout.findViewById(R.id.tvTargetPrice)).setText(mList.get(5));
         mListView = (ListView) view.findViewById(R.id.listView2);
+        ArrayList<String> msgList = getMessages();
+        messageAdapter = new NewsAdapter(msgList, null);
+        mListView.setAdapter(messageAdapter);
         String strUrl = "https://www.google.com/finance/company_news?q=" + mList.get(6) + "&output=json";
         Listener listener = new Listener();
         StringRequest bseNseRequest = new StringRequest(StringRequest.Method.GET, strUrl, listener, listener);
         StockBooRequestQueue.getInstance(getActivity()).getRequestQueue().add(bseNseRequest);
-        view.findViewById(R.id.button_messages).setOnClickListener(this);
-        view.findViewById(R.id.button_news).setOnClickListener(this);
+        mNewsButton = (Button) view.findViewById(R.id.button_news);
+        mMesgButton = (Button) view.findViewById(R.id.button_messages);
+        mNewsButton.setOnClickListener(this);
+        mMesgButton.setOnClickListener(this);
         return view;
     }
 
     @Override
     public void onStart() {
         super.onStart();
-        ArrayList<String> msgList = getMessages();
-        messageAdapter = new NewsAdapter(msgList, null);
-        mListView.setAdapter(messageAdapter);
     }
 
     // TODO: Rename method, update argument and hook method into UI event
@@ -161,21 +165,21 @@ public class StockDetailFragment extends Fragment implements View.OnClickListene
         switch (v.getId()){
             case R.id.button_messages:
                 Button msgButton = (Button) v;
-                msgButton.setBackgroundResource(R.drawable.button_left_sided_round_corner_white_fill);
-                msgButton.setTextColor(getResources().getColor(R.color.stockboo_color_light_blue));
+                msgButton.setBackgroundResource(R.drawable.button_left_sided_round_corner);
+                msgButton.setTextColor(Color.WHITE);
 
-                Button newsButton = (Button) getActivity().findViewById(R.id.button_news);
-                newsButton.setBackgroundResource(R.drawable.button_right_sided_round_corner);
-                newsButton.setTextColor(Color.WHITE);
+                mNewsButton.setBackgroundResource(R.drawable.button_right_sided_round_corner_white_fill);
+                mNewsButton.setTextColor(getResources().getColor(R.color.stockboo_color_light_blue));
+                mListView.setAdapter(messageAdapter);
                 break;
             case R.id.button_news:
-                Button msgButton1 = (Button) getActivity().findViewById(R.id.button_messages);
-                msgButton1.setBackgroundResource(R.drawable.button_left_sided_round_corner);
-                msgButton1.setTextColor(Color.WHITE);
+                mMesgButton.setBackgroundResource(R.drawable.button_left_sided_round_corner_white_fill);
+                mMesgButton.setTextColor(getResources().getColor(R.color.stockboo_color_light_blue));
 
                 Button newsButton1 = (Button) v;
-                newsButton1.setBackgroundResource(R.drawable.button_right_sided_round_corner_white_fill);
-                newsButton1.setTextColor(getResources().getColor(R.color.stockboo_color_light_blue));
+                newsButton1.setBackgroundResource(R.drawable.button_right_sided_round_corner);
+                newsButton1.setTextColor(Color.WHITE);
+                mListView.setAdapter(newsAdapter);
                 break;
         }
     }

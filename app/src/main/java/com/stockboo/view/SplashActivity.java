@@ -23,6 +23,7 @@ import com.stockboo.R;
 import com.stockboo.model.StockListIntentService;
 import com.stockboo.network.StockBooRequestQueue;
 import com.stockboo.view.util.PreferenceManager;
+import com.stockboo.view.util.Utilities;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -44,7 +45,7 @@ public class SplashActivity extends AppCompatActivity {
         getSupportActionBar().hide();
         Parse.enableLocalDatastore(this);
         Parse.initialize(this, "CJtGKzUduXCdZye1VLd9J0HZT7KfwXyMlJMBmR2I", "f0q6rKX9FLOfgfm4zAx7pwzhjWk3T245dDod002i");
-        if(checkInternetConnection()) {
+        if(Utilities.checkInternetConnection(this)) {
             updateStockMessages();
             new Handler().postDelayed(new Runnable() {
 
@@ -62,20 +63,6 @@ public class SplashActivity extends AppCompatActivity {
             DialogFragment newFragment = AlertFragment.newInstance(
                     R.string.alert_dialog_no_internet);
             newFragment.show(getFragmentManager(), "dialog");
-        }
-    }
-
-    private boolean checkInternetConnection() {
-        ConnectivityManager conMgr = (ConnectivityManager) getSystemService (Context.CONNECTIVITY_SERVICE);
-        // ARE WE CONNECTED TO THE NET
-        if (conMgr.getActiveNetworkInfo() != null
-                && conMgr.getActiveNetworkInfo().isAvailable()
-                && conMgr.getActiveNetworkInfo().isConnected()) {
-
-            return true;
-       } else {
-            return false;
-
         }
     }
 
