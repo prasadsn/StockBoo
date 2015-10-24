@@ -333,14 +333,16 @@ public class PortfolioFragment extends Fragment {
         LinearLayout totalInvestementlayout = (LinearLayout) getActivity().findViewById(R.id.portfolio_total_investement);
         LinearLayout netWorthlayout = (LinearLayout) getActivity().findViewById(R.id.portfolio_networth);
         LinearLayout totalChangelayout = (LinearLayout) getActivity().findViewById(R.id.portfolio_total_change);
-        totalInvestementlayout.setBackgroundColor(Color.LTGRAY);
-        netWorthlayout.setBackgroundColor(Color.LTGRAY);
+        totalInvestementlayout.setBackgroundColor(getResources().getColor(R.color.light_gray));
+        netWorthlayout.setBackgroundColor(getResources().getColor(R.color.light_gray));
         ((TextView) totalInvestementlayout.getChildAt(0)).setText("TOTAL INVESTMENT");
         ((TextView) totalInvestementlayout.getChildAt(1)).setText("\u20B9" + formatK(totalInvestement));
         ((TextView) netWorthlayout.getChildAt(0)).setText("MY NETWORTH");
         ((TextView) netWorthlayout.getChildAt(1)).setText("\u20B9" + formatK(netWorth));
-        ((TextView) totalChangelayout.getChildAt(0)).setText("TOTAL DAY CHANGE");
-        ((TextView) totalChangelayout.getChildAt(1)).setText("\u20B9" + formatK((int)totDayChange));
+        ((TextView) totalChangelayout.getChildAt(0)).setText("TOTDAY CHANGE");
+        ((TextView) totalChangelayout.getChildAt(0)).setTextColor(Color.WHITE);
+        ((TextView) totalChangelayout.getChildAt(1)).setText("\u20B9" + formatK((int) totDayChange));
+        ((TextView) totalChangelayout.getChildAt(1)).setTextColor(Color.WHITE);
     }
 
     public static String formatK(int number) {

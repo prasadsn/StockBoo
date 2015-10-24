@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="horizontal" android:layout_width="match_parent"
-    android:background="@drawable/stock_headline"
+    android:background="@drawable/pp_back_left"
     android:layout_marginBottom="10dp"
     android:layout_height="@dimen/height_heading">
 
@@ -17,7 +17,7 @@
         android:layout_height="wrap_content"
         android:text="@string/title_dashboard"
         android:layout_weight="1"
-        android:textSize="16dp"
+        android:textSize="14dp"
         android:gravity="center"
         android:textColor="@android:color/black"
         android:layout_gravity="center"/>

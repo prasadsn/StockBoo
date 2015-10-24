@@ -17,6 +17,8 @@
             android:gravity="right"
             android:layout_marginRight="20dp"
             android:id="@+id/last_updated_tv"
+            android:textSize="11dp"
+            android:textStyle="italic"
             android:text="@string/last_updated_label"/>
         <include layout="@layout/stockboo_heading_layout" android:id="@+id/heading_stock_messages" />
         <LinearLayout

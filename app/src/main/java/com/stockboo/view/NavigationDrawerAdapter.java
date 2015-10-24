@@ -48,8 +48,14 @@ public class NavigationDrawerAdapter extends BaseAdapter {
     }
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        if(convertView != null)
+        if(convertView != null) {
+            TextView title = (TextView) ((LinearLayout)convertView).getChildAt(1);
+            if(position == currentPosition)
+                title.setTextColor(Color.WHITE);
+            else
+                title.setTextColor(Color.LTGRAY);
             return convertView;
+        }
         LinearLayout layout = (LinearLayout) ((Activity)mContext).getLayoutInflater().inflate(R.layout.navigation_drawer_item, null);
         ImageView icon = (ImageView) layout.getChildAt(0);
         TextView title = (TextView) layout.getChildAt(1);

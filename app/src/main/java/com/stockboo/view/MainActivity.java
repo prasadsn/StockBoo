@@ -387,7 +387,7 @@ public class MainActivity extends ActionBarActivity
                 return;
             try {
                     LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-                    params.setMargins(20, 10, 10, 10);
+                    params.setMargins(20, 5, 10, 5);
                     LinearLayout stockMsgsLayout = (LinearLayout) getActivity().findViewById(R.id.layout_stock_msgs);
                     JSONArray array = new JSONArray(msgs);
                     for(int i = 0; i < array.length(); i++) {

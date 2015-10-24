@@ -3,7 +3,8 @@
 <!-- See also values-xlarge for specializations for xlarge screens -->
 <resources>
     <color name="stockboo_color_light_blue">#95c9e8</color>
-
+    <color name="stockboo_color_dark_blue">#004e7d</color>
+    <color name="light_gray">#f6f6f6</color>
     <color name="black_overlay">#66000000</color>
 
 </resources>

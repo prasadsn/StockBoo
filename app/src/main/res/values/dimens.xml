@@ -12,5 +12,5 @@
     <dimen name="margin_left_navigation_icon">20dp</dimen>
     <dimen name="margin_top_navigation_item">30dp</dimen>
     <dimen name="margin_bottom_navigation_item">30dp</dimen>
-    <dimen name="height_heading">50dp</dimen>
+    <dimen name="height_heading">40dp</dimen>
 </resources>
