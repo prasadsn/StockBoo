@@ -235,6 +235,7 @@ public class CurrentSuggestionFragment extends Fragment implements AbsListView.O
             list.add((String) object.get("buyPrice"));
             list.add((String) object.get("targetPrice"));
             list.add((String) object.get("scriptCode"));
+            list.add(object.getObjectId());
             return list;
         }
 

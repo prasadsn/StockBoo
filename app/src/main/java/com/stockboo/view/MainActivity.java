@@ -384,18 +384,17 @@ public class MainActivity extends ActionBarActivity
             if(msgs == null)
                 return;
             try {
-                LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-                params.setMargins(20, 10, 10, 10);
-                LinearLayout stockMsgsLayout = (LinearLayout) getActivity().findViewById(R.id.layout_stock_msgs);
-                JSONArray array = new JSONArray(msgs);
-            for(int i = 0; i < array.length(); i = i++) {
-                JSONObject obj = array.getJSONObject(i);
-                final int linkPosition = i + 1;
-                LinearLayout layout = (LinearLayout) getActivity().getLayoutInflater().inflate(R.layout.headlines_tv, null);
-                TextView tv = (TextView) layout.getChildAt(0);
-                tv.setText(obj.getString("content"));
-                stockMsgsLayout.addView(layout, params);
-            }
+                    LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+                    params.setMargins(20, 10, 10, 10);
+                    LinearLayout stockMsgsLayout = (LinearLayout) getActivity().findViewById(R.id.layout_stock_msgs);
+                    JSONArray array = new JSONArray(msgs);
+                    for(int i = 0; i < array.length(); i++) {
+                        JSONObject obj = array.getJSONObject(i);
+                        LinearLayout layout = (LinearLayout) getActivity().getLayoutInflater().inflate(R.layout.headlines_tv, null);
+                        TextView tv = (TextView) layout.getChildAt(0);
+                        tv.setText(obj.getString("content"));
+                        stockMsgsLayout.addView(layout, params);
+                    }
             } catch (JSONException e) {
                 e.printStackTrace();
             }

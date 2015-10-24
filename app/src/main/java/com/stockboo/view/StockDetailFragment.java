@@ -1,7 +1,9 @@
 package com.stockboo.view;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
@@ -63,6 +65,8 @@ public class StockDetailFragment extends Fragment implements View.OnClickListene
 
     private OnFragmentInteractionListener mListener;
     private ListView mListView;
+    private NewsAdapter newsAdapter;
+    private NewsAdapter messageAdapter;
 
     /**
      * Use this factory method to create a new instance of
@@ -117,6 +121,14 @@ public class StockDetailFragment extends Fragment implements View.OnClickListene
         view.findViewById(R.id.button_messages).setOnClickListener(this);
         view.findViewById(R.id.button_news).setOnClickListener(this);
         return view;
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        ArrayList<String> msgList = getMessages();
+        messageAdapter = new NewsAdapter(msgList, null);
+        mListView.setAdapter(messageAdapter);
     }
 
     // TODO: Rename method, update argument and hook method into UI event
@@ -189,13 +201,31 @@ public class StockDetailFragment extends Fragment implements View.OnClickListene
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-            mListView.setAdapter(new NewsAdapter(newsTitleList, newsLinkList));
+            newsAdapter = new NewsAdapter(newsTitleList, newsLinkList);
         }
 
         @Override
         public void onErrorResponse(VolleyError error) {
 
         }
+    }
+
+    private ArrayList<String> getMessages(){
+        SharedPreferences preferences = getActivity().getSharedPreferences("stock_messages", Context.MODE_PRIVATE);
+        String msgs = preferences.getString("stock_messages", null);
+        ArrayList<String> list = new ArrayList<String>();
+        JSONArray array = null;
+        try {
+            array = new JSONArray(msgs);
+            for(int i = 0; i < array.length(); i++) {
+                JSONObject obj = array.getJSONObject(i);
+                if(mList.get(7) !=null && mList.get(7).equals(obj.getString("stock")))
+                    list.add(obj.getString("content"));
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return list;
     }
     private ArrayList<String> updateMarketNews(String scriptCode) throws IOException, XmlPullParserException {
         //StringBuilder builder=new StringBuilder();
@@ -250,14 +280,15 @@ public class StockDetailFragment extends Fragment implements View.OnClickListene
             LinearLayout layout = (LinearLayout) getActivity().getLayoutInflater().inflate(R.layout.headlines_tv, null);
             TextView tv = (TextView) layout.getChildAt(0);
             tv.setText(mList.get(position));
-            layout.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Intent intent = new Intent(getActivity(), MarketNewsActivity.class);
-                    intent.putExtra("link", mNewsLinkList.get(position));
-                    startActivity(intent);
-                }
-            });
+            if(mNewsLinkList != null)
+                layout.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent intent = new Intent(getActivity(), MarketNewsActivity.class);
+                        intent.putExtra("link", mNewsLinkList.get(position));
+                        startActivity(intent);
+                    }
+                });
             return layout;
         }
     }

@@ -100,7 +100,7 @@ public class SplashActivity extends AppCompatActivity {
                         String msg = parseObject.get("content").toString();
                         try {
                             object.put("content", msg);
-                            object.put("stock", stockObject.get("objectId").toString());
+                            object.put("stock", stockObject.getObjectId());
                         } catch (JSONException e1) {
                             e1.printStackTrace();
                         }
