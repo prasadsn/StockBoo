@@ -232,12 +232,12 @@ public class WatchListFragment extends Fragment implements AbsListView.OnItemCli
             mList = list;
         }
         public void updateView(Context context, View view, WatchList watchList){
-            RelativeLayout layout = (RelativeLayout) view;
-            TextView stockNameTv = (TextView) layout.getChildAt(0);
-            TextView stockIdTv = (TextView) layout.getChildAt(1);
-            TextView cTv = (TextView) layout.getChildAt(2);
-            TextView priceTv = (TextView) layout.getChildAt(3);
-            TextView cpFixTv = (TextView) layout.getChildAt(4);
+            LinearLayout layout = (LinearLayout) view;
+            TextView stockNameTv = (TextView) layout.findViewById(R.id.scriptName);
+            TextView stockIdTv = (TextView) layout.findViewById(R.id.scriptID);
+            TextView cTv = (TextView) layout.findViewById(R.id.c);
+            TextView priceTv = (TextView) layout.findViewById(R.id.price);
+            TextView cpFixTv = (TextView) layout.findViewById(R.id.c_fix);
 
             stockNameTv.setText(watchList.getScriptName());
             stockIdTv.setText(watchList.getScriptID());
@@ -259,7 +259,7 @@ public class WatchListFragment extends Fragment implements AbsListView.OnItemCli
                     cpFixTv.setBackgroundResource(R.drawable.oval_background_red);
                 else
                     cpFixTv.setBackgroundResource(R.drawable.oval_background_green);
-                cpFixTv.setText(watchList.getC_fix());
+                cpFixTv.setText(watchList.getC_fix() + " %");
             } else
                 cpFixTv.setVisibility(View.INVISIBLE);
             view.setTag(watchList.get_Id());
@@ -283,7 +283,7 @@ public class WatchListFragment extends Fragment implements AbsListView.OnItemCli
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
             if(convertView == null)
-                convertView = (RelativeLayout) getActivity().getLayoutInflater().inflate(R.layout.watchlist_item, null);
+                convertView = (LinearLayout) getActivity().getLayoutInflater().inflate(R.layout.watchlist_item, null);
             convertView.setOnTouchListener(mTouchListener);
             updateView(getActivity(), convertView, mList.get(position));
             return convertView;

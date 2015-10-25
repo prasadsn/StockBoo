@@ -10,7 +10,7 @@ public class StockBooBoldTextView extends TextView {
 	public StockBooBoldTextView(Context context, AttributeSet attrs, int defStyle) {
 		super(context, attrs, defStyle);
 		Typeface font = Typeface.createFromAsset(getContext().getAssets(),
-				"fonts/Brandon_reg.otf");
+				"fonts/Verdana_Bold.otf");
 		setTypeface(font);
 		setTypeface(getTypeface(), Typeface.BOLD);
 	}

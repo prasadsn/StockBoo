@@ -170,7 +170,7 @@
             android:text="120"
             android:textSize="10dp"
             android:layout_marginLeft="5dp"
-            android:textColor="@android:color/holo_blue_light"/>
+            android:textColor="#009090"/>
     </LinearLayout>
     <LinearLayout
         android:layout_width="wrap_content"
@@ -191,6 +191,6 @@
             android:text="160"
             android:textSize="10dp"
             android:layout_marginLeft="5dp"
-            android:textColor="@android:color/holo_blue_light"/>
+            android:textColor="#009090"/>
     </LinearLayout>
 </RelativeLayout>
