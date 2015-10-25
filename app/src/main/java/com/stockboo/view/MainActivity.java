@@ -5,7 +5,9 @@ import android.app.Fragment;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.net.Uri;
 import android.os.AsyncTask;
+import android.preference.PreferenceManager;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBar;
 import android.os.Bundle;
@@ -60,7 +62,7 @@ public class MainActivity extends ActionBarActivity
     private SearchView mAddView;
     private SearchView mSearchView;
     private Menu mMenu;
-    private enum FRAGMENTS {HOME, CURRENT_SUGGESTION, PAST_PERFORMANCE, MY_WATCH_LIST, PORTFOLIO, BROKERAGE_RECOS, MARKET_NEWS, ABOUT_US};
+    private enum FRAGMENTS {HOME, CURRENT_SUGGESTION, PAST_PERFORMANCE, MY_WATCH_LIST, PORTFOLIO, BROKERAGE_RECOS, MARKET_NEWS, ABOUT_US, FEEDBACK};
 
     private FRAGMENTS mCurrentFragment;
 
@@ -79,12 +81,17 @@ public class MainActivity extends ActionBarActivity
                 getSupportFragmentManager().findFragmentById(R.id.navigation_drawer);
         mTitle = getTitle();
         restoreActionBar();
-        new SampleAlarmReceiver().setAlarm(this);
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        if(preferences.getBoolean("enable_notification", true))
+            new SampleAlarmReceiver().setAlarm(this);
+        else
+            new SampleAlarmReceiver().cancelAlarm(this);
         // Set up the drawer.
         mNavigationDrawerFragment.setUp(
                 R.id.navigation_drawer,
                 (DrawerLayout) findViewById(R.id.drawer_layout));
 
+        getSupportActionBar().setDisplayHomeAsUpEnabled(false);
         mInterstitialAd = new InterstitialAd(this);
         mInterstitialAd.setAdUnitId("ca-app-pub-9023139403489240/8056856614");
 
@@ -187,7 +194,14 @@ public class MainActivity extends ActionBarActivity
                         .replace(R.id.container, AboutUsFragment.newInstance("", ""))
                         .commit();
                 break;
-
+            case 8:
+                mCurrentFragment = FRAGMENTS.FEEDBACK;
+                invalidateOptionsMenu();
+                Intent emailIntent = new Intent(Intent.ACTION_SENDTO, Uri.fromParts(
+                        "mailto", "info@stockboo.com", null));
+                emailIntent.putExtra(Intent.EXTRA_SUBJECT, "Feedback");
+                startActivity(Intent.createChooser(emailIntent, "Send email..."));
+                break;
         }
     }
 
@@ -209,8 +223,6 @@ public class MainActivity extends ActionBarActivity
     public void restoreActionBar() {
         ActionBar actionBar = getSupportActionBar();
         //actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
-        actionBar.setDisplayShowTitleEnabled(false);
-
         //actionBar.setTitle(mTitle);
         View view = getLayoutInflater().inflate(R.layout.stockboo_action_bar, null);
         actionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
@@ -219,7 +231,7 @@ public class MainActivity extends ActionBarActivity
         findViewById(R.id.btn_navigation).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(mNavigationDrawerFragment.isDrawerOpen())
+                if (mNavigationDrawerFragment.isDrawerOpen())
                     mNavigationDrawerFragment.closeDrawer();
                 else
                     mNavigationDrawerFragment.openDrawer();
@@ -241,6 +253,7 @@ public class MainActivity extends ActionBarActivity
             //mSearchView = (SearchView) menu.findItem(R.id.action_search).getActionView();
             return true;
         }*/
+        //getMenuInflater().inflate(R.menu.menu_main, menu);
         return super.onCreateOptionsMenu(menu);
     }
 
@@ -250,16 +263,8 @@ public class MainActivity extends ActionBarActivity
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_add) {
-            switch (mCurrentFragment){
-                case MY_WATCH_LIST:
-                    Intent intent = new Intent(MainActivity.this, StockListSearchActivity.class);
-                    startActivityForResult(intent, WATCH_STOCK_LIST_REQUEST_CODE);
-                    return true;
-            }
-        }
+        Intent intent = new Intent(MainActivity.this, SettingsActivity.class);
+        startActivity(intent);
 
         return super.onOptionsItemSelected(item);
     }
@@ -359,7 +364,7 @@ public class MainActivity extends ActionBarActivity
                 //lv.setAdapter(new NewsHeadlineAdapter(MainActivity.this, headlines));
                 LinearLayout mainLayout = (LinearLayout) getActivity().findViewById(R.id.main_layout);
                 LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-                params.setMargins(20, 10, 10, 10);
+                params.setMargins(20, 5, 10, 5);
                 if(headlines == null)
                     return;
                 for(int i = 4; i < headlines.size(); i = i+2) {

@@ -22,7 +22,7 @@ public class NavigationDrawerAdapter extends BaseAdapter {
     private String[] items;
     private Context mContext;
     private int currentPosition;
-    private final static int[] NAVIGATION_ITEMS_ICONS = {R.drawable.home_menu, R.drawable.currensuggestion_icon, R.drawable.past_performance, R.drawable.mywathlist_menu_icon, R.drawable.myportfolio_menu, R.drawable.brokeragerecos, R.drawable.marketnews, R.drawable.aboutus};
+    private final static int[] NAVIGATION_ITEMS_ICONS = {R.drawable.home_menu, R.drawable.currensuggestion_icon, R.drawable.past_performance, R.drawable.mywathlist_menu_icon, R.drawable.myportfolio_menu, R.drawable.brokeragerecos, R.drawable.marketnews, R.drawable.aboutus, R.drawable.feedback};
     public NavigationDrawerAdapter(Context context){
         mContext = context;
         items = context.getResources().getStringArray(R.array.navigation_drawer_items);

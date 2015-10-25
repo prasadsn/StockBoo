@@ -43,8 +43,6 @@ public class SplashActivity extends AppCompatActivity {
         Intent intentService = new Intent(this, StockListIntentService.class);
         startService(intentService);
         getSupportActionBar().hide();
-        Parse.enableLocalDatastore(this);
-        Parse.initialize(this, "CJtGKzUduXCdZye1VLd9J0HZT7KfwXyMlJMBmR2I", "f0q6rKX9FLOfgfm4zAx7pwzhjWk3T245dDod002i");
         if(Utilities.checkInternetConnection(this)) {
             updateStockMessages();
             new Handler().postDelayed(new Runnable() {

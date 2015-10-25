@@ -304,6 +304,8 @@ public class PortfolioFragment extends Fragment {
                     Portfolio portfolio = list.get(0);
                     String price = jsonObject.getString("l_fix");
                     String change = jsonObject.getString("c");
+                    if(change == null || change.isEmpty())
+                        change = "0";
                     portfolio.setCurrentPrice((int) Float.parseFloat(price));
                     portfolio.setChange(Double.valueOf(change));
                     portfolioDao.update(portfolio);

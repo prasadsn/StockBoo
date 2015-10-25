@@ -64,4 +64,6 @@
     <string name="banner_ad_unit_id">ca-app-pub-9023139403489240/3626657013</string>
     <string name="about_us_msg_1">We are crazy indi developers who try to so solve the common problems and give solution through technology. After good response from your previous app Showboard an app for Photography and photogrophers we thought to try something else and got the StockBoo idea.  </string>
     <string name="about_us_msg_2">Peoples pay lot of attention on their earnings but they not find right place to invest their savings, still 80% peoples invest their money only in Bank FD, we want to enlighten users and guide them to invest in better manner rather than investing only in Bank FD or gold</string>
+    <string name="menu_title_settings">Settings</string>
+    <string name="title_activity_settings">SettingsActivity</string>
 </resources>
