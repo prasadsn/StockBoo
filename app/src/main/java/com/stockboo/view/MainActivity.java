@@ -81,11 +81,6 @@ public class MainActivity extends ActionBarActivity
                 getSupportFragmentManager().findFragmentById(R.id.navigation_drawer);
         mTitle = getTitle();
         restoreActionBar();
-        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-        if(preferences.getBoolean("enable_notification", true))
-            new SampleAlarmReceiver().setAlarm(this);
-        else
-            new SampleAlarmReceiver().cancelAlarm(this);
         // Set up the drawer.
         mNavigationDrawerFragment.setUp(
                 R.id.navigation_drawer,
@@ -450,12 +445,14 @@ public class MainActivity extends ActionBarActivity
                 try {
                     if(response.startsWith("\n// "))
                         response = response.substring(4);
+                    else if(!response.trim().startsWith("["))
+                        response = response.substring(response.indexOf("["));
                     JSONArray array = new JSONArray(response);
                     JSONObject bseJsonObj = array.getJSONObject(0);
                     LinearLayout layout = (LinearLayout) getActivity().findViewById(R.id.bse_layout);
                     double cp = new Double(bseJsonObj.getString("cp")).doubleValue();
                     if(cp<0){
-                        ((TextView) layout.getChildAt(1)).setTextColor(Color.RED);
+                        //((TextView) layout.getChildAt(1)).setTextColor(Color.RED);
                         ((TextView) layout.getChildAt(2)).setTextColor(Color.RED);
                     }
                     ((TextView) layout.getChildAt(1)).setText(bseJsonObj.getString("l_fix"));
@@ -464,7 +461,7 @@ public class MainActivity extends ActionBarActivity
                     layout = (LinearLayout) getActivity().findViewById(R.id.nse_layout);
                     cp = new Double(nseJsonObj.getString("cp")).doubleValue();
                     if(cp<0){
-                        ((TextView) layout.getChildAt(1)).setTextColor(Color.RED);
+                       // ((TextView) layout.getChildAt(1)).setTextColor(Color.RED);
                         ((TextView) layout.getChildAt(2)).setTextColor(Color.RED);
                     }
                     ((TextView) layout.getChildAt(0)).setText("NSE");

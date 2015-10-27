@@ -22,8 +22,10 @@ public class SampleAlarmReceiver extends WakefulBroadcastReceiver {
   
     @Override
     public void onReceive(Context context, Intent intent) {
+
         Intent service = new Intent(context, SampleSchedulingService.class);
-        service.putExtra("stock_update", intent.getStringExtra("stock_update"));
+        boolean stockUpdate = intent.getBooleanExtra("stock_update", false);
+        service.putExtra("stock_update", stockUpdate);
         if(intent.getStringExtra("message") != null)
             service.putExtra("message", intent.getStringExtra("message"));
         // Start the service, keeping the device awake while it is launching.
@@ -40,10 +42,6 @@ public class SampleAlarmReceiver extends WakefulBroadcastReceiver {
     public void setAlarm(Context context) {
         alarmMgr = (AlarmManager)context.getSystemService(Context.ALARM_SERVICE);
 
-        setMarketOpenReminder(context);
-        setMarketOpen(context);
-        setMarketCloseReminder(context);
-        setMarketClose(context);
         setStockUpdateNotificationAlarm(context);
         // Enable {@code SampleBootReceiver} to automatically restart the alarm when the
         // device is rebooted.
@@ -54,61 +52,15 @@ public class SampleAlarmReceiver extends WakefulBroadcastReceiver {
                 PackageManager.COMPONENT_ENABLED_STATE_ENABLED,
                 PackageManager.DONT_KILL_APP);
     }
-    // END_INCLUDE(set_alarm)
-    private void setMarketOpenReminder(Context context){
-        Intent intent = new Intent(context, SampleAlarmReceiver.class);
-        intent.putExtra("stock_update", false);
-        intent.putExtra("message", "Market likely to open  in 15 Minutes");
-        alarmIntent = PendingIntent.getBroadcast(context, 0, intent, 0);
-
-        Calendar calendar = getCalendar(9, 0);
-
-        alarmMgr.setInexactRepeating(AlarmManager.RTC_WAKEUP,
-                calendar.getTimeInMillis(), AlarmManager.INTERVAL_DAY, alarmIntent);
-    }
-
-    private void setMarketOpen(Context context) {
-        Intent intent = new Intent(context, SampleAlarmReceiver.class);
-        intent.putExtra("stock_update", false);
-        intent.putExtra("message", "Market trading session started");
-        alarmIntent = PendingIntent.getBroadcast(context, 0, intent, 0);
-
-        Calendar calendar = getCalendar(9, 15);
-
-        alarmMgr.setInexactRepeating(AlarmManager.RTC_WAKEUP,
-                calendar.getTimeInMillis(), AlarmManager.INTERVAL_DAY, alarmIntent);
-    }
-
-    private void setMarketCloseReminder(Context context){
-        Intent intent = new Intent(context, SampleAlarmReceiver.class);
-        intent.putExtra("stock_update", false);
-        intent.putExtra("message", "Market Will close in 15 Minutes");
-        alarmIntent = PendingIntent.getBroadcast(context, 0, intent, 0);
-
-        Calendar calendar = getCalendar(15, 15);
-
-        alarmMgr.setInexactRepeating(AlarmManager.RTC_WAKEUP,
-                calendar.getTimeInMillis(), AlarmManager.INTERVAL_DAY, alarmIntent);
-    }
-
-    private void setMarketClose(Context context){
-        Intent intent = new Intent(context, SampleAlarmReceiver.class);
-        intent.putExtra("stock_update", false);
-        intent.putExtra("message", "Market is closed");
-        alarmIntent = PendingIntent.getBroadcast(context, 0, intent, 0);
-
-        Calendar calendar = getCalendar(15, 30);
-
-        alarmMgr.setInexactRepeating(AlarmManager.RTC_WAKEUP,
-                calendar.getTimeInMillis(), AlarmManager.INTERVAL_DAY, alarmIntent);
-    }
 
     private void setStockUpdateNotificationAlarm(Context context){
         Intent intent = new Intent(context, SampleAlarmReceiver.class);
         intent.putExtra("stock_update", true);
         alarmIntent = PendingIntent.getBroadcast(context, 0, intent, 0);
 
-        Calendar calendar = getCalendar(12, 00);
+        Calendar calendar = Calendar.getInstance();
+        calendar.roll(Calendar.HOUR_OF_DAY, 1);
+        calendar.set(Calendar.MINUTE, 0);
 
         alarmMgr.setInexactRepeating(AlarmManager.RTC_WAKEUP,
                 calendar.getTimeInMillis(), AlarmManager.INTERVAL_HOUR, alarmIntent);
@@ -118,7 +70,7 @@ public class SampleAlarmReceiver extends WakefulBroadcastReceiver {
         calendar.setTimeInMillis(System.currentTimeMillis());
         if(calendar.get(Calendar.HOUR_OF_DAY) > hour)
             calendar.roll(Calendar.DATE, 1);
-        calendar.set(Calendar.HOUR, hour);
+        calendar.set(Calendar.HOUR_OF_DAY, hour);
         calendar.set(Calendar.MINUTE, minutes);
         return calendar;
     }

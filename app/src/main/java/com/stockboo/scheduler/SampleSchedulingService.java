@@ -1,17 +1,22 @@
 package com.stockboo.scheduler;
 
 import android.app.IntentService;
+import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
+import android.media.RingtoneManager;
+import android.net.Uri;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 import android.widget.LinearLayout;
+import android.widget.RemoteViews;
 import android.widget.TextView;
 
 import com.stockboo.R;
+import com.stockboo.view.MainActivity;
 import com.stockboo.view.util.Utilities;
 
 import org.json.JSONArray;
@@ -25,6 +30,10 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.Calendar;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.TimeUnit;
 
 /**
  * This {@code IntentService} does the app's actual work.
@@ -50,6 +59,7 @@ public class SampleSchedulingService extends IntentService {
     public static final String URL = "http://finance.google.com/finance/info?client=ig&q=INDEXBOM:SENSEX,NSE:NIFTY";
     private NotificationManager mNotificationManager;
     NotificationCompat.Builder builder;
+    ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
 
     @Override
     protected void onHandleIntent(Intent intent) {
@@ -62,8 +72,19 @@ public class SampleSchedulingService extends IntentService {
         if(!isWeekday)
             return;
 
+        if(cal.get(Calendar.HOUR_OF_DAY) == 9 && cal.get(Calendar.MINUTE) == 0){
+            sendNotification("Market likely to open  in 15 Minutes", "", true);
+            sendNotificationInDelay(15, "Market trading session started", "");
+        }
+
+        //if(cal.get(Calendar.HOUR_OF_DAY) == 15){
+            sendNotificationInDelay(15, "Market Will close in 15 Minutes", "");
+            sendNotificationInDelay(30, "Market is closed", "");
+        //}
         String message = "";
+        String title = "";
         boolean stockMesg = intent.getBooleanExtra("stock_update", false);
+
         if(stockMesg & Utilities.checkInternetConnection(getApplicationContext())) {
             String urlString = URL;
 
@@ -79,18 +100,19 @@ public class SampleSchedulingService extends IntentService {
                 StringBuffer buffer = new StringBuffer();
                 if(response.startsWith("\n// "))
                     response = response.substring(4);
+                else if(!response.trim().startsWith("["))
+                    response = response.substring(response.indexOf("["));
                 JSONArray array = new JSONArray(response);
                 JSONObject sensexJsonObj = array.getJSONObject(0);
                 double sensexchange = new Double(sensexJsonObj.getString("c")).doubleValue();
                 JSONObject niftyJsonObj = array.getJSONObject(1);
                 double niftychange = new Double(sensexJsonObj.getString("c")).doubleValue();
                 if(isMarketClosed()){
-                    buffer.append("Market is closed");
-                    buffer.append(",");
+                    title = "Market is closed";
                     if(sensexchange > 0)
-                        buffer.append(" Sensex is up by " + sensexchange +" Points" );
+                        buffer.append("Sensex is up by " + sensexchange +" Points " );
                     else
-                        buffer.append(" Sensex is down by " + sensexchange +" Points" );
+                        buffer.append("Sensex is down by " + sensexchange +" Points " );
                     buffer.append(":");
                     if(niftychange > 0)
                         buffer.append(" Nifty is up by " + niftychange +" Points");
@@ -99,26 +121,25 @@ public class SampleSchedulingService extends IntentService {
 
                 } else {
                     if(sensexchange > 30 && niftychange > 10){
-                        buffer.append("Market is in Positive mode.");
-                        buffer.append(" Sensex up by ").append(sensexchange).append(" Points");
-                        buffer.append(" Nifty up by ").append(niftychange).append(" Points");
+                        title = "Market is in Positive mode.";
+                        buffer.append("Sensex up by ").append(sensexchange).append(" Points ");
+                        buffer.append(": Nifty up by ").append(niftychange).append(" Points");
                     }
                     else if(sensexchange < -30 && niftychange < -10){
-                        buffer.append("Market is in Negative mode.");
-                        buffer.append(" Sensex down by ").append(sensexchange).append(" Points");
-                        buffer.append(" Nifty down by ").append(niftychange).append(" Points");
+                        title = "Market is in Negative mode.";
+                        buffer.append("Sensex down by ").append(sensexchange).append(" Points ");
+                        buffer.append(": Nifty down by ").append(niftychange).append(" Points");
                     } else {
-                        buffer.append("Market is flat");
-                        buffer.append(",");
+                        title = "Market is flat";
                         if(sensexchange > 0)
-                            buffer.append(" Sensex is up by " + sensexchange +" Points" );
+                            buffer.append("Sensex is up by " + sensexchange +" Points " );
                         else
-                            buffer.append(" Sensex is down by " + sensexchange +" Points" );
+                            buffer.append("Sensex is down by " + sensexchange +" Points " );
                         buffer.append(":");
                         if(niftychange > 0)
-                            buffer.append(" Nifty is up by " + niftychange +" Points");
+                            buffer.append(": Nifty is up by " + niftychange +" Points");
                         else
-                            buffer.append(" Nifty is down by " + niftychange +" Points");
+                            buffer.append(": Nifty is down by " + niftychange +" Points");
                     }
 
                 }
@@ -129,12 +150,22 @@ public class SampleSchedulingService extends IntentService {
 
         } else
             message = intent.getStringExtra("message");
-        if(message != null )
-            sendNotification(message);
+        if(message != null && !message.isEmpty())
+            sendNotification(title, message, true);
         Log.i(TAG, "No doodle found. :-(");
         // Release the wake lock provided by the BroadcastReceiver.
         SampleAlarmReceiver.completeWakefulIntent(intent);
         // END_INCLUDE(service_onhandle)
+    }
+
+    public void sendNotificationInDelay(long delay, final String title, final String msg) {
+        final Runnable runnable = new Runnable() {
+            public void run() {
+                sendNotification(title, msg, true);
+            }
+        };
+        final ScheduledFuture beeperHandle =
+                scheduler.schedule(runnable, delay, TimeUnit.MINUTES);
     }
 
     private boolean isMarketClosed(){
@@ -144,25 +175,29 @@ public class SampleSchedulingService extends IntentService {
     }
 
     // Post a notification indicating whether a doodle was found.
-    private void sendNotification(String msg) {
+    private void sendNotification(String title, String msg, boolean sound) {
         mNotificationManager = (NotificationManager)
                this.getSystemService(Context.NOTIFICATION_SERVICE);
     
-        //PendingIntent contentIntent = PendingIntent.getActivity(this, 0,
-        //        new Intent(this, MainActivity.class), 0);
-
+        PendingIntent contentIntent = PendingIntent.getActivity(this, 0,
+                new Intent(this, MainActivity.class), PendingIntent.FLAG_CANCEL_CURRENT);
+        Uri soundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
         NotificationCompat.Builder mBuilder =
                 new NotificationCompat.Builder(this)
         .setSmallIcon(R.drawable.ic_launcher)
-        //.setContentTitle(getString(R.string.doodle_alert))
+                        .setContentTitle(title)
         .setStyle(new NotificationCompat.BigTextStyle()
         .bigText(msg))
         .setContentText(msg);
-
-        //mBuilder.setContentIntent(contentIntent);
-        mNotificationManager.notify(NOTIFICATION_ID, mBuilder.build());
+        if(sound)
+            mBuilder.setSound(soundUri);
+        mBuilder.setAutoCancel(true);
+        mBuilder.setContentIntent(contentIntent);
+        Notification notification = mBuilder.build();
+        notification.flags |= Notification.FLAG_AUTO_CANCEL;
+        mNotificationManager.notify(NOTIFICATION_ID, notification);
     }
- 
+
 //
 // The methods below this line fetch content from the specified URL and return the
 // content as a string.
