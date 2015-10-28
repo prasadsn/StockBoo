@@ -120,12 +120,12 @@ public class SampleSchedulingService extends IntentService {
                     if(sensexchange > 0)
                         buffer.append("Sensex is up by " + sensexchange +" Points " );
                     else
-                        buffer.append("Sensex is down by " + sensexchange +" Points " );
+                        buffer.append("Sensex is down by " + (sensexchange * -1) +" Points " );
                     buffer.append(":");
                     if(niftychange > 0)
                         buffer.append(" Nifty is up by " + niftychange +" Points");
                     else
-                        buffer.append(" Nifty is down by " + niftychange +" Points");
+                        buffer.append(" Nifty is down by " + (niftychange * -1) +" Points");
 
                 } else {
                     if(sensexchange > 30 && niftychange > 10){
@@ -135,19 +135,19 @@ public class SampleSchedulingService extends IntentService {
                     }
                     else if(sensexchange < -30 && niftychange < -10){
                         title = "Market is in Negative mode.";
-                        buffer.append("Sensex down by ").append(sensexchange).append(" Points ");
-                        buffer.append(": Nifty down by ").append(niftychange).append(" Points");
+                        buffer.append("Sensex down by ").append(sensexchange * -1).append(" Points ");
+                        buffer.append(": Nifty down by ").append(niftychange * -1).append(" Points");
                     } else {
                         title = "Market is flat";
                         if(sensexchange > 0)
                             buffer.append("Sensex is up by " + sensexchange +" Points " );
                         else
-                            buffer.append("Sensex is down by " + sensexchange +" Points " );
+                            buffer.append("Sensex is down by " + (sensexchange  * -1) +" Points " );
                         buffer.append(":");
                         if(niftychange > 0)
                             buffer.append(": Nifty is up by " + niftychange +" Points");
                         else
-                            buffer.append(": Nifty is down by " + niftychange +" Points");
+                            buffer.append(": Nifty is down by " + (niftychange * -1) +" Points");
                     }
 
                 }
