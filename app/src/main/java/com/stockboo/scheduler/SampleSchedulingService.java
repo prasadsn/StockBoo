@@ -11,6 +11,7 @@ import android.media.RingtoneManager;
 import android.net.Uri;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
+import android.widget.CalendarView;
 import android.widget.LinearLayout;
 import android.widget.RemoteViews;
 import android.widget.TextView;
@@ -59,7 +60,6 @@ public class SampleSchedulingService extends IntentService {
     public static final String URL = "http://finance.google.com/finance/info?client=ig&q=INDEXBOM:SENSEX,NSE:NIFTY";
     private NotificationManager mNotificationManager;
     NotificationCompat.Builder builder;
-    ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
 
     @Override
     protected void onHandleIntent(Intent intent) {
@@ -69,18 +69,26 @@ public class SampleSchedulingService extends IntentService {
         Calendar cal = Calendar.getInstance();
         int dow = cal.get(Calendar.DAY_OF_WEEK);
         boolean isWeekday = ((dow >= Calendar.MONDAY) && (dow <= Calendar.FRIDAY));
-        if(!isWeekday)
+
+        if(!isWeekday ||  cal.get(Calendar.HOUR_OF_DAY) < 9 || cal.get(Calendar.HOUR_OF_DAY) > 15)
             return;
 
-        if(cal.get(Calendar.HOUR_OF_DAY) == 9 && cal.get(Calendar.MINUTE) == 0){
+        if(cal.get(Calendar.HOUR_OF_DAY) == 9 && cal.get(Calendar.MINUTE) == 0) {
             sendNotification("Market likely to open  in 15 Minutes", "", true);
-            sendNotificationInDelay(15, "Market trading session started", "");
+            return;
+        } else if(cal.get(Calendar.HOUR_OF_DAY) == 9 && cal.get(Calendar.MINUTE) == 15) {
+            sendNotification("Market trading session started", "", true);
+            return;
+        } else if(cal.get(Calendar.HOUR_OF_DAY) == 9 && cal.get(Calendar.MINUTE) == 30) {
+        } else if(cal.get(Calendar.HOUR_OF_DAY) == 15 && cal.get(Calendar.MINUTE) == 15) {
+            sendNotification("Market Will close in 15 Minutes", "", true);
+            return;
+        } else if(cal.get(Calendar.HOUR_OF_DAY) == 15 && cal.get(Calendar.MINUTE) == 30) {
+            //sendNotification("Market is closed", "", true);
+            //return;
+        } else if(cal.get(Calendar.MINUTE) > 0){
+            return;
         }
-
-        //if(cal.get(Calendar.HOUR_OF_DAY) == 15){
-            sendNotificationInDelay(15, "Market Will close in 15 Minutes", "");
-            sendNotificationInDelay(30, "Market is closed", "");
-        //}
         String message = "";
         String title = "";
         boolean stockMesg = intent.getBooleanExtra("stock_update", false);
@@ -151,27 +159,16 @@ public class SampleSchedulingService extends IntentService {
         } else
             message = intent.getStringExtra("message");
         if(message != null && !message.isEmpty())
-            sendNotification(title, message, true);
+            sendNotification(title, message, false);
         Log.i(TAG, "No doodle found. :-(");
         // Release the wake lock provided by the BroadcastReceiver.
         SampleAlarmReceiver.completeWakefulIntent(intent);
         // END_INCLUDE(service_onhandle)
     }
 
-    public void sendNotificationInDelay(long delay, final String title, final String msg) {
-        final Runnable runnable = new Runnable() {
-            public void run() {
-                sendNotification(title, msg, true);
-            }
-        };
-        final ScheduledFuture beeperHandle =
-                scheduler.schedule(runnable, delay, TimeUnit.MINUTES);
-    }
-
     private boolean isMarketClosed(){
         Calendar calendar =Calendar.getInstance();
-        int hod = calendar.get(Calendar.HOUR_OF_DAY);
-        return hod < 9 || hod >= 16;
+        return calendar.get(Calendar.HOUR_OF_DAY) == 15 && calendar.get(Calendar.MINUTE) == 30;
     }
 
     // Post a notification indicating whether a doodle was found.
