@@ -248,7 +248,7 @@ public class MainActivity extends ActionBarActivity
             //mSearchView = (SearchView) menu.findItem(R.id.action_search).getActionView();
             return true;
         }*/
-        //getMenuInflater().inflate(R.menu.menu_main, menu);
+        getMenuInflater().inflate(R.menu.menu_main, menu);
         return super.onCreateOptionsMenu(menu);
     }
 

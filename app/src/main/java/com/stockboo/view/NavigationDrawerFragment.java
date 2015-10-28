@@ -236,7 +236,7 @@ public class NavigationDrawerFragment extends Fragment {
         // Forward the new configuration the drawer toggle component.
         mDrawerToggle.onConfigurationChanged(newConfig);
     }
-
+/*
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         // If the drawer is open, show the global app actions in the action bar. See also
@@ -246,7 +246,7 @@ public class NavigationDrawerFragment extends Fragment {
             showGlobalContextActionBar();
         }
         super.onCreateOptionsMenu(menu, inflater);
-    }
+    }*/
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -265,7 +265,7 @@ public class NavigationDrawerFragment extends Fragment {
         /*actionBar.setDisplayShowTitleEnabled(true);
         actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
         actionBar.setTitle(R.string.app_name);*/
-        actionBar.setCustomView(getActivity().getLayoutInflater().inflate(R.layout.stockboo_action_bar, null));
+        //actionBar.setCustomView(getActivity().getLayoutInflater().inflate(R.layout.stockboo_action_bar, null));
 
     }
 
