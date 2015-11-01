@@ -297,6 +297,10 @@ public class PastPerformanceFragment extends Fragment implements View.OnClickLis
                 v.setBackgroundResource(R.drawable.button_right_sided_round_corner);
                 break;
         }
+        int dp = (int)(5 *getResources().getDisplayMetrics().density);
+        for(int i = 0;i<layout.getChildCount(); i++) {
+            layout.getChildAt(i).setPadding(dp,dp,dp,dp);
+        }
         mAdapter.notifyDataSetChanged();
     }
     private class PerformanceAdapter extends BaseAdapter {

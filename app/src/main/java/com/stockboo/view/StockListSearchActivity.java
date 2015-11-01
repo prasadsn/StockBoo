@@ -78,6 +78,7 @@ public class StockListSearchActivity extends Activity implements TextWatcher, Ad
         setContentView(R.layout.activity_stocklist_search);
         getActionBar().hide();
         EditText searchEditText = (EditText) findViewById(R.id.searchEditText);
+        searchEditText.setCompoundDrawables(null, null, getResources().getDrawable(android.R.drawable.ic_menu_search), null);
         searchEditText.addTextChangedListener(this);
         dbHelper = OpenHelperManager.getHelper(this, DatabaseHelper.class);
         SQLiteDatabase database = dbHelper.getReadableDatabase();
@@ -110,7 +111,7 @@ public class StockListSearchActivity extends Activity implements TextWatcher, Ad
     @Override
     public void afterTextChanged(Editable s) {
         String query = null;
-        query = "SELECT * FROM StockList where ScriptName like '" + s.toString() + "%'";
+        query = "SELECT * FROM StockList where ScriptName like '" + s.toString() + "%'" + "OR ScriptID like '" + s.toString() + "%'";
         SQLiteDatabase database = dbHelper.getReadableDatabase();
         Cursor cursor = database.rawQuery(query, null);
         adapter.changeCursor(cursor);

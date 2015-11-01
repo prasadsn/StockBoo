@@ -6,11 +6,22 @@
     android:orientation="vertical"
     tools:context="com.stockboo.view.CurrentSuggestionFragment">
 
-    <EditText
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/searchEditText"
-        android:layout_gravity="center_horizontal|top" />
+        android:layout_height="wrap_content" android:orientation="horizontal">
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@android:drawable/ic_menu_search"/>
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/searchEditText"
+            android:textColor="@android:color/black"
+            android:layout_gravity="center_horizontal|top">
+            <requestFocus />
+        </EditText>
+    </LinearLayout>
 
     <ListView android:id="@+id/listView" android:layout_width="match_parent"
         android:layout_height="532dp"

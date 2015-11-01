@@ -223,7 +223,7 @@ public class MainActivity extends ActionBarActivity
         actionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
         actionBar.setCustomView(view);
         //actionBar.setIcon(R.drawable.logo_header);
-        findViewById(R.id.btn_navigation).setOnClickListener(new View.OnClickListener() {
+        view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (mNavigationDrawerFragment.isDrawerOpen())
@@ -470,6 +470,8 @@ public class MainActivity extends ActionBarActivity
                     String lastUpdated = new String().format(getString(R.string.last_updated_label), nseJsonObj.getString("ltt"));
                     ((TextView)getActivity().findViewById(R.id.last_updated_tv)).setText(lastUpdated);
                 } catch (JSONException e) {
+                    e.printStackTrace();
+                } catch (Exception e){
                     e.printStackTrace();
                 }
             }

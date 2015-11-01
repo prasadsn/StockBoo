@@ -58,7 +58,8 @@ public class SampleAlarmReceiver extends WakefulBroadcastReceiver {
         intent.putExtra("stock_update", true);
         alarmIntent = PendingIntent.getBroadcast(context, 0, intent, 0);
 
-        Calendar calendar = getCalendar(9, 0);
+        //Calendar calendar = getCalendar(9, 0);
+        Calendar calendar = getCalendar();
 
         alarmMgr.setInexactRepeating(AlarmManager.RTC_WAKEUP,
                 calendar.getTimeInMillis(), AlarmManager.INTERVAL_FIFTEEN_MINUTES, alarmIntent);
@@ -74,6 +75,15 @@ public class SampleAlarmReceiver extends WakefulBroadcastReceiver {
         calendar.set(Calendar.MINUTE, minutes);
         return calendar;
     }
+
+    private Calendar getCalendar(){
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(System.currentTimeMillis());
+        calendar.roll(Calendar.HOUR_OF_DAY, 1);
+        calendar.set(Calendar.MINUTE, 0);
+        return calendar;
+    }
+
 
     /**
      * Cancels the alarm.

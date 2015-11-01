@@ -3,7 +3,7 @@
     android:layout_height="match_parent" tools:context="com.stockboo.view.StockDetailFragment"
     android:background="@android:color/white">
 
-    <include android:id="@+id/stock_detail" layout="@layout/current_suggestion_list_item"></include>
+    <include android:id="@+id/stock_detail" android:layout_width="match_parent" android:layout_height="200dp" layout="@layout/current_suggestion_list_item"></include>
 
     <LinearLayout
         android:layout_width="match_parent"

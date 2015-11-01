@@ -118,9 +118,9 @@ public class SampleSchedulingService extends IntentService {
                 if(isMarketClosed()){
                     title = "Market is closed";
                     if(sensexchange > 0)
-                        buffer.append("Sensex is up by " + sensexchange +" Points " );
+                        buffer.append("Sensex is up by " + sensexchange );
                     else
-                        buffer.append("Sensex is down by " + (sensexchange * -1) +" Points " );
+                        buffer.append("Sensex is down by " + (sensexchange * -1) );
                     buffer.append(":");
                     if(niftychange > 0)
                         buffer.append(" Nifty is up by " + niftychange +" Points");
@@ -130,19 +130,19 @@ public class SampleSchedulingService extends IntentService {
                 } else {
                     if(sensexchange > 30 && niftychange > 10){
                         title = "Market is in Positive mode.";
-                        buffer.append("Sensex up by ").append(sensexchange).append(" Points ");
+                        buffer.append("Sensex up by ").append(sensexchange);
                         buffer.append(": Nifty up by ").append(niftychange).append(" Points");
                     }
                     else if(sensexchange < -30 && niftychange < -10){
                         title = "Market is in Negative mode.";
-                        buffer.append("Sensex down by ").append(sensexchange * -1).append(" Points ");
+                        buffer.append("Sensex down by ").append(sensexchange * -1);
                         buffer.append(": Nifty down by ").append(niftychange * -1).append(" Points");
                     } else {
                         title = "Market is flat";
                         if(sensexchange > 0)
-                            buffer.append("Sensex is up by " + sensexchange +" Points " );
+                            buffer.append("Sensex is up by " + sensexchange );
                         else
-                            buffer.append("Sensex is down by " + (sensexchange  * -1) +" Points " );
+                            buffer.append("Sensex is down by " + (sensexchange  * -1) );
                         buffer.append(":");
                         if(niftychange > 0)
                             buffer.append(": Nifty is up by " + niftychange +" Points");
