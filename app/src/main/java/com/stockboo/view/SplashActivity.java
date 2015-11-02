@@ -62,6 +62,12 @@ public class SplashActivity extends AppCompatActivity {
                     R.string.alert_dialog_no_internet);
             newFragment.show(getFragmentManager(), "dialog");
         }
+        initApp();
+    }
+
+    private void initApp(){
+        SharedPreferences preferences = getSharedPreferences("NSE_BSE_DATA", MODE_PRIVATE);
+        preferences.edit().putString("NSE_BSE_DATA", null).commit();
     }
 
     private void launchTutorial(){

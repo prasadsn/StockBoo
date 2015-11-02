@@ -109,15 +109,25 @@ public class PastPerformanceFragment extends Fragment implements View.OnClickLis
     }
 
     @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+
+    }
+
+    @Override
     public void onStart() {
         super.onStart();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
         mProgressDialog = new ProgressDialog(getActivity(), ProgressDialog.STYLE_SPINNER);
         mProgressDialog.setCanceledOnTouchOutside(false);
         mProgressDialog.setCancelable(false);
         mProgressDialog.setIndeterminate(true);
         mProgressDialog.show();
         getData();
-        mProgressDialog.dismiss();
     }
 
     private void getData(){
@@ -160,6 +170,8 @@ public class PastPerformanceFragment extends Fragment implements View.OnClickLis
                     initiPastPerformanceSummary(mLastMonthList);
                     mAdapter = new PerformanceAdapter(mLastMonthList);
                     mListView.setAdapter(mAdapter);
+                    if(mProgressDialog.isShowing())
+                        mProgressDialog.dismiss();
                 } else {
                 }
 

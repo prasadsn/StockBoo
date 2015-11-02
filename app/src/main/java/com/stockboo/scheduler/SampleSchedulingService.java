@@ -79,14 +79,10 @@ public class SampleSchedulingService extends IntentService {
         } else if(cal.get(Calendar.HOUR_OF_DAY) == 9 && cal.get(Calendar.MINUTE) == 15) {
             sendNotification("Market trading session started", "", true);
             return;
-        } else if(cal.get(Calendar.HOUR_OF_DAY) == 9 && cal.get(Calendar.MINUTE) == 30) {
         } else if(cal.get(Calendar.HOUR_OF_DAY) == 15 && cal.get(Calendar.MINUTE) == 15) {
             sendNotification("Market Will close in 15 Minutes", "", true);
             return;
-        } else if(cal.get(Calendar.HOUR_OF_DAY) == 15 && cal.get(Calendar.MINUTE) == 30) {
-            //sendNotification("Market is closed", "", true);
-            //return;
-        } else if(cal.get(Calendar.MINUTE) > 0){
+        } else if(!(cal.get(Calendar.HOUR_OF_DAY) == 9 && cal.get(Calendar.MINUTE) == 30) && !(cal.get(Calendar.HOUR_OF_DAY) == 15 && cal.get(Calendar.MINUTE) == 30) && cal.get(Calendar.MINUTE) > 0){
             return;
         }
         String message = "";
@@ -114,7 +110,7 @@ public class SampleSchedulingService extends IntentService {
                 JSONObject sensexJsonObj = array.getJSONObject(0);
                 double sensexchange = new Double(sensexJsonObj.getString("c")).doubleValue();
                 JSONObject niftyJsonObj = array.getJSONObject(1);
-                double niftychange = new Double(sensexJsonObj.getString("c")).doubleValue();
+                double niftychange = new Double(niftyJsonObj.getString("c")).doubleValue();
                 if(isMarketClosed()){
                     title = "Market is closed";
                     if(sensexchange > 0)
@@ -192,6 +188,7 @@ public class SampleSchedulingService extends IntentService {
         mBuilder.setContentIntent(contentIntent);
         Notification notification = mBuilder.build();
         notification.flags |= Notification.FLAG_AUTO_CANCEL;
+        notification.priority = Notification.PRIORITY_HIGH;
         mNotificationManager.notify(NOTIFICATION_ID, notification);
     }
 

@@ -61,10 +61,10 @@ public class SampleAlarmReceiver extends WakefulBroadcastReceiver {
         //Calendar calendar = getCalendar(9, 0);
         Calendar calendar = getCalendar();
 
-        alarmMgr.setInexactRepeating(AlarmManager.RTC_WAKEUP,
+        alarmMgr.setRepeating(AlarmManager.RTC_WAKEUP,
                 calendar.getTimeInMillis(), AlarmManager.INTERVAL_FIFTEEN_MINUTES, alarmIntent);
-        //alarmMgr.setInexactRepeating(AlarmManager.RTC_WAKEUP,
-        //        Calendar.getInstance().getTimeInMillis(), AlarmManager.INTERVAL_HOUR, alarmIntent);
+        //alarmMgr.setRepeating(AlarmManager.RTC_WAKEUP,
+        //       Calendar.getInstance().getTimeInMillis(), AlarmManager.INTERVAL_FIFTEEN_MINUTES, alarmIntent);
     }
     private Calendar getCalendar(int hour, int minutes){
         Calendar calendar = Calendar.getInstance();

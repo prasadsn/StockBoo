@@ -1,6 +1,7 @@
 package com.stockboo.view;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.database.DataSetObserver;
@@ -79,6 +80,7 @@ public class CurrentSuggestionFragment extends Fragment implements AbsListView.O
      * Views.
      */
     private ListAdapter mAdapter;
+    private ProgressDialog dialog;
 
     // TODO: Rename and change types of parameters
     public static CurrentSuggestionFragment newInstance(String param1, String param2) {
@@ -116,12 +118,23 @@ public class CurrentSuggestionFragment extends Fragment implements AbsListView.O
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_item, container, false);
 
+        //setListAdapter(new SuggestionAdapter());
+        return view;
+    }
+
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
         // Set the adapter
-        mListView = (AbsListView) view.findViewById(android.R.id.list);
+        mListView = (AbsListView) getActivity().findViewById(android.R.id.list);
         //((AdapterView<ListAdapter>) mListView).setAdapter(mAdapter);
 
         // Set OnItemClickListener so we can be notified on item clicks
         mListView.setOnItemClickListener(this);
+        dialog = new ProgressDialog(getActivity());
+        dialog.setIndeterminate(true);
+        dialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+        dialog.show();
         LinearLayout currentSuggestionHeading = (LinearLayout) getActivity().getLayoutInflater().inflate(R.layout.stockboo_heading_layout, mListView, false);
         ((ImageView) currentSuggestionHeading.getChildAt(0)).setImageResource(R.drawable.voice_icon);
         ((TextView) currentSuggestionHeading.getChildAt(1)).setText(R.string.heading_current_suggestions);
@@ -147,18 +160,16 @@ public class CurrentSuggestionFragment extends Fragment implements AbsListView.O
                     String request = "http://finance.google.com/finance/info?client=ig&q=" + reqParamBuffer;
                     StringRequest bseNseRequest = new StringRequest(StringRequest.Method.GET, request, listener, listener);
                     StockBooRequestQueue.getInstance(getActivity()).getRequestQueue().add(bseNseRequest);
-               } else {
+                } else {
                 }
             }
         });
-        AdView mAdView = (AdView) view.findViewById(R.id.adView);
+        AdView mAdView = (AdView) getActivity().findViewById(R.id.adView);
         AdRequest adRequest = new AdRequest.Builder()
                 //.addTestDevice(AdRequest.DEVICE_ID_EMULATOR)
                 //.addTestDevice("B1166B5E58D7D8172322BE3B3D50EC00")
                 .build();
         mAdView.loadAd(adRequest);
-        //setListAdapter(new SuggestionAdapter());
-        return view;
     }
 
     @Override
@@ -306,6 +317,8 @@ public class CurrentSuggestionFragment extends Fragment implements AbsListView.O
                     response = response.substring(4);
                 JSONArray array = new JSONArray(response);
                 ((AdapterView<ListAdapter>) mListView).setAdapter(new SuggestionAdapter(objects, array));
+                if(dialog.isShowing())
+                    dialog.dismiss();
             } catch (JSONException e) {
                 e.printStackTrace();
             }

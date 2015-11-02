@@ -2,6 +2,7 @@ package com.stockboo.view;
 
 import android.app.Activity;
 import android.app.Fragment;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
@@ -284,6 +285,10 @@ public class MainActivity extends ActionBarActivity
          * fragment.
          */
         private static final String ARG_SECTION_NUMBER = "section_number";
+        private ProgressDialog dialog;
+
+        private static String mNseBseData;
+        private static ArrayList<String> marketNews;
 
         /**
          * Returns a new instance of this fragment for the given section
@@ -298,6 +303,11 @@ public class MainActivity extends ActionBarActivity
         }
 
         @Override
+        public void onCreate(Bundle savedInstanceState) {
+            super.onCreate(savedInstanceState);
+        }
+
+        @Override
         public void onActivityCreated(Bundle savedInstanceState) {
             super.onActivityCreated(savedInstanceState);
             LinearLayout stockMsgLayout = (LinearLayout) getActivity().findViewById(R.id.heading_stock_messages);
@@ -308,6 +318,14 @@ public class MainActivity extends ActionBarActivity
             ((ImageView) marketNewsLayout.getChildAt(0)).setImageResource(R.drawable.newsicon);
             ((TextView) marketNewsLayout.getChildAt(1)).setText(R.string.heading_market_news);
             updateStockMessages();
+            loadData();
+        }
+
+        private void loadData(){
+            SharedPreferences preferences = getActivity().getSharedPreferences("NSE_BSE_DATA", MODE_PRIVATE);
+            mNseBseData = preferences.getString("NSE_BSE_DATA", null);
+            if(mNseBseData == null)
+                marketNews = null;
             DashboardResponseListener listener = new DashboardResponseListener();
             StringRequest bseNseRequest = new StringRequest(StringRequest.Method.GET, "http://finance.google.com/finance/info?client=ig&q=INDEXBOM:SENSEX,NSE:NIFTY", listener, listener);
             //StringRequest marketNewsRequest = new StringRequest(StringRequest.Method.GET, "http://www.moneycontrol.com/rss/MCtopnews.xml", listener, listener);
@@ -315,7 +333,6 @@ public class MainActivity extends ActionBarActivity
             //StockBooRequestQueue.getRequestQueue(this).add(marketNewsRequest);
             new UpdateMarketNewsTask().execute();
         }
-
         public PlaceholderFragment() {
         }
 
@@ -335,15 +352,26 @@ public class MainActivity extends ActionBarActivity
         private class UpdateMarketNewsTask extends AsyncTask<Void, ArrayList<String>, ArrayList<String>> {
 
             @Override
+            protected void onPreExecute() {
+                super.onPreExecute();
+                dialog = new ProgressDialog(getActivity());
+                dialog.setIndeterminate(true);
+                dialog.setCanceledOnTouchOutside(false);
+                dialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+                dialog.show();
+            }
+
+            @Override
             protected ArrayList<String> doInBackground(Void... params) {
-                try {
-                    return updateMarketNews();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                } catch (XmlPullParserException e) {
-                    e.printStackTrace();
-                }
-                return null;
+                if(marketNews == null)
+                    try {
+                        marketNews =  updateMarketNews();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    } catch (XmlPullParserException e) {
+                        e.printStackTrace();
+                    }
+                return marketNews;
             }
 
             @Override
@@ -377,6 +405,8 @@ public class MainActivity extends ActionBarActivity
                         }
                     });
                 }
+                if(dialog.isShowing())
+                    dialog.dismiss();
             }
         }
 
@@ -441,7 +471,18 @@ public class MainActivity extends ActionBarActivity
             }
 
             @Override
-            public void onResponse(String response) {
+            public void onResponse(String response) { mNseBseData = response;
+                SharedPreferences preferences = getActivity().getSharedPreferences("NSE_BSE_DATA", MODE_PRIVATE);
+                SharedPreferences.Editor editor = preferences.edit();
+                editor.putString("NSE_BSE_DATA", response);
+                editor.commit();
+
+                processDashboardData(mNseBseData);}
+
+        }
+
+        private void processDashboardData(String response) {
+            {
                 try {
                     if(response.startsWith("\n// "))
                         response = response.substring(4);
@@ -461,7 +502,7 @@ public class MainActivity extends ActionBarActivity
                     layout = (LinearLayout) getActivity().findViewById(R.id.nse_layout);
                     cp = new Double(nseJsonObj.getString("cp")).doubleValue();
                     if(cp<0){
-                       // ((TextView) layout.getChildAt(1)).setTextColor(Color.RED);
+                        // ((TextView) layout.getChildAt(1)).setTextColor(Color.RED);
                         ((TextView) layout.getChildAt(2)).setTextColor(Color.RED);
                     }
                     ((TextView) layout.getChildAt(0)).setText("NSE");

@@ -1,0 +1,196 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="200dp" android:background="@drawable/bg_box">
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/imageView2"
+        android:src="@drawable/buy_button"
+        android:layout_marginTop="7dp"
+        android:layout_marginLeft="7dp"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
+
+    <com.stockboo.view.custom.StockBooTextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Buy &quot;Anil Ltd&quot;"
+        android:id="@+id/textView6"
+        android:textSize="14dp"
+        android:maxLines="1"
+        android:textColor="@android:color/black"
+        android:layout_alignBottom="@+id/imageView2"
+        android:layout_toRightOf="@+id/imageView2"
+        android:layout_toEndOf="@+id/imageView2"
+        android:layout_marginLeft="20dp"
+        android:layout_marginStart="20dp" />
+
+    <com.stockboo.view.custom.StockBooTextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@android:color/black"
+        android:text="Multibaggers"
+        android:id="@+id/textView7"
+        android:layout_marginTop="15dp"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@+id/textView6" />
+
+    <ImageView
+        android:layout_width="55dp"
+        android:layout_height="55dp"
+        android:id="@+id/imageView3"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="20dp"
+        android:layout_below="@id/imageView2"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:src="@drawable/ic_launcher" />
+    <View
+        android:layout_width="2dp"
+        android:layout_height="50dp"
+        android:background="@android:color/black"
+        android:id="@+id/view"
+        android:layout_alignBottom="@+id/textView12"
+        android:layout_centerHorizontal="true" />
+
+    <ImageView
+        android:layout_width="10dp"
+        android:layout_height="10dp"
+        android:id="@+id/imageView4"
+        android:layout_below="@+id/textView7"
+        android:layout_marginRight="5dp"
+        android:layout_marginTop="10dp"
+        android:layout_toLeftOf="@+id/view"
+        android:layout_toStartOf="@+id/view"
+        android:src="@drawable/status_icon" />
+
+    <ImageView
+        android:layout_width="10dp"
+        android:layout_height="10dp"
+        android:id="@+id/imageView5"
+        android:layout_marginTop="10dp"
+        android:src="@drawable/time_icon"
+        android:layout_below="@+id/imageView4"
+        android:layout_alignLeft="@+id/imageView4"
+        android:layout_alignStart="@+id/imageView4" />
+
+    <com.stockboo.view.custom.StockBooTextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="CP"
+        android:id="@+id/textView8"
+        android:textColor="@android:color/black"
+        android:textSize="10dp"
+        android:layout_marginTop="10dp"
+        android:layout_below="@+id/imageView5"
+        android:layout_alignRight="@+id/imageView4"
+        android:layout_alignEnd="@+id/textView7" />
+
+    <com.stockboo.view.custom.StockBooTextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Open"
+        android:id="@+id/textView9"
+        android:textColor="@android:color/black"
+        android:textSize="10dp"
+        android:layout_alignBottom="@+id/imageView4"
+        android:layout_alignLeft="@+id/tvUpdatedAt"
+        android:layout_alignStart="@+id/tvUpdatedAt" />
+    <com.stockboo.view.custom.StockBooTextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="14 Jan"
+        android:id="@+id/tvUpdatedAt"
+        android:textColor="@android:color/black"
+        android:textSize="10dp"
+        android:layout_alignBottom="@+id/imageView5"
+        android:layout_alignLeft="@+id/tvCpValue"
+        android:layout_alignStart="@+id/tvCpValue" />
+    <com.stockboo.view.custom.StockBooTextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="248.30"
+        android:id="@+id/tvCpValue"
+        android:textColor="@android:color/black"
+        android:textSize="10dp"
+        android:layout_marginLeft="5dp"
+        android:layout_below="@+id/tvUpdatedAt"
+        android:layout_marginTop="5dp"
+        android:layout_alignBaseline="@id/textView8"
+        android:layout_toRightOf="@+id/view"
+        android:layout_toEndOf="@+id/view" />
+
+    <com.stockboo.view.custom.StockBooTextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="\@StockBuddy"
+        android:textColor="@android:color/black"
+        android:id="@+id/textView12"
+        android:layout_alignBottom="@+id/textView8"
+        android:layout_alignLeft="@+id/imageView3"
+        android:layout_alignStart="@+id/imageView3" />
+
+    <com.stockboo.view.custom.StockBooTextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="+0.20 [ 0.20 % ]"
+        android:textColor="@android:color/holo_green_light"
+        android:textSize="9dp"
+        android:gravity="bottom"
+        android:id="@+id/tvc_c_fix_value"
+        android:layout_alignBottom="@+id/tvCpValue"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginRight="5dp"
+        android:layout_marginEnd="5dp" />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_below="@+id/textView8"
+        android:id="@+id/layout_recommended_price"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginLeft="5dp"
+        android:layout_marginTop="30dp">
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" android:src="@drawable/tick_icon"/>
+        <com.stockboo.view.custom.StockBooTextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/label_recommended_price"               android:textSize="10dp"
+            android:textColor="@android:color/black"
+            android:layout_marginLeft="5dp"
+            />
+        <com.stockboo.view.custom.StockBooBoldTextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/tvrBuyPrice"
+            android:text="120"
+            android:textSize="10dp"
+            android:layout_marginLeft="5dp"
+            android:textColor="#009090"/>
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="25dp"
+        android:orientation="horizontal"
+        android:layout_below="@+id/layout_recommended_price"
+        android:layout_marginTop="12dp"
+        android:layout_marginLeft="24dp"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true">
+        <com.stockboo.view.custom.StockBooTextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/label_target_price"               android:textSize="10dp"
+            android:textColor="@android:color/black"
+            android:layout_marginLeft="5dp"/>
+        <com.stockboo.view.custom.StockBooBoldTextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/tvTargetPrice"
+            android:text="160"
+            android:textSize="10dp"
+            android:layout_marginLeft="5dp"
+            android:textColor="#009090"/>
+    </LinearLayout>
+</RelativeLayout>
