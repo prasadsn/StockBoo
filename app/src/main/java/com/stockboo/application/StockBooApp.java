@@ -20,13 +20,13 @@ public class StockBooApp extends Application {
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
 
         if(preferences.getBoolean("enable_notification", true)) {
-            if(preferences.getBoolean("alarm_set", false))
-                return;
-            new SampleAlarmReceiver().setAlarm(this);
-            SharedPreferences.Editor editor = preferences.edit();
-            editor.putBoolean("alarm_set", true);
-            editor.commit();
-            editor.apply();
+            if(!preferences.getBoolean("alarm_set", false)){
+                new SampleAlarmReceiver().setAlarm(this);
+                SharedPreferences.Editor editor = preferences.edit();
+                editor.putBoolean("alarm_set", true);
+                editor.commit();
+                editor.apply();
+            }
         }
         else
             new SampleAlarmReceiver().cancelAlarm(this);
