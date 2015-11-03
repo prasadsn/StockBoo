@@ -9,6 +9,7 @@ import android.content.pm.PackageManager;
 import android.support.v4.content.WakefulBroadcastReceiver;
 
 import java.util.Calendar;
+import java.util.Date;
 
 /**
  * When the alarm fires, this WakefulBroadcastReceiver receives the broadcast Intent 
@@ -60,7 +61,6 @@ public class SampleAlarmReceiver extends WakefulBroadcastReceiver {
 
         //Calendar calendar = getCalendar(9, 0);
         Calendar calendar = getCalendar();
-
         alarmMgr.setRepeating(AlarmManager.RTC_WAKEUP,
                 calendar.getTimeInMillis(), AlarmManager.INTERVAL_FIFTEEN_MINUTES, alarmIntent);
         //alarmMgr.setRepeating(AlarmManager.RTC_WAKEUP,
@@ -79,8 +79,14 @@ public class SampleAlarmReceiver extends WakefulBroadcastReceiver {
     private Calendar getCalendar(){
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(System.currentTimeMillis());
-        calendar.roll(Calendar.HOUR_OF_DAY, 1);
-        calendar.set(Calendar.MINUTE, 0);
+        int minute = calendar.get(Calendar.MINUTE);
+        if(minute > 0)
+            minute = minute + (15 - (minute % 15));
+        minute = minute == 60 ? 0 : minute;
+        if(minute == 0)
+            calendar.roll(Calendar.HOUR_OF_DAY, 1);
+        calendar.set(Calendar.MINUTE, minute);
+        calendar.set(Calendar.SECOND, 0);
         return calendar;
     }
 

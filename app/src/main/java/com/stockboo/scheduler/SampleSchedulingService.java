@@ -68,21 +68,23 @@ public class SampleSchedulingService extends IntentService {
 
         Calendar cal = Calendar.getInstance();
         int dow = cal.get(Calendar.DAY_OF_WEEK);
+        int hod = cal.get(Calendar.HOUR_OF_DAY);
+        int min = cal.get(Calendar.MINUTE);
         boolean isWeekday = ((dow >= Calendar.MONDAY) && (dow <= Calendar.FRIDAY));
 
-        if(!isWeekday ||  cal.get(Calendar.HOUR_OF_DAY) < 9 || cal.get(Calendar.HOUR_OF_DAY) > 15)
+        if(!isWeekday ||  hod < 9 || hod > 15)
             return;
 
-        if(cal.get(Calendar.HOUR_OF_DAY) == 9 && cal.get(Calendar.MINUTE) == 0) {
+        if(hod == 9 && min == 0) {
             sendNotification("Market likely to open  in 15 Minutes", "", true);
             return;
-        } else if(cal.get(Calendar.HOUR_OF_DAY) == 9 && cal.get(Calendar.MINUTE) == 15) {
+        } else if(hod == 9 && min == 15) {
             sendNotification("Market trading session started", "", true);
             return;
-        } else if(cal.get(Calendar.HOUR_OF_DAY) == 15 && cal.get(Calendar.MINUTE) == 15) {
+        } else if(hod == 15 && min == 15) {
             sendNotification("Market Will close in 15 Minutes", "", true);
             return;
-        } else if(!(cal.get(Calendar.HOUR_OF_DAY) == 9 && cal.get(Calendar.MINUTE) == 30) && !(cal.get(Calendar.HOUR_OF_DAY) == 15 && cal.get(Calendar.MINUTE) == 30) && cal.get(Calendar.MINUTE) > 0){
+        } else if(!(hod == 9 && min == 30) && !(hod == 15 && min == 30) && min > 0){
             return;
         }
         String message = "";
@@ -111,7 +113,7 @@ public class SampleSchedulingService extends IntentService {
                 double sensexchange = new Double(sensexJsonObj.getString("c")).doubleValue();
                 JSONObject niftyJsonObj = array.getJSONObject(1);
                 double niftychange = new Double(niftyJsonObj.getString("c")).doubleValue();
-                if(isMarketClosed()){
+                if(isMarketClosed(hod, min)){
                     title = "Market is closed";
                     if(sensexchange > 0)
                         buffer.append("Sensex is up by " + sensexchange );
@@ -162,9 +164,9 @@ public class SampleSchedulingService extends IntentService {
         // END_INCLUDE(service_onhandle)
     }
 
-    private boolean isMarketClosed(){
-        Calendar calendar =Calendar.getInstance();
-        return calendar.get(Calendar.HOUR_OF_DAY) == 15 && calendar.get(Calendar.MINUTE) == 30;
+    private boolean isMarketClosed(int hour, int min){
+        Calendar calendar = Calendar.getInstance();
+        return hour == 15 && min == 30;
     }
 
     // Post a notification indicating whether a doodle was found.
