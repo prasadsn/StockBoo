@@ -274,7 +274,7 @@ public class CurrentSuggestionFragment extends Fragment implements AbsListView.O
                 ((TextView) layout.findViewById(R.id.tvc_c_fix_value)).setTextColor(Color.RED);
             }
             else
-                ((TextView) layout.findViewById(R.id.tvc_c_fix_value)).setTextColor(Color.GREEN);
+                ((TextView) layout.findViewById(R.id.tvc_c_fix_value)).setTextColor(getResources().getColor(R.color.stockboo_color_green));
             ((TextView) layout.findViewById(R.id.tvc_c_fix_value)).setText(tvc_c_fix_value);
             ((TextView) layout.findViewById(R.id.textView6)).setText(list.get(2));
             ((TextView) layout.findViewById(R.id.tvUpdatedAt)).setText(list.get(3));

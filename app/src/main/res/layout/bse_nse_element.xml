@@ -32,6 +32,6 @@
         android:gravity="right"
         android:layout_marginRight="20dp"
         android:textSize="12dp"
-        android:textColor="@android:color/holo_green_light"
+        android:textColor="@color/stockboo_color_green"
         android:id="@+id/textView4" />
 </LinearLayout>

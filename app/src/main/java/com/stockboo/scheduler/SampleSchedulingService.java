@@ -75,16 +75,16 @@ public class SampleSchedulingService extends IntentService {
         if(!isWeekday ||  hod < 9 || hod > 15)
             return;
 
-        if(hod == 9 && min == 0) {
+        if( hod == 9 && min < 2 ) {
             sendNotification("Market likely to open  in 15 Minutes", "", true);
             return;
-        } else if(hod == 9 && min == 15) {
+        } else if( hod == 9 && min == 15 ) {
             sendNotification("Market trading session started", "", true);
             return;
-        } else if(hod == 15 && min == 15) {
+        } else if( hod == 15 && min == 15 ) {
             sendNotification("Market Will close in 15 Minutes", "", true);
             return;
-        } else if(!(hod == 9 && min == 30) && !(hod == 15 && min == 30) && min > 0){
+        } else if(!( hod == 9 && min == 30 ) && !( hod == 15 && min == 30 ) && min > 0){
             return;
         }
         String message = "";

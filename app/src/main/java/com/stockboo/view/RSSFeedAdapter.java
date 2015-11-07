@@ -42,7 +42,7 @@ public class RSSFeedAdapter extends CursorAdapter {
     }
     private void updateView(View view, Context context, Cursor cursor){
         RelativeLayout layout = (RelativeLayout) view;
-        final String link = cursor.getString(1);
+        final String link = cursor.getString(cursor.getColumnIndex("link"));
 
         if( link!=null && link.contains("news.google.com"))
             layout.getChildAt(1).setVisibility(View.GONE);
@@ -65,7 +65,7 @@ public class RSSFeedAdapter extends CursorAdapter {
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("EEE, d MMM yyyy HH:mm:ss z");
         Date pubDate = null;
         try {
-            pubDate = simpleDateFormat.parse(cursor.getString(2));
+            pubDate = simpleDateFormat.parse(cursor.getString(cursor.getColumnIndex("pubDate")));
         } catch (ParseException e) {
             e.printStackTrace();
         }
@@ -78,9 +78,9 @@ public class RSSFeedAdapter extends CursorAdapter {
         if(days>1)
             hours = hours % 24;
         String time = days > 1? days + " day ago" : hours + " hours ago";
-        titleView.setText(cursor.getString(4));
-        descriptionView.setText(cursor.getString(0));
+        titleView.setText(cursor.getString(cursor.getColumnIndex("title")));
+        descriptionView.setText(cursor.getString(cursor.getColumnIndex("description")));
         updatedDateView.setText(time);
-        imageView.setImageUrl(cursor.getString(3), StockBooRequestQueue.getInstance(mContext).getImageLoader());
+        imageView.setImageUrl(cursor.getString(cursor.getColumnIndex("thumbnailLink")), StockBooRequestQueue.getInstance(mContext).getImageLoader());
     }
 }

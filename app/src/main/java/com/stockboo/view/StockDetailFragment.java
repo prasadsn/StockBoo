@@ -106,10 +106,10 @@ public class StockDetailFragment extends Fragment implements View.OnClickListene
         ((TextView) layout.findViewById(R.id.tvCpValue)).setText(mList.get(0));
         String tvc_c_fix_value = mList.get(1);
         if(tvc_c_fix_value.trim().startsWith("-")){
-            ((TextView) layout.findViewById(R.id.tvc_c_fix_value)).setTextColor(Color.RED);
+            ((TextView) layout.findViewById(R.id.tvc_c_fix_value)).setTextColor(getResources().getColor(R.color.stockboo_color_red));
         }
         else
-            ((TextView) layout.findViewById(R.id.tvc_c_fix_value)).setTextColor(Color.GREEN);
+            ((TextView) layout.findViewById(R.id.tvc_c_fix_value)).setTextColor(getResources().getColor(R.color.stockboo_color_green));
         ((TextView) layout.findViewById(R.id.tvc_c_fix_value)).setText(tvc_c_fix_value);
         ((TextView) layout.findViewById(R.id.textView6)).setText(mList.get(2));
         ((TextView) layout.findViewById(R.id.tvUpdatedAt)).setText(mList.get(3));
@@ -282,7 +282,7 @@ public class StockDetailFragment extends Fragment implements View.OnClickListene
         @Override
         public View getView(final int position, View convertView, ViewGroup parent) {
             LinearLayout layout = (LinearLayout) getActivity().getLayoutInflater().inflate(R.layout.headlines_tv, null);
-            TextView tv = (TextView) layout.getChildAt(0);
+            TextView tv = (TextView) layout.getChildAt(1);
             tv.setText(mList.get(position));
             if(mNewsLinkList != null)
                 layout.setOnClickListener(new View.OnClickListener() {

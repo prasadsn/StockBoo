@@ -19,7 +19,7 @@
         android:layout_height="wrap_content"
         android:text="Buy &quot;Anil Ltd&quot;"
         android:id="@+id/textView6"
-        android:textSize="14dp"
+        android:textSize="15dp"
         android:maxLines="1"
         android:textColor="@android:color/black"
         android:layout_alignBottom="@+id/imageView2"
@@ -83,7 +83,7 @@
         android:text="CP"
         android:id="@+id/textView8"
         android:textColor="@android:color/black"
-        android:textSize="10dp"
+        android:textSize="11dp"
         android:layout_marginTop="10dp"
         android:layout_below="@+id/imageView5"
         android:layout_alignRight="@+id/imageView4"
@@ -95,7 +95,7 @@
         android:text="Open"
         android:id="@+id/textView9"
         android:textColor="@android:color/black"
-        android:textSize="10dp"
+        android:textSize="11dp"
         android:layout_alignBottom="@+id/imageView4"
         android:layout_alignLeft="@+id/tvUpdatedAt"
         android:layout_alignStart="@+id/tvUpdatedAt" />
@@ -105,7 +105,7 @@
         android:text="14 Jan"
         android:id="@+id/tvUpdatedAt"
         android:textColor="@android:color/black"
-        android:textSize="10dp"
+        android:textSize="11dp"
         android:layout_alignBottom="@+id/imageView5"
         android:layout_alignLeft="@+id/tvCpValue"
         android:layout_alignStart="@+id/tvCpValue" />
@@ -115,7 +115,7 @@
         android:text="248.30"
         android:id="@+id/tvCpValue"
         android:textColor="@android:color/black"
-        android:textSize="10dp"
+        android:textSize="11dp"
         android:layout_marginLeft="5dp"
         android:layout_below="@+id/tvUpdatedAt"
         android:layout_marginTop="5dp"
@@ -138,7 +138,7 @@
         android:layout_height="wrap_content"
         android:text="+0.20 [ 0.20 % ]"
         android:textColor="@android:color/holo_green_light"
-        android:textSize="9dp"
+        android:textSize="10dp"
         android:gravity="bottom"
         android:id="@+id/tvc_c_fix_value"
         android:layout_alignBottom="@+id/tvCpValue"
@@ -168,7 +168,7 @@
             android:layout_height="wrap_content"
             android:id="@+id/tvrBuyPrice"
             android:text="120"
-            android:textSize="10dp"
+            android:textSize="11dp"
             android:layout_marginLeft="5dp"
             android:textColor="#009090"/>
     </LinearLayout>
@@ -189,7 +189,7 @@
             android:layout_height="wrap_content"
             android:id="@+id/tvTargetPrice"
             android:text="160"
-            android:textSize="10dp"
+            android:textSize="11dp"
             android:layout_marginLeft="5dp"
             android:textColor="#009090"/>
     </LinearLayout>

@@ -259,8 +259,16 @@ public class MainActivity extends ActionBarActivity
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
-        Intent intent = new Intent(MainActivity.this, SettingsActivity.class);
-        startActivity(intent);
+        switch (id){
+            case R.id.action_settings:
+                Intent intent = new Intent(MainActivity.this, SettingsActivity.class);
+                startActivity(intent);
+                break;
+            case R.id.action_quote:
+                Intent intent1 = new Intent(MainActivity.this, QuoteActivity.class);
+                startActivity(intent1);
+                break;
+        }
 
         return super.onOptionsItemSelected(item);
     }
@@ -393,7 +401,7 @@ public class MainActivity extends ActionBarActivity
                 for(int i = 4; i < headlines.size(); i = i+2) {
                     final int linkPosition = i + 1;
                     LinearLayout layout = (LinearLayout) getActivity().getLayoutInflater().inflate(R.layout.headlines_tv, null);
-                    TextView tv = (TextView) layout.getChildAt(0);
+                    TextView tv = (TextView) layout.getChildAt(1);
                     tv.setText(headlines.get(i));
                     mainLayout.addView(layout, params);
                     layout.setOnClickListener(new View.OnClickListener() {
@@ -423,7 +431,7 @@ public class MainActivity extends ActionBarActivity
                     for(int i = 0; i < array.length(); i++) {
                         JSONObject obj = array.getJSONObject(i);
                         LinearLayout layout = (LinearLayout) getActivity().getLayoutInflater().inflate(R.layout.headlines_tv, null);
-                        TextView tv = (TextView) layout.getChildAt(0);
+                        TextView tv = (TextView) layout.getChildAt(1);
                         tv.setText(obj.getString("content"));
                         stockMsgsLayout.addView(layout, params);
                     }
@@ -471,13 +479,19 @@ public class MainActivity extends ActionBarActivity
             }
 
             @Override
-            public void onResponse(String response) { mNseBseData = response;
-                SharedPreferences preferences = getActivity().getSharedPreferences("NSE_BSE_DATA", MODE_PRIVATE);
-                SharedPreferences.Editor editor = preferences.edit();
-                editor.putString("NSE_BSE_DATA", response);
-                editor.commit();
+            public void onResponse(String response) {
+                try {
+                    mNseBseData = response;
+                    SharedPreferences preferences = getActivity().getSharedPreferences("NSE_BSE_DATA", MODE_PRIVATE);
+                    SharedPreferences.Editor editor = preferences.edit();
+                    editor.putString("NSE_BSE_DATA", response);
+                    editor.commit();
 
-                processDashboardData(mNseBseData);}
+                    processDashboardData(mNseBseData);
+                } catch (Exception e){
+
+                }
+            }
 
         }
 
