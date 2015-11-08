@@ -68,6 +68,10 @@ public class QuoteActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+        if(data == null) {
+            finish();
+            return;
+        }
         StockList stockList = data.getParcelableExtra("Stock");
         mWatchList = new WatchList(stockList.getSYMBOL(), stockList.getScriptName(), stockList.getStatus(), stockList.getISINNO(), stockList.getIndustry(), stockList.getGroup(), null, stockList.getScriptID(), null, null);
         StringBuffer reqParamBuffer = new StringBuffer();
