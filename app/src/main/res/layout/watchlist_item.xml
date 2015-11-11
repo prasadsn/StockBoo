@@ -21,7 +21,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="25dp" android:orientation="horizontal" android:background="@drawable/boxbackground_2">
-    <com.stockboo.view.custom.StockBooTextView android:id="@+id/price" android:textSize="12dp" android:layout_marginTop="5dp" android:layout_marginLeft="5dp" android:text="Price" android:layout_width="match_parent"  android:layout_weight="1"
+    <com.stockboo.view.custom.StockBooBoldTextView android:id="@+id/price" android:textSize="12dp" android:layout_marginTop="5dp" android:layout_marginLeft="5dp" android:text="Price" android:layout_width="match_parent"  android:layout_weight="1"
         android:textColor="#009090" android:textStyle="bold" android:layout_height="wrap_content" android:layout_below="@id/scriptID"/>
     <com.stockboo.view.custom.StockBooTextView android:id="@+id/c_fix" android:textSize="10sp" android:background="@drawable/oval_background_green" android:text="Stock ID" android:layout_alignParentRight="true" android:layout_width="match_parent"  android:layout_weight="4"
         android:layout_gravity="center_vertical" android:gravity="center" android:textColor="@android:color/white" android:layout_height="14dp" android:layout_alignBaseline="@id/price" android:layout_marginRight="10dp"/>

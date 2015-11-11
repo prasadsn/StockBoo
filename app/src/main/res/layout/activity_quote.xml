@@ -3,6 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    android:background="@android:color/white"
     xmlns:ads="http://schemas.android.com/apk/res-auto"
     tools:context="com.stockboo.view.QuoteActivity">
 
@@ -37,13 +38,13 @@
         android:id="@+id/heading_market_news"/>
 
     <ListView
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/listView2"
         android:layout_marginLeft="5dp"
         android:layout_marginRight="5dp"
-        android:layout_weight="10"
-        android:dividerHeight="2dp"
+        android:layout_weight="15"
+        android:dividerHeight="5dp"
         android:divider="@android:color/white"
         android:scrollbars="none"
         android:layout_below="@+id/heading_market_news"

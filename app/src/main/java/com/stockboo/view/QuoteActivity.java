@@ -2,6 +2,7 @@ package com.stockboo.view;
 
 import android.content.Context;
 import android.content.Intent;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -11,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListAdapter;
 import android.widget.ListView;
@@ -53,6 +55,12 @@ public class QuoteActivity extends AppCompatActivity {
         mAdView.loadAd(adRequest);
         Intent intent = new Intent(this, StockListSearchActivity.class);
         startActivityForResult(intent, 0);
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.setHomeButtonEnabled(false);
+        View view = getLayoutInflater().inflate(R.layout.stockboo_action_bar, null);
+        view.findViewById(R.id.btn_navigation).setVisibility(View.INVISIBLE);
+        actionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
+        actionBar.setCustomView(view);
     }
 
     @Override
@@ -61,8 +69,10 @@ public class QuoteActivity extends AppCompatActivity {
         mListView = (ListView) findViewById(R.id.listView2);
         LinearLayout layout = (LinearLayout) findViewById(R.id.heading_quote);
         ((TextView)layout.getChildAt(1)).setText("Show Quote");
+        ((ImageView)layout.getChildAt(0)).setImageResource(R.drawable.newsicon);
         layout = (LinearLayout) findViewById(R.id.heading_market_news);
         ((TextView)layout.getChildAt(1)).setText("Market News");
+        ((ImageView)layout.getChildAt(0)).setImageResource(R.drawable.newsicon);
     }
 
     @Override
