@@ -28,6 +28,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.InterstitialAd;
 import com.stockboo.R;
 import com.stockboo.model.BrokerageRecos;
@@ -322,6 +323,12 @@ public class MainActivity extends ActionBarActivity
             ((ImageView) stockMsgLayout.getChildAt(0)).setImageResource(R.drawable.stockmessage_screen);
             ((TextView) stockMsgLayout.getChildAt(1)).setText(R.string.heading_stock_message);
 
+            AdView mAdView = (AdView) getActivity().findViewById(R.id.adView);
+            AdRequest adRequest = new AdRequest.Builder()
+                    //.addTestDevice(AdRequest.DEVICE_ID_EMULATOR)
+                    //.addTestDevice("B1166B5E58D7D8172322BE3B3D50EC00")
+                    .build();
+            mAdView.loadAd(adRequest);
             LinearLayout marketNewsLayout = (LinearLayout) getActivity().findViewById(R.id.heading_market_news);
             ((ImageView) marketNewsLayout.getChildAt(0)).setImageResource(R.drawable.newsicon);
             ((TextView) marketNewsLayout.getChildAt(1)).setText(R.string.heading_market_news);

@@ -153,14 +153,20 @@ public class PastPerformanceFragment extends Fragment implements View.OnClickLis
                         Calendar cal1 = Calendar.getInstance();
                         cal1.setTimeInMillis(updatedTime);
                         cal.roll(Calendar.MONTH, -1);
+                        if(cal.get(Calendar.MONTH) == Calendar.DECEMBER)
+                            cal.roll(Calendar.YEAR, -1);
                         int equal = cal.compareTo(cal1);
                         if(equal == -1)
                             mLastMonthList.add(parseObject);
                         cal.roll(Calendar.MONTH, -2);
+                        if(cal.get(Calendar.MONTH) == Calendar.NOVEMBER || cal.get(Calendar.MONTH) == Calendar.DECEMBER)
+                            cal.roll(Calendar.YEAR, -1);
                         equal = cal.compareTo(cal1);
                         if(equal == -1)
                             m3MonthList.add(parseObject);
                         cal.roll(Calendar.MONTH, -3);
+                        if(cal.get(Calendar.MONTH) == Calendar.APRIL || cal.get(Calendar.MONTH) == Calendar.MAY || cal.get(Calendar.MONTH) == Calendar.JUNE)
+                            cal.roll(Calendar.YEAR, -1);
                         equal = cal.compareTo(cal1);
                         if(equal == -1)
                             m6MonthList.add(parseObject);

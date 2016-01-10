@@ -109,7 +109,7 @@ public class StockDetailFragment extends Fragment implements View.OnClickListene
             ((TextView) layout.findViewById(R.id.tvc_c_fix_value)).setTextColor(getResources().getColor(R.color.stockboo_color_red));
         }
         else
-            ((TextView) layout.findViewById(R.id.tvc_c_fix_value)).setTextColor(getResources().getColor(R.color.stockboo_color_green));
+            ((TextView) layout.findViewById(R.id.tvc_c_fix_value)).setTextColor(getResources().getColor(android.R.color.holo_green_light));
         ((TextView) layout.findViewById(R.id.tvc_c_fix_value)).setText(tvc_c_fix_value);
         ((TextView) layout.findViewById(R.id.textView6)).setText(mList.get(2));
         ((TextView) layout.findViewById(R.id.tvUpdatedAt)).setText(mList.get(3));
