@@ -330,7 +330,7 @@ public class PortfolioFragment extends Fragment {
         netWorthlayout.setBackgroundColor(getResources().getColor(R.color.light_gray));
         ((TextView) totalInvestementlayout.getChildAt(0)).setText("TOTAL INVESTMENT");
         ((TextView) netWorthlayout.getChildAt(0)).setText("MY NETWORTH");
-        ((TextView) totalChangelayout.getChildAt(0)).setText("TOTDAY CHANGE");
+        ((TextView) totalChangelayout.getChildAt(0)).setText("TODAY CHANGE");
 
     }
     private void updatePortFolioBoard(){

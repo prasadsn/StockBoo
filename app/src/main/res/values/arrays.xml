@@ -2,7 +2,7 @@
 <resources>
     <array name="navigation_drawer_items">
         <item>Home</item>
-        <item>Current Suggestions</item>
+        <item>StockBoo Vista</item>
         <item>Past Performance</item>
         <item>My Watch List</item>
         <item>Portfolio</item>

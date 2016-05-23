@@ -234,11 +234,11 @@ public class CurrentSuggestionFragment extends Fragment implements AbsListView.O
             }
             list.add(((String)object.get("stockId")).replace("\n", "").trim());
             Date updatedAt = object.getUpdatedAt();
-            SimpleDateFormat format = new SimpleDateFormat("dd MMMM");
+            SimpleDateFormat format = new SimpleDateFormat("dd MMM");
 
             Calendar c = Calendar.getInstance();
             c.setTime(updatedAt);
-            c.add(Calendar.MONTH, -3);
+            //c.add(Calendar.MONTH, -3);
 
             Date d = c.getTime();
             String res = format.format(d);

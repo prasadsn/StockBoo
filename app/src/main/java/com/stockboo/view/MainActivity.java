@@ -9,6 +9,7 @@ import android.graphics.Color;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.preference.PreferenceManager;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBar;
 import android.os.Bundle;
@@ -298,6 +299,7 @@ public class MainActivity extends ActionBarActivity
 
         private static String mNseBseData;
         private static ArrayList<String> marketNews;
+        private SwipeRefreshLayout swipeView;
 
         /**
          * Returns a new instance of this fragment for the given section
@@ -332,6 +334,15 @@ public class MainActivity extends ActionBarActivity
             LinearLayout marketNewsLayout = (LinearLayout) getActivity().findViewById(R.id.heading_market_news);
             ((ImageView) marketNewsLayout.getChildAt(0)).setImageResource(R.drawable.newsicon);
             ((TextView) marketNewsLayout.getChildAt(1)).setText(R.string.heading_market_news);
+            swipeView = (SwipeRefreshLayout) getActivity().findViewById(R.id.swipe);
+            swipeView.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+                @Override
+                public void onRefresh() {
+                    swipeView.setRefreshing(true);
+                    loadData();
+                }
+            });
+
             updateStockMessages();
             loadData();
         }
@@ -422,6 +433,8 @@ public class MainActivity extends ActionBarActivity
                 }
                 if(dialog.isShowing())
                     dialog.dismiss();
+                if(swipeView != null)
+                    swipeView.setRefreshing(false);
             }
         }
 

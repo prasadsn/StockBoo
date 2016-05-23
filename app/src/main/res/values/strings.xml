@@ -45,10 +45,10 @@
     <string name="hello_world">Hello world!</string>
     <string name="button_skip">SKIP NOW</string>
     <string name="alert_dialog_no_internet">No internet connection</string>
-    <string name="label_recommended_price">Recommend Price:</string>
+    <string name="label_recommended_price">Entering Price:</string>
     <string name="label_target_price">Target Price:</string>
-    <string name="heading_current_suggestions">Current Suggestions</string>
-    <string name="title_activity_stock_detail">Current Suggestions</string>
+    <string name="heading_current_suggestions">StockBoo vista</string>
+    <string name="title_activity_stock_detail">StockBoo vista</string>
     <string name="menu_title_add">Add Stock</string>
 
     <string name="title_activity_organization_search">OrganizationSearchActivity</string>

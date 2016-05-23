@@ -98,10 +98,8 @@ public class SampleAlarmReceiver extends WakefulBroadcastReceiver {
     // BEGIN_INCLUDE(cancel_alarm)
     public void cancelAlarm(Context context) {
         // If the alarm has been set, cancel it.
-        if (alarmMgr!= null) {
-            alarmMgr.cancel(alarmIntent);
-        }
-        
+        ((AlarmManager)context.getSystemService(Context.ALARM_SERVICE)).cancel(alarmIntent);
+
         // Disable {@code SampleBootReceiver} so that it doesn't automatically restart the 
         // alarm when the device is rebooted.
         ComponentName receiver = new ComponentName(context, SampleBootReceiver.class);
