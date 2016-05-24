@@ -111,7 +111,12 @@ public class PastPerformanceFragment extends Fragment implements View.OnClickLis
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-
+        mProgressDialog = new ProgressDialog(getActivity(), ProgressDialog.STYLE_SPINNER);
+        mProgressDialog.setCanceledOnTouchOutside(false);
+        mProgressDialog.setCancelable(false);
+        mProgressDialog.setIndeterminate(true);
+        mProgressDialog.show();
+        getData();
     }
 
     @Override
@@ -122,12 +127,6 @@ public class PastPerformanceFragment extends Fragment implements View.OnClickLis
     @Override
     public void onResume() {
         super.onResume();
-        mProgressDialog = new ProgressDialog(getActivity(), ProgressDialog.STYLE_SPINNER);
-        mProgressDialog.setCanceledOnTouchOutside(false);
-        mProgressDialog.setCancelable(false);
-        mProgressDialog.setIndeterminate(true);
-        mProgressDialog.show();
-        getData();
     }
 
     private void getData(){
@@ -165,7 +164,7 @@ public class PastPerformanceFragment extends Fragment implements View.OnClickLis
                         if(equal == -1)
                             m3MonthList.add(parseObject);
                         cal.roll(Calendar.MONTH, -3);
-                        if(cal.get(Calendar.MONTH) == Calendar.APRIL || cal.get(Calendar.MONTH) == Calendar.MAY || cal.get(Calendar.MONTH) == Calendar.JUNE)
+                        if(cal.get(Calendar.MONTH) == Calendar.OCTOBER || cal.get(Calendar.MONTH) == Calendar.NOVEMBER || cal.get(Calendar.MONTH) == Calendar.DECEMBER)
                             cal.roll(Calendar.YEAR, -1);
                         equal = cal.compareTo(cal1);
                         if(equal == -1)

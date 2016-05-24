@@ -3,6 +3,8 @@ package com.stockboo.scheduler;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 
 /**
  * This BroadcastReceiver automatically (re)starts the alarm when the device is
@@ -18,7 +20,13 @@ public class SampleBootReceiver extends BroadcastReceiver {
     public void onReceive(Context context, Intent intent) {
         if (intent.getAction().equals("android.intent.action.BOOT_COMPLETED"))
         {
-            alarm.setAlarm(context);
+            SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
+
+            if(preferences.getBoolean("enable_notification", true)) {
+                if (!preferences.getBoolean("alarm_set", false)) {
+                    alarm.setAlarm(context);
+                }
+            }
         }
     }
 }
